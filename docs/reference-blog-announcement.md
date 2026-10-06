@@ -187,6 +187,10 @@ OBI intercepts that `write()` call inside the kernel:
 - Without correlation, the manager hears someone yell *"Out of onions!"* but has no idea which customer's order ticket is delayed.
 - With OBI, before the chef's voice leaves the kitchen, OBI stamps `[Ticket #42, Grill Station]` onto the note, so the manager instantly knows which customer is affected.
 
+### Visual Architecture Infographic
+
+![Zero-Code Trace-Log Correlation Architecture Infographic](images/zero-code-trace-log-correlation-infographic.jpg)
+
 ---
 
 ## 3. Advanced Specialist Deep Dive (Kernel & SRE Architecture)

@@ -115,6 +115,59 @@ This repository includes a comprehensive multi-format educational series synthes
 
 *For complete descriptions, technical breakdowns, and YouTube Studio links, see [Video Walkthroughs & Architecture References](#video-walkthroughs--architecture-references-youtube).*
 
+---
+
+## 📊 Architectural Infographic: Zero-Code Trace-Log Correlation with OBI
+
+![Zero-Code Trace-Log Correlation with OpenTelemetry OBI](docs/images/zero-code-trace-log-correlation-infographic.jpg)
+
+### Comprehensive Breakdown of the 5 Core Architectural Pillars
+
+#### 1. 🔍 The Problem: Inefficient Manual Log Search
+- **The Operational Challenge**: In high-throughput distributed microservices, standard application logs lack any direct contextual link to distributed traces.
+- **The Manual Triage Nightmare**: During an outage or degradation, on-call engineers are paged with a failing trace ID (e.g. from Jaeger, Tempo, or Datadog) but are forced to manually `grep` log files by imprecise timestamps across dozens of container pods.
+- **The Resolution Bottleneck**: Clock drift between nodes, high concurrency (thousands of requests/sec), and asynchronous processing waste critical minutes guessing which logs belong to which user transaction, artificially inflating Mean Time to Resolution (MTTR).
+
+#### 2. ⚡ The Solution: Kernel-Level Context Injection via eBPF
+- **Real-Time Thread Context Tracking**: OpenTelemetry eBPF Instrumentation (OBI) operates transparently within the Linux kernel, continuously monitoring active request contexts (`trace_id`, `span_id`) across running application threads.
+- **In-Flight Syscall Interception**: When an application thread calls `write()` or `writev()` to emit logs to stdout or stderr, OBI intercepts the system call in-flight and injects the active trace context directly into the log payload.
+- **Zero-Touch Operational Model**: Requires **ZERO code changes**, **NO SDK imports**, **NO logger reconfigurations**, and **NO application rebuilds or container redeployments**.
+
+#### 3. 🔄 Visual Log Transformation: Before & After
+- **Standard Application Log Output (Before)**:
+  - *Structured JSON*: `{"level":"INFO","message":"payment authorized","amount":42}` — missing `trace_id` and `span_id` attributes.
+  - *Plain-Text*: `[2025-10-27 10:00:00] INFO payment authorized` — completely disconnected from tracing context.
+- **OBI Enriched Log Output (After)**:
+  - *Structured JSON*: Automatically enriched with native JSON attributes:
+    ```json
+    {
+      "level": "INFO",
+      "message": "payment authorized",
+      "amount": 42,
+      "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+      "span_id": "00f067aa0ba902b7"
+    }
+    ```
+  - *Plain-Text*: Decorated with fixed-width key-value suffixes:
+    ```text
+    [2025-10-27 10:00:00] INFO payment authorized trace_id=4bf92f3577b34da6a3ce929d0e0e4736 span_id=00f067aa0ba902b7
+    ```
+- **Bidirectional Navigation**: Engineers can copy a `trace_id` from a log record directly into a trace viewer (Jaeger/Tempo) to inspect the full distributed waterfall, or click through from a trace span directly to the correlated log entries in Grafana Loki, OpenSearch, or CloudWatch.
+
+#### 4. 📋 Environment & Runtime Compatibility Checklist
+- ☑ **Targets Standard Container Streams (`stdout`/`stderr`)**: Enrichment is exclusive to container runtime streams captured from Linux pipes and pseudo-terminals (`/dev/stdout`, `/dev/stderr`). Logs written directly to disk files or emitted via out-of-process network socket appenders bypass kernel stdout interception.
+- ☑ **Kernel & Security Privilege Requirements**: Requires `CAP_SYS_ADMIN` capability and a non-lockdown Linux kernel (`[none]` mode in `/sys/kernel/security/lockdown`). Full `write()` support requires **Linux 6.0+** (`ITER_UBUF`); older kernels (5.8–5.19) support only `writev()` (`ITER_IOVEC`).
+- ☑ **Synchronous Execution Threading**: Relies on synchronous log emission from the thread actively serving the request. Works out of the box in Go, Java (platform threads), and Ruby. Python requires `ENV PYTHONUNBUFFERED=1` to disable stdio pipe buffering. Node.js uses `async_hooks` to bridge libuv callbacks.
+- ☑ **Coexistence with Existing OTel SDKs**: If an application already exports traces via an official OpenTelemetry SDK, OBI automatically detects it and injects **only `trace_id`**, safely suppressing synthetic `span_id` injection to avoid conflicting with the SDK's internal span hierarchy.
+
+#### 5. 🚀 Production Enablement & Deployment Strategy
+- **Step 1 — Enable Enrichment Configuration**: Activate `extensions.obi.correlation.log_trace_annotation.enabled: true` in OBI Config v2 and specify target workload match rules (`exe_path_glob`, namespaces, or container names).
+- **Step 2 — Add Shipper Placeholder Filter**: When OBI suppresses the original un-enriched log via `bpf_probe_write_user`, it zeroes the user buffer. Downstream log shippers (OTel Collector, Vector, Fluent Bit, Promtail) must include a filter rule dropping blank placeholder records matching `^[\x00\s]*$`.
+- **Step 3 — Evaluate Large Payload Handling (> 8 KiB)**: Linux eBPF probe limits enforce an 8 KiB boundary per system call. Payloads exceeding 8 KiB are split: the first 8 KiB prefix is enriched, while the remainder leaks through un-enriched. Applications emitting large payloads should be measured before rollout.
+- **Step 4 — Execute an Incremental Canary Rollout**: Begin by enabling log correlation on a single low-risk service in OBI's `match` list. Validate that NUL placeholders are dropped and log lines are not duplicated before progressively expanding across the cluster.
+
+---
+
 ## Architecture
 
 ```mermaid
@@ -201,6 +254,8 @@ obi-trace-log-correlation/
 │   ├── benchmark-overhead.sh      # Latency and throughput overhead benchmark
 │   └── decommission.sh            # Safe cleanup and BPF map unpinning
 └── docs/                      # Comprehensive technical documentation
+    ├── images/                    # Architectural infographics and visual assets
+    │   └── zero-code-trace-log-correlation-infographic.jpg
     ├── reference-blog-announcement.md # Verbatim blog text, junior primers & specialist deep dives
     ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
     ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
@@ -292,6 +347,8 @@ obi-trace-log-correlation/
     - ⏱️ [`benchmark-overhead.sh`](scripts/benchmark-overhead.sh) — *Overhead benchmarking tool measuring latency, throughput, and CPU usage*
     - 🧹 [`decommission.sh`](scripts/decommission.sh) — *Safe cleanup script unpinning `/sys/fs/bpf/otel` maps and tearing down resources*
   - 📁 **[`docs/`](docs/)** — *Comprehensive technical and operational documentation*
+    - 📁 **[`docs/images/`](docs/images/)** — *Architectural infographics and visual assets*
+      - 🖼️ [`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg) — *High-resolution architectural infographic detailing the 5 core pillars*
     - 📜 [`reference-blog-announcement.md`](docs/reference-blog-announcement.md) — *Verbatim OpenTelemetry announcement, junior primer, and kernel deep dive*
     - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
     - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
@@ -352,6 +409,7 @@ obi-trace-log-correlation/
 - **[`scripts/decommission.sh`](scripts/decommission.sh)**: Clean teardown script that detaches kernel probes, unpins persistent BPF maps under `/sys/fs/bpf/otel/`, and deletes cluster namespaces and RBAC.
 
 #### 📁 `docs/` — Technical Architecture & Operational Guides
+- **[`docs/images/zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg)**: High-resolution architectural infographic illustrating the 5 core pillars: the inefficient manual log search problem, kernel-level eBPF context injection, before/after log transformation, compatibility checklist, and production rollout strategy.
 - **[`docs/reference-blog-announcement.md`](docs/reference-blog-announcement.md)**: Verbatim text of the official OpenTelemetry announcement (*Zero-code trace-log correlation with OBI*), accompanied by multi-tiered explanatory breakdowns for juniors (ELI5) and advanced kernel specialists (VFS mechanics, BPF memory mutation, and context staleness).
 - **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
 - **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.
