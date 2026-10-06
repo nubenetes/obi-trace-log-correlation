@@ -18,7 +18,15 @@
 - [2. The Fundamental Problem: Context Staleness Across Runtimes](#2-the-fundamental-problem-context-staleness-across-runtimes)
   - [The Junior Mental Model: The Restaurant Waiter Analogy](#the-junior-mental-model-the-restaurant-waiter-analogy)
   - [The Technical Problem: OS Threads vs Application Concurrency](#the-technical-problem-os-threads-vs-application-concurrency)
-- [3. Per-Runtime Summary Table](#3-per-runtime-summary-table)
+- [3. Per-Runtime Summary Table & Practical Guidance](#3-per-runtime-summary-table--practical-guidance)
+  - [Architectural Dimensions of the Runtime Matrix](#architectural-dimensions-of-the-runtime-matrix)
+  - [Go Runtime: Out-of-the-Box Success & Goroutine Pitfalls](#go-runtime-out-of-the-box-success--goroutine-pitfalls)
+  - [Python Runtime: The Block Buffering Trap & Asyncio Fixes](#python-runtime-the-block-buffering-trap--asyncio-fixes)
+  - [Node.js Runtime: Event Loop Alignment & Worker Thread Traps](#nodejs-runtime-event-loop-alignment--worker-thread-traps)
+  - [Java Runtime: Platform Threads vs Project Loom Virtual Thread Failures](#java-runtime-platform-threads-vs-project-loom-virtual-thread-failures)
+  - [.NET Runtime: ASP.NET Core Background Channel Dilemma & Solutions](#net-runtime-aspnet-core-background-channel-dilemma--solutions)
+  - [Ruby Runtime: Puma Reactor Paths & Background Job Limits](#ruby-runtime-puma-reactor-paths--background-job-limits)
+  - [Plain-Text & Legacy Monoliths: Non-JSON Key-Value Enrichment](#plain-text--legacy-monoliths-non-json-key-value-enrichment)
 - [4. Deep Dive: Per-Runtime Kernel Refresh Mechanics](#4-deep-dive-per-runtime-kernel-refresh-mechanics)
   - [Go Runtime: `runtime.casgstatus` Uprobes](#go-runtime-runtimecasgstatus-uprobes)
   - [Node.js Runtime: `async_hooks` & `uv_fs_access`](#nodejs-runtime-async_hooks--uv_fs_access)
@@ -66,17 +74,450 @@ To prevent context staleness, OBI hooks each runtime's internal scheduler to ref
 
 ---
 
-## 3. Per-Runtime Summary Table
+## 3. Per-Runtime Summary Table & Practical Guidance
 
-| Language Runtime | Default Stdout Buffering | Works Out of the Box? | Mandatory Configuration | Context Refresh Hook |
-|---|---|:---:|---|---|
-| **Go** | Synchronous `write()` | ✅ **Yes** | None (Zero config) | `runtime.casgstatus` uprobes |
-| **Node.js** | Synchronous stdout pipe | ✅ **Yes** | Ensure no heavy pipe backpressure | `async_hooks` + `uv_fs_access` uprobe |
-| **Java (Platform Threads)** | Immediate `System.out.println()` | ✅ **Yes** | Standard console appenders | ByteBuddy + `ioctl` (`k_ioctl_java_threads`) |
-| **Java (Virtual Threads / Loom)** | Fiber multiplexing | ⚠️ **Not Yet** | Do not rely on OBI for Loom fibers | Currently unsupported in kernel map |
-| **Ruby (Puma)** | Synchronous `syswrite()` | ✅ **Yes** | None | `rb_ary_shift` uprobes |
-| **Python** | Block-buffered on pipes | ⚠️ **Requires Env** | `ENV PYTHONUNBUFFERED=1` | `_asyncio.Task.task_step` uprobes |
-| **.NET (C#)** | Block-buffered (4 KB) | ⚠️ **Requires Code** | Set `AutoFlush = true` on `StreamWriter` | Synchronous console appender required |
+The matrix below provides an operational overview of how mainstream programming language runtimes behave with OBI eBPF zero-code trace-log correlation.
+
+| Language Runtime | Default Stdout Buffering | Works Out of the Box? | Mandatory Configuration / Remediation | Context Refresh Hook | Risk of Context Staleness |
+| :--- | :--- | :---: | :--- | :--- | :---: |
+| **Go** | Synchronous `write()` | ✅ **Yes** | None (Zero-code / Zero-config) | `runtime.casgstatus` uprobes | Minimal (Except detached background goroutines) |
+| **Python** | Block-buffered on pipes (8 KiB) | ⚠️ **Requires Env** | `ENV PYTHONUNBUFFERED=1` in Dockerfile | `_asyncio.Task.task_step` uprobes | **High** if unbuffered mode is omitted |
+| **Node.js** | Synchronous stdout pipe | ✅ **Yes** | Use direct stdout stream; avoid worker-thread transports | `async_hooks` + `uv_fs_access` uprobe | Low (High if using thread-stream transports) |
+| **Java (Platform Threads)** | Immediate `System.out` flush | ✅ **Yes** | Standard synchronous console appenders | ByteBuddy + `ioctl` (`k_ioctl_java_threads`) | Low with platform thread pools |
+| **Java (Virtual Threads / Loom)** | Fiber carrier multiplexing | ❌ **Not Supported** | Do not rely on OBI for Loom fibers; use in-process OTel SDK | None (Virtual carrier hopping unmapped) | **Extreme** (Severe trace cross-contamination) |
+| **.NET (C# / ASP.NET)** | Block-buffered (4 KB) | ⚠️ **Requires Code** | Serilog synchronous console sink or `AutoFlush = true` | Synchronous console appender required | **High** with default `AddConsole()` background channel |
+| **Ruby (Puma)** | Synchronous `syswrite()` | ✅ **Yes** | Ensure `STDOUT.sync = true` in multi-process Puma | `rb_ary_shift` uprobes | Low within web worker threads |
+| **Legacy Plain-Text (C/C++/Go)** | VFS write syscalls | ✅ **Yes** | None (Appends `trace_id=... span_id=...` key-value pairs) | Direct `sys_enter_write` kprobe | Minimal |
+
+---
+
+### Architectural Dimensions of the Runtime Matrix
+
+To understand why some runtimes work effortlessly while others silently lose trace correlation, engineers must evaluate three fundamental architectural dimensions:
+
+1. **User-Space Buffering vs Kernel System Calls**:
+   - The Linux kernel eBPF probe operates strictly at the VFS syscall boundary (`sys_enter_write` and `sys_enter_writev`).
+   - If an application's runtime or standard C library (`libc`) buffers output in user-space memory (e.g. 4 KiB or 8 KiB buffers), the actual `write()` syscall does not occur when the code executes `log.info(...)`.
+   - Instead, the syscall is deferred until the buffer fills or the process exits. By that time, the thread has finished processing the original HTTP transaction, resulting in **either a completely missing trace ID or an incorrect trace ID from an unrelated subsequent request**.
+
+2. **Thread Affinity vs Asynchronous Dispatch**:
+   - The kernel identifies executing code by `bpf_get_current_pid_tgid()` (Thread Group ID + Process ID).
+   - If a logging framework immediately hands log entries to a separate background thread pool, async channel, or worker thread (as seen in ASP.NET Core `AddConsole()` or Pino worker threads), the thread that actually issues the `write()` system call is **not** the thread that handled the request.
+   - Without active thread-hierarchy tracking, the worker thread possesses no entry in the `traces_ctx_v1` BPF map.
+
+3. **Runtime Scheduler Visibility**:
+   - In cooperative multitasking runtimes (Go Goroutines, Python Asyncio, Node.js Event Loop), multiple units of application concurrency are multiplexed over one or more OS threads.
+   - OBI requires runtime-specific uprobes (`runtime.casgstatus`, `async_hooks`, `_asyncio.Task.task_step`) to update `traces_ctx_v1` precisely as the runtime scheduler switches active execution contexts.
+
+---
+
+### Go Runtime: Out-of-the-Box Success & Goroutine Pitfalls
+
+#### Why It Works Out of the Box
+Go's runtime scheduler multiplexes $M$ operating system threads across $N$ goroutines. OBI hooks `runtime.casgstatus` to detect when a goroutine enters `_Grunning` or `_Gsyscall`. When an uninstrumented Go application logs via `log/slog` or `fmt.Println`, the runtime issues a direct `write()` syscall on the current OS thread $M$, allowing the eBPF probe to match `traces_ctx_v1[pid_tgid]` instantaneously.
+
+#### ✅ Working Sample: Standard Go `log/slog` JSON Server
+This is the pattern implemented in [`demo-apps/go/frontend/main.go`](../demo-apps/go/frontend/main.go):
+
+```go
+package main
+
+import (
+    "log/slog"
+    "net/http"
+    "os"
+)
+
+func main() {
+    // Zero-code setup: Standard JSON handler writing directly to os.Stdout
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+    http.HandleFunc("/api/order", func(w http.ResponseWriter, r *http.Request) {
+        // OBI intercepts this stdout write and correlates it with the active HTTP trace!
+        logger.Info("order received",
+            slog.String("item", "widget-pro"),
+            slog.Int("qty", 2),
+        )
+        w.WriteHeader(http.StatusOK)
+    })
+
+    http.ListenAndServe(":8080", nil)
+}
+```
+
+#### ⚠️ When It Does NOT Work: Detached Background Goroutines
+If an HTTP handler fires an unmonitored background goroutine that outlives the HTTP request or performs async work after returning, OBI's return uprobe clears the active HTTP trace context when the handler finishes:
+
+```go
+// ❌ BROKEN SCENARIO: Detached background goroutine loses trace context
+http.HandleFunc("/api/order", func(w http.ResponseWriter, r *http.Request) {
+    logger.Info("order accepted synchronously") // ✅ Correlated!
+
+    // Fire-and-forget goroutine executing after HTTP response returns
+    go func() {
+        time.Sleep(200 * time.Millisecond)
+        // ❌ FAILS: The HTTP request has finished. OBI's return probe cleared
+        // the thread's trace context. This log line will NOT contain trace_id!
+        logger.Info("async background notification dispatched")
+    }()
+
+    w.WriteHeader(http.StatusAccepted)
+})
+```
+
+#### 💡 Remediation for Background Goroutines
+For asynchronous tasks that outlive the HTTP request, pass context explicitly or log within the synchronous boundary:
+```go
+// ✅ REMEDIATION: Capture context or complete work within handler lifecycle
+http.HandleFunc("/api/order", func(w http.ResponseWriter, r *http.Request) {
+    logger.Info("processing order synchronously")
+    
+    // Complete async work with WaitGroup or bounded context before returning:
+    done := make(chan struct{})
+    go func() {
+        logger.Info("in-flight worker task executing") // ✅ Correlated while request is active
+        close(done)
+    }()
+    <-done
+    w.WriteHeader(http.StatusOK)
+})
+```
+
+---
+
+### Python Runtime: The Block Buffering Trap & Asyncio Fixes
+
+#### Why It FAILS Out of the Box: The `libc` Block Buffering Trap
+By default, the C standard library (`libc`) detects whether standard output is connected to an interactive terminal (`isatty(fileno)`):
+- **Terminal (TTY)**: Standard output is **line-buffered** (flushed on each newline `\n`).
+- **Container Pipe (`/dev/stdout`)**: When running inside Docker or Kubernetes, stdout is redirected to a pipe. In non-TTY mode, Python switches to **block-buffering (typically 8,192 bytes)**.
+
+As a result, Python buffers log lines in memory and only triggers the kernel `write()` syscall after 8 KiB accumulates. By that time, the original HTTP request has long since ended, and the thread is either idle or serving an unrelated request.
+
+#### ❌ Broken Sample: Default Containerized Python
+```python
+# app.py - BROKEN IN CONTAINERS WITHOUT UNBUFFERED MODE
+import logging
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+logging.basicConfig(level=logging.INFO, format='{"time":"%(asctime)s","msg":"%(message)s"}')
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # ❌ FAILS: Log line stays in Python's internal 8 KiB buffer!
+        # The write() syscall is NOT called during this request.
+        logging.info("handling customer checkout")
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK\n")
+
+HTTPServer(("", 8082), Handler).serve_forever()
+```
+
+#### ✅ Working Fix 1 (Recommended Dockerfile): `ENV PYTHONUNBUFFERED=1`
+As configured in [`demo-apps/python/Dockerfile`](../demo-apps/python/Dockerfile):
+```dockerfile
+FROM python:3.12-alpine
+WORKDIR /app
+
+# CRITICAL FOR OBI TRACE-LOG CORRELATION:
+# Disables libc block buffering on pipes, ensuring each log write
+# triggers an immediate write() syscall on the active thread.
+ENV PYTHONUNBUFFERED=1
+
+COPY app.py .
+CMD ["python", "app.py"]
+```
+
+#### ✅ Working Fix 2 (CLI / Kubernetes Command Override)
+Invoke Python with the `-u` (unbuffered) flag:
+```bash
+python -u app.py
+```
+
+#### ✅ Working Fix 3 (Code-Level Reconfiguration)
+For existing applications where Dockerfiles cannot be modified, reconfigure standard streams in code:
+```python
+import sys
+# Forces line buffering on stdout even when piped to a container runtime
+sys.stdout.reconfigure(line_buffering=True)
+```
+
+#### ⚡ Asyncio & FastAPI Compatibility
+In asynchronous frameworks (FastAPI, Starlette, AIOHTTP), OBI attaches uprobes to `_asyncio.Task.task_step` to update `traces_ctx_v1` across `await` yields:
+```python
+from fastapi import FastAPI
+import logging, sys, asyncio
+
+# Ensure synchronous stdout flushes
+sys.stdout.reconfigure(line_buffering=True)
+app = FastAPI()
+logger = logging.getLogger("api")
+
+@app.get("/items/{item_id}")
+async def get_item(item_id: str):
+    logger.info(f"fetching item {item_id}") # ✅ Correlated!
+    await asyncio.sleep(0.05) # Yields execution to event loop
+    logger.info(f"item {item_id} ready")    # ✅ Correlated after coroutine resume!
+    return {"item_id": item_id}
+```
+
+---
+
+### Node.js Runtime: Event Loop Alignment & Worker Thread Traps
+
+#### Why It Works Out of the Box
+Node.js processes requests on a single-threaded event loop. Standard `process.stdout.write` and `console.log` execute synchronous writes to file descriptor 1. OBI pairs an internal `async_hooks` bridge with a `uv_fs_access` dummy file descriptor probe to synchronize `traces_ctx_v1` as callbacks resume.
+
+#### ✅ Working Sample: Direct Synchronous Stdout Stream
+As implemented in [`demo-apps/nodejs/server.js`](../demo-apps/nodejs/server.js):
+```javascript
+const http = require('http');
+
+function logJSON(level, msg, extra = {}) {
+  const line = JSON.stringify({
+    timestamp: new Date().toISOString(),
+    level,
+    msg,
+    ...extra
+  }) + '\n';
+  // Synchronous write on the main event-loop thread
+  process.stdout.write(line);
+}
+
+const server = http.createServer((req, res) => {
+  // ✅ Correlated: OBI intercepts this write() on the active HTTP context
+  logJSON('INFO', 'handling node.js async transaction', { path: req.url });
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end('{"status":"ok"}\n');
+});
+
+server.listen(8083);
+```
+
+#### ❌ When It Fails: Asynchronous Worker-Thread Transports
+Many Node.js teams configure **Pino** with multi-threaded worker transports (`pino.transport({ target: 'pino/file' })` or `thread-stream`) to offload log serialization from the main event loop.
+
+```javascript
+// ❌ BROKEN FOR OBI: Pino worker-thread transport
+const pino = require('pino');
+
+// Spins up a worker_threads worker to handle I/O asynchronously
+const transport = pino.transport({
+  target: 'pino/file',
+  options: { destination: 1 } // Output to stdout via worker thread
+});
+
+const logger = pino(transport);
+
+// In HTTP handler:
+app.get('/order', (req, res) => {
+  // ❌ FAILS: The main thread posts a message to the worker thread.
+  // The worker thread executes the write() syscall. Because the worker thread
+  // is detached from the HTTP request context, it has NO entry in traces_ctx_v1!
+  logger.info('processing order');
+  res.send('ok');
+});
+```
+
+#### 💡 Remediation for Node.js
+When deploying OBI, configure loggers to write synchronously to `process.stdout` on the main thread:
+```javascript
+// ✅ REMEDIATION: Direct stdout stream on the main thread
+const pino = require('pino');
+const logger = pino({
+  level: 'info'
+}, process.stdout); // Direct synchronous stream -> CORRELATED!
+```
+
+---
+
+### Java Runtime: Platform Threads vs Project Loom Virtual Thread Failures
+
+#### Platform Threads: Traditional Thread-Pool Servers (Works Out of the Box)
+In standard Java architectures (Tomcat, Spring Boot, Jetty, Netty), incoming HTTP requests are served by dedicated platform threads (`catalina-exec-*`). OBI deploys a ByteBuddy bytecode agent that intercepts task submissions to `ThreadPoolExecutor` and calls a lightweight `ioctl` (`k_ioctl_java_threads`) to link parent and worker thread IDs in kernel space.
+
+#### ✅ Working Sample: Spring Boot with Logback
+```java
+@RestController
+public class PaymentController {
+    private static final Logger log = LoggerFactory.getLogger(PaymentController.class);
+
+    @PostMapping("/payments")
+    public ResponseEntity<String> processPayment(@RequestBody PaymentRequest req) {
+        // ✅ Correlated: Executing on platform thread catalina-exec-1
+        log.info("Processing payment for account={}", req.getAccountId());
+        return ResponseEntity.ok("AUTHORIZED");
+    }
+}
+```
+
+#### ❌ When It Fails #1: Java 21+ Project Loom (Virtual Threads)
+Project Loom decouples Java threads from operating system threads. A huge number of virtual threads (`java.lang.VirtualThread`) are multiplexed onto a small pool of carrier OS threads (`ForkJoinPool.commonPool()`):
+
+```properties
+# application.properties (Spring Boot 3.2+)
+spring.threads.virtual.enabled=true # ❌ FAILS WITH OBI CORRELATION!
+```
+
+**Why Virtual Threads Break eBPF Kernel Correlation**:
+1. When a virtual thread blocks on non-blocking socket I/O, it unmounts from its carrier OS thread.
+2. When I/O completes, the virtual thread remounts on a potentially **different** carrier OS thread.
+3. Crucially, multiple virtual threads run consecutively on the **same** carrier OS thread.
+4. In the Linux kernel, `bpf_get_current_pid_tgid()` only sees the carrier OS thread's TID. The kernel cannot discern which user-space virtual thread is currently executing.
+5. If virtual thread A sets a trace context in `traces_ctx_v1` on carrier thread 10, yields, and virtual thread B logs on carrier thread 10, **virtual thread B is falsely stamped with virtual thread A's trace ID** (severe trace cross-contamination).
+
+#### 💡 Guidance for Project Loom
+- **Option A (Recommended for OBI)**: Keep web request handling on standard platform thread pools (`server.tomcat.threads.max=200`).
+- **Option B (In-Process Agent)**: If virtual threads are mandatory for throughput, deploy the official OpenTelemetry Java Agent (`-javaagent:opentelemetry-javaagent.jar`). The in-process agent tracks `ScopedValue` and virtual thread continuations in JVM memory until eBPF Loom support is engineered.
+
+#### ❌ When It Fails #2: Asynchronous Log4j2 Disruptor Loggers
+If Log4j2 is configured with the asynchronous LMAX Disruptor (`AsyncLogger`):
+```properties
+-Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+```
+Log events are placed into an in-memory ringbuffer and written by a single background thread (`Log4j2-AsyncLogger-1`). This background thread has no trace context in the kernel.
+
+**Remediation**: Use standard synchronous console appenders with `immediateFlush="true"`:
+```xml
+<!-- log4j2.xml: Synchronous console appender -->
+<Console name="Console" target="SYSTEM_OUT" immediateFlush="true">
+  <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
+</Console>
+```
+
+---
+
+### .NET Runtime: ASP.NET Core Background Channel Dilemma & Solutions
+
+#### Why It FAILS Out of the Box: The Background Channel Architecture
+In .NET 6/7/8/9, standard console logging fails with OBI for two distinct reasons:
+1. `Console.Out` is wrapped in a `StreamWriter` with `AutoFlush = false`, causing 4 KB block buffering.
+2. The default ASP.NET Core console logger (`builder.Logging.AddConsole()`) queues log messages into an internal asynchronous queue (`System.Threading.Channels.Channel<LogMessageEntry>`). A single dedicated background writer thread (`ConsoleLoggerProcessor`) dequeues messages and performs the actual write syscall.
+
+Because the writer thread is not the thread that executed the controller action, the kernel sees a `write()` syscall from a thread with zero trace context in `traces_ctx_v1`.
+
+#### ❌ Broken Sample: Default ASP.NET Core `AddConsole()`
+```csharp
+// Program.cs - BROKEN FOR OBI CORRELATION
+var builder = WebApplication.CreateBuilder(args);
+
+// Default console provider delegates to an asynchronous background channel thread
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(); 
+
+var app = builder.Build();
+
+app.MapGet("/checkout", (ILogger<Program> logger) => {
+    // ❌ FAILS: Log write occurs on background ConsoleLoggerProcessor thread!
+    logger.LogInformation("Processing customer checkout");
+    return Results.Ok(new { status = "approved" });
+});
+
+app.Run();
+```
+
+#### ✅ Working Fix 1 (Recommended: Serilog Synchronous Console)
+Serilog's console sink writes synchronously on the calling thread:
+```csharp
+// Program.cs - FIXED FOR OBI CORRELATION
+using Serilog;
+
+// Configure Serilog to write synchronously to stdout on the calling thread
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter())
+    .CreateLogger();
+
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
+
+var app = builder.Build();
+
+app.MapGet("/checkout", () => {
+    // ✅ Correlated: write() syscall occurs synchronously on the request thread!
+    Log.Information("Processing customer checkout");
+    return Results.Ok(new { status = "approved" });
+});
+
+app.Run();
+```
+
+#### ✅ Working Fix 2: Native StreamWriter with `AutoFlush = true`
+```csharp
+// Force immediate stdout flushing on standard Console.Out
+var stdout = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
+Console.SetOut(stdout);
+```
+
+#### ✅ Working Fix 3: NLog Synchronous Console Target
+Configure NLog without queueing:
+```xml
+<!-- nlog.config -->
+<targets>
+  <target xsi:type="Console" name="console" queueLimit="0" />
+</targets>
+```
+
+---
+
+### Ruby Runtime: Puma Reactor Paths & Background Job Limits
+
+#### Why It Works Out of the Box
+Puma servers dispatch HTTP requests from worker threads. OBI instruments `rb_ary_shift` (`Array#shift` in Ruby C internals) to synchronize `traces_ctx_v1` whenever a worker pulls a request from the reactor queue.
+
+#### ✅ Working Sample: Puma Web Server
+```ruby
+# config/puma.rb
+threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
+threads threads_count, threads_count
+port ENV.fetch("PORT") { 3000 }
+environment ENV.fetch("RAILS_ENV") { "production" }
+
+# Ensure stdout stream is unbuffered
+$stdout.sync = true
+```
+
+#### ⚠️ When It Does NOT Work: Asynchronous Background Workers
+Asynchronous queue workers (Sidekiq, GoodJob, Resque) running in separate worker processes or threads do not share the HTTP thread's kernel context. Pass W3C `traceparent` headers inside the serialized job payload if asynchronous background jobs must correlate with originating HTTP requests.
+
+---
+
+### Plain-Text & Legacy Monoliths: Non-JSON Key-Value Enrichment
+
+#### Universal Compatibility Without JSON
+OBI does not require structured JSON logging. If a legacy C, C++, or Go application emits unstructured free-form log lines, OBI intercepts the `write()` system call, checks if the payload starts with `{`, and if not, automatically appends key-value annotations: `trace_id=<hex> span_id=<hex>`.
+
+#### ✅ Working Sample: Legacy Unstructured Service
+As implemented in [`demo-apps/plaintext/main.go`](../demo-apps/plaintext/main.go):
+```go
+package main
+
+import (
+    "fmt"
+    "net/http"
+    "time"
+)
+
+func main() {
+    http.HandleFunc("/legacy", func(w http.ResponseWriter, r *http.Request) {
+        // Raw unstructured string emitted to stdout
+        fmt.Printf("[%s] legacy transaction executed user=john_doe status=ok\n", 
+            time.Now().Format(time.RFC3339))
+        w.Write([]byte("processed\n"))
+    })
+
+    http.ListenAndServe(":8084", nil)
+}
+```
+
+#### Output Stream Result
+```text
+# Raw Application Output:
+[2026-10-07T00:00:00Z] legacy transaction executed user=john_doe status=ok
+
+# Enriched Output Captured by Container Engine:
+[2026-10-07T00:00:00Z] legacy transaction executed user=john_doe status=ok trace_id=4bf92f3577b34da6a3ce929d0e0e4736 span_id=00f067aa0ba902b7
+```
 
 ---
 
