@@ -131,6 +131,55 @@ flowchart TD
 
 ## Repository Structure
 
+### Compact Overview (ASCII Tree)
+
+```text
+obi-trace-log-correlation/
+├── demo-apps/                 # Polyglot uninstrumented application workloads
+│   ├── go/frontend/           # Uninstrumented Go HTTP service (log/slog JSON)
+│   ├── go/backend/            # Uninstrumented Go HTTP service (log/slog JSON)
+│   ├── python/                # Python unbuffered service (PYTHONUNBUFFERED=1)
+│   ├── nodejs/                # Node.js service with Pino JSON logging
+│   └── plaintext/             # Legacy plain-text service showing key=value annotations
+├── docker-compose/            # Self-contained local Linux evaluation stack
+│   ├── compose.yaml           # Frontend, Backend, Jaeger, and OBI DaemonSet
+│   └── obi-config.yml         # OBI Config v2 with correlation.log_trace_annotation
+├── k8s/                       # Production Kubernetes configurations
+│   ├── base/                  # Kustomize base (DaemonSet, RBAC, ConfigMap, Collector)
+│   └── overlays/              # Enterprise distribution overlays
+│       ├── openshift-4.20/    # OpenShift 4.20+ with custom SCC & Vector filter
+│       ├── aks/               # Azure Kubernetes Service (Azure Linux/Ubuntu)
+│       ├── eks/               # AWS Elastic Kubernetes Service (AL2023/Bottlerocket)
+│       ├── gke/               # Google Kubernetes Engine (Standard COS/Ubuntu)
+│       └── rke/               # Rancher RKE2 / K3s hardened profiles
+├── log-pipelines/             # Filter configurations to drop suppressed NUL placeholders
+│   ├── otel-collector-filelog.yaml
+│   ├── fluent-bit-filter.conf
+│   ├── vector-filter.toml
+│   └── promtail-filter.yaml
+├── scripts/                   # Production lifecycle automation scripts
+│   ├── common.sh                  # Shared logging, ANSI colors, and error trap library
+│   ├── day0-kernel-audit.sh       # Preflight kernel, BPF, and lockdown audit
+│   ├── day1-deploy.sh             # Multi-cloud automated deployment
+│   ├── day1-generate-traffic.sh   # Synthetic HTTP traffic generator
+│   ├── day2-verify-correlation.sh # Live verification of log trace IDs
+│   ├── day2-canary-rollout.sh     # Canary progressive rollout helper
+│   ├── benchmark-overhead.sh      # Latency and throughput overhead benchmark
+│   └── decommission.sh            # Safe cleanup and BPF map unpinning
+└── docs/                      # Comprehensive technical documentation
+    ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
+    ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
+    ├── day1-installation.md       # Multi-platform deployment guides
+    ├── day2-operations-triage.md  # Incident triage queries (Loki, Jaeger, ES)
+    ├── log-filtering-guide.md     # In-depth explanation of NUL bytes & filters
+    ├── runtime-compatibility.md   # Language runtime specifics (Go, Python, Java, .NET)
+    ├── troubleshooting.md         # Diagnostic runbook for common pitfalls
+    ├── decommission-guide.md      # Clean teardown procedures
+    └── references.md              # Catalog of official links and resources
+```
+
+### Interactive Repository Map
+
 > [!TIP]
 > **Interactive Repository Map**: Every directory and file link in the tree below is hyperlinked directly to its source. Click any item to explore its code, configuration, or documentation without losing context.
 
