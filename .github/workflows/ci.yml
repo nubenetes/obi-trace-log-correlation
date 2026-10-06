@@ -37,6 +37,8 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           scandir: './scripts'
+        env:
+          SHELLCHECK_OPTS: -x -e SC1091
 
       - name: Validate Docker Compose Configuration
         run: |

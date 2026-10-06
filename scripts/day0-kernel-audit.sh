@@ -78,7 +78,6 @@ if command -v kubectl >/dev/null 2>&1 && kubectl get nodes >/dev/null 2>&1; then
     kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.nodeInfo.osImage}{"\t"}{.status.nodeInfo.kernelVersion}{"\n"}{end}' | while IFS=$'\t' read -r node os kern; do
         printf "%-30s %-25s %-20s\n" "$node" "$os" "$kern"
         NODE_MAJOR=$(echo "$kern" | cut -d. -f1)
-        NODE_MINOR=$(echo "$kern" | cut -d. -f2)
         if (( NODE_MAJOR < 6 )); then
             log_warn "Node '$node' runs kernel $kern (< 6.0). Recommend upgrading to RHCOS 9 / AL2023 / Ubuntu 24.04."
         fi
