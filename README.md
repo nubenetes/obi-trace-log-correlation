@@ -87,7 +87,14 @@ This repository includes a comprehensive multi-format educational series synthes
 
 > [!NOTE]
 > **Multilingual Learning Experience**:
-> Content features native spoken audio in **English 🇺🇸**, and includes automated YouTube subtitles / closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for global knowledge sharing.
+> Content features native spoken audio in **English 🇺🇸** and **Spanish 🇪🇸**, and includes automated YouTube subtitles / closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for global knowledge sharing.
+
+### 🎙️ Architectural Masterclass Podcasts (Audio)
+
+| # | Format | Podcast Episode | Domain / Focus | Origin Language | Duration | Direct YouTube Link |
+|---|:---:|---|---|:---:|:---:|---|
+| 1 | 🎙️ Audio Podcast | [**Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive**](https://www.youtube.com/watch?v=QUSwbpEERlI) | Complete Architecture, Kernel Hooks & SRE Triage | 🇺🇸 English *(CC 20+)* | `47:47` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=QUSwbpEERlI) |
+| 2 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=mpSVsUIpaMc) | Arquitectura Kernel, Filtrado NUL y Producción | 🇪🇸 Spanish *(CC 20+)* | `21:37` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=mpSVsUIpaMc) |
 
 ### 🎬 Full-Length Technical Deep Dives (Videos)
 
@@ -876,6 +883,77 @@ Below are the direct links and full descriptions for each session.
 > #Shorts #OpenTelemetry #eBPF #Python #NodeJS #Observability #Debugging #SRE #Kubernetes #DevOps
 
 </details>
+
+<br/>
+
+### 🎙️ Architectural Masterclass Podcasts (2 Episodes)
+
+<details open>
+<summary>📂 <strong>Detailed Breakdown: Architectural Podcasts</strong></summary>
+
+<br/>
+
+#### 1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=QUSwbpEERlI](https://www.youtube.com/watch?v=QUSwbpEERlI)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/QUSwbpEERlI/edit](https://studio.youtube.com/video/QUSwbpEERlI/edit)
+- ⏱️ **Duration**: 47:47
+- 🏷️ **Domain**: Complete Architecture Masterclass, Kernel Hooks & SRE Triage
+- 📝 **Full Description**:
+> 🎙️ Architecture Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI)
+>
+> Full 47-minute masterclass podcast deep dive exploring how OpenTelemetry eBPF Instrumentation (OBI) bridges distributed traces and application logs at the Linux kernel level with zero source code changes.
+>
+> An in-depth technical discussion for platform engineers, SREs, and cloud architects on ending midnight incident triage guesswork and unifying observability telemetry.
+>
+> 📌 Key Discussion Topics:
+> • The Midnight Triage Nightmare: Why grepping application logs by timestamp during production outages fails in distributed microservice architectures.
+> • The Zero-Code Revolution: How eBPF operates below user space, instrumenting applications without language SDKs, code edits, or image rebuilds.
+> • Linux Kernel Syscall Interception: The mechanics of hooking write() and writev() syscalls, extracting active thread execution context, and tracking distributed transactions in BPF maps.
+> • The NUL Byte Suppression Trick: How bpf_probe_write_user zeroes out un-enriched user buffers and why downstream shippers (Fluent Bit, Vector, OTel Collector) require drop filters.
+> • 8KB Buffer Boundaries: Handling large log payloads, chunked splits, and configuring multi-line reassembly in log forwarders.
+> • Runtime Buffering Quirks: Synchronous vs asynchronous loggers, Python unbuffered mode (PYTHONUNBUFFERED=1), Node.js async stdout streams, and Java virtual thread nuances.
+> • Production Security & Rollout: Kernel version prerequisites (Linux 6.0+), CAP_BPF / CAP_SYS_ADMIN capabilities, and progressive canary rollouts in Kubernetes.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Production Manifests & Architecture: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
+>
+> ⏱️ Duration: 47:47
+> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservices
+
+#### 2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=mpSVsUIpaMc](https://www.youtube.com/watch?v=mpSVsUIpaMc)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/mpSVsUIpaMc/edit](https://studio.youtube.com/video/mpSVsUIpaMc/edit)
+- ⏱️ **Duration**: 21:37
+- 🏷️ **Domain**: Arquitectura Kernel, Filtrado NUL y Producción
+- 📝 **Full Description**:
+> 🎙️ Podcast de Arquitectura Técnica: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI
+>
+> Episodio completo de 21 minutos en formato podcast técnico en español analizando la arquitectura de correlación automática entre logs y trazas distribuidas mediante OpenTelemetry eBPF Instrumentation (OBI).
+>
+> Una conversación exhaustiva para ingenieros de fiabilidad (SRE), líderes de plataforma y desarrolladores sobre cómo conectar telemetría directamente desde el kernel de Linux sin tocar código fuente ni recompilar servicios.
+>
+> 📌 Puntos Clave de la Sesión:
+> • El Drama de la Guardia a las 3:00 AM: Por qué buscar logs con grep por timestamp durante un incidente es impreciso y ralentiza la recuperación del servicio.
+> • Filosofía Zero-Code: Cómo eBPF inyecta identificadores de traza (trace_id y span_id) en tiempo de ejecución sin dependencias de SDKs en las aplicaciones.
+> • Mecánica en el Kernel de Linux: Intercepción de syscalls write() y writev(), mapas LRU de contexto y seguimiento del hilo de ejecución en tiempo real.
+> • Supresión de Buffers y Filtrado NUL: Por qué OBI reemplaza el buffer original con bytes nulos (\x00) mediante bpf_probe_write_user y cómo configurar filtros de descarte en Fluent Bit, Vector y OTel Collector.
+> • Límites y Ensamblado de 8 KiB: Comportamiento ante líneas de log masivas que superan la memoria del kernel y reglas de reconstrucción multilínea.
+> • Trampas en Runtimes Asíncronos: Cómo evitar desfases de contexto en Python deshabilitando el buffer (PYTHONUNBUFFERED=1), Node.js y virtual threads en Java.
+> • Puesta en Producción Segura: Requisitos de kernel (Linux 6.0+), privilegios de seguridad (CAP_SYS_ADMIN) y estrategias de despliegue canary en Kubernetes y OpenShift.
+>
+> 🔗 Repositorio Oficial y Documentación:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Guía de Filtrado de Logs: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
+>
+> ⏱️ Duración: 21:37
+> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
+
+</details>
+
+<br/>
 
 ## References & Official Links
 
