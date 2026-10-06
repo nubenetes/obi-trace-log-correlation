@@ -181,33 +181,33 @@ This repository includes a comprehensive multi-format educational series synthes
 flowchart TD
     subgraph AppNamespace["Application Pod (Zero Code / Uninstrumented)"]
         UserReq["Inbound Request (HTTP/gRPC)"] --> App["Application Process (Go / Python / Node / Java)"]
-        App -->|"log.Info() -> write() syscall"| Syscall["Kernel Syscall write(stdout/stderr)"]
+        App -->|"log.Info()<br/>write() syscall"| Syscall["Kernel Syscall write(stdout/stderr)"]
     end
 
     subgraph KernelSpace["Kernel Space (eBPF Probes)"]
-        Tracer["OBI Tracer (kprobe / uprobe)"] -->|"Extracts & pins trace context"| TraceCtxMap[("BPF Map: traces_ctx_v1 (LRU Hash)")]
+        Tracer["OBI Tracer (kprobe / uprobe)"] -->|"Extracts & pins<br/>trace context"| TraceCtxMap[("BPF Map: traces_ctx_v1 (LRU Hash)")]
         Syscall -->|"Intercepted by"| LogEnricher["OBI Log Enricher (pipe_write / tty_write)"]
-        TraceCtxMap -->|"Look up pid_tgid"| LogEnricher
-        LogEnricher -->|"bpf_probe_write_user zeroes out user buffer"| OrigBuffer["Suppressed Buffer (NUL bytes \x00)"]
-        LogEnricher -->|"Enqueue log line + trace context"| RingBuffer[("BPF Ring Buffer: log_events")]
+        TraceCtxMap -->|"Look up<br/>pid_tgid"| LogEnricher
+        LogEnricher -->|"bpf_probe_write_user<br/>zeroes user buffer"| OrigBuffer["Suppressed Buffer (NUL bytes \x00)"]
+        LogEnricher -->|"Enqueue log line<br/>+ trace context"| RingBuffer[("BPF Ring Buffer: log_events")]
     end
 
     subgraph OBIDaemonSet["OBI User Space (DaemonSet)"]
         RingBuffer --> ReadWorker["OBI Reader Daemon"]
-        ReadWorker -->|"Injects trace_id & span_id"| EnrichedLog["Enriched Log Line"]
-        EnrichedLog -->|"Re-emits to original stdout fd"| ContainerLogFile["/var/log/pods/*/*.log"]
-        Tracer -->|"Export OTLP Traces (gRPC)"| OTelCollector["OTel Collector / Jaeger"]
+        ReadWorker -->|"Injects trace_id<br/>& span_id"| EnrichedLog["Enriched Log Line"]
+        EnrichedLog -->|"Re-emits to<br/>stdout FD"| ContainerLogFile["/var/log/pods/*/*.log"]
+        Tracer -->|"Export OTLP<br/>traces (gRPC)"| OTelCollector["OTel Collector / Jaeger"]
     end
 
     subgraph LogShipping["Log Forwarding Pipeline (Collector / Vector / Fluent Bit)"]
-        OrigBuffer -->|"Runtime captures \x00\x00..."| ContainerLogFile
+        OrigBuffer -->|"Captures placeholder<br/>\x00\x00..."| ContainerLogFile
         ContainerLogFile --> Filter["Drop Filter: ^[\\x00\\s]*$"]
         Filter --> LogStorage["Log Backend (Loki / Elasticsearch / CloudWatch)"]
     end
 
     subgraph ObservabilityUI["Unified Incident Triage"]
         OTelCollector --> TracesBackend["Jaeger / Tempo"]
-        TracesBackend <-->|"Correlate instantly via trace_id"| LogStorage
+        TracesBackend <-->|"Correlate via<br/>trace_id"| LogStorage
     end
 ```
 

@@ -67,26 +67,26 @@ Why can't organizations just add the OpenTelemetry SDK to their code?
 ```mermaid
 flowchart TD
     subgraph ContainerRuntime["Container Runtime & App Space"]
-        App["Application Process (Zero Code Changes)"] -->|"fmt.Println() / slog / pino / logger"| Stdio["Process stdout / stderr (FD 1 / 2)"]
+        App["Application Process (Zero Code Changes)"] -->|"fmt.Println() / slog<br/>pino / logger"| Stdio["Process stdout / stderr (FD 1 / 2)"]
     end
 
     subgraph LinuxKernel["Linux Kernel (eBPF Subsystem)"]
-        Stdio -->|"write() / writev() Syscall"| SyscallHook["OBI eBPF Syscall Hook (pipe_write / ksys_write)"]
-        Tracer["OBI Network Tracer (Socket kprobes)"] -->|"Extracts W3C traceparent"| Map[("BPF Map: traces_ctx_v1 (LRU Hash)")]
-        SyscallHook -->|"1. Lookup thread pid_tgid"| Map
-        SyscallHook -->|"2. Zero out buffer (bpf_probe_write_user)"| SuppressedBuffer["Blank Placeholder: \\x00\\x00...\\n"]
-        SyscallHook -->|"3. Submit payload + IDs"| RingBuffer[("BPF Ring Buffer: log_events")]
+        Stdio -->|"write() / writev()<br/>syscall"| SyscallHook["OBI eBPF Syscall Hook (pipe_write / ksys_write)"]
+        Tracer["OBI Network Tracer (Socket kprobes)"] -->|"Extracts W3C<br/>traceparent"| Map[("BPF Map: traces_ctx_v1 (LRU Hash)")]
+        SyscallHook -->|"1. Lookup thread<br/>pid_tgid"| Map
+        SyscallHook -->|"2. Zero out buffer<br/>(bpf_probe_write_user)"| SuppressedBuffer["Blank Placeholder: \\x00\\x00...\\n"]
+        SyscallHook -->|"3. Submit payload<br/>+ trace IDs"| RingBuffer[("BPF Ring Buffer: log_events")]
     end
 
     subgraph OBIDaemon["OBI DaemonSet (User Space)"]
         RingBuffer --> RingConsumer["Ring Buffer Reader"]
         RingConsumer --> Injector["Trace Context Injector (JSON / Plain-Text)"]
-        Injector -->|"Re-emits enriched record directly to container FD"| PodLogFile["/var/log/pods/*/*.log"]
+        Injector -->|"Re-emits enriched log<br/>to container FD"| PodLogFile["/var/log/pods/*/*.log"]
     end
 
-    SuppressedBuffer -->|"Captured by container engine"| PodLogFile
+    SuppressedBuffer -->|"Captured by<br/>container engine"| PodLogFile
     PodLogFile --> LogShipper["Log Pipeline (OTel Collector / Vector / Fluent Bit)"]
-    LogShipper -->|"Drop Filter: ^[\\x00\\s]*$"| Storage["Observability Backend (Loki / ES)"]
+    LogShipper -->|"Drop Filter:<br/>^[\\x00\\s]*$"| Storage["Observability Backend (Loki / ES)"]
 ```
 
 ---
