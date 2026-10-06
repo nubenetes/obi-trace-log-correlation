@@ -5,9 +5,11 @@ This reference guide catalogs all official OpenTelemetry documentation, blog pos
 ---
 
 ## 1. Official Announcements & Articles
+- **Local Unabridged Reference & Analysis**: [docs/reference-blog-announcement.md](reference-blog-announcement.md)
+  - Contains the complete, verbatim text of the official announcement plus junior primers and advanced kernel deep dives.
 - **OpenTelemetry Blog Post**: [Zero-code trace-log correlation with OBI](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
   - *Summary*: Primary announcement detailing the motivation, kernel interception mechanism, JSON/plain-text formatting, and rollout guidance.
-- **Markdown Version**: [Blog Index Markdown](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/index.md)
+- **Markdown Version of Blog Post**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/index.md](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/index.md)
 
 ---
 
@@ -30,7 +32,19 @@ This reference guide catalogs all official OpenTelemetry documentation, blog pos
 
 ---
 
-## 4. Community & Support
+## 4. Local Architecture Guides in this Repository
+- [architecture.md](architecture.md) — Comprehensive kernel syscall mechanics, LRU maps, memory suppression, and 8 KiB boundary.
+- [runtime-compatibility.md](runtime-compatibility.md) — Detailed runtime breakdown (Go, Node.js, Java, Python, .NET, Ruby) solving context staleness.
+- [day0-planning-sizing.md](day0-planning-sizing.md) — Preflight planning, kernel compatibility matrix, and hardware sizing.
+- [day1-installation.md](day1-installation.md) — Installation and multi-cloud Kubernetes deployment runbooks.
+- [day2-operations-triage.md](day2-operations-triage.md) — Operational queries (LogQL, Jaeger, Elasticsearch) and alert configurations.
+- [log-filtering-guide.md](log-filtering-guide.md) — Deep dive into NUL byte placeholder lines and log shipper drop filters.
+- [troubleshooting.md](troubleshooting.md) — Operational diagnostic runbook for edge cases and errors.
+- [decommission-guide.md](decommission-guide.md) — Clean teardown and BPF map unpinning procedures.
+
+---
+
+## 5. Community & Support
 - **CNCF Slack**: [#otel-ebpf-instrumentation](https://cloud-native.slack.com/archives/C06DQ7S2YEP)
 - **OpenTelemetry Community Meetings**: Join the bi-weekly eBPF SIG meeting on the CNCF public calendar.
 - **Issue Tracker**: [Report OBI Issues](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/issues)

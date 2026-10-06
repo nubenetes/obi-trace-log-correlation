@@ -45,6 +45,40 @@ When an incident occurs in production, operators often get paged with a failing 
 
 ---
 
+## 📖 Official Reference & Theoretical Motivation
+
+> [!IMPORTANT]
+> **Official Reference Announcement**:  
+> This repository operationalizes the milestone OpenTelemetry architecture announced in:  
+> 👉 [**Zero-code trace-log correlation with OBI** (OpenTelemetry Blog, October 2026)](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)  
+> 
+> For the complete, unabridged verbatim text of the announcement paired with section-by-section analysis for both junior engineers and Linux systems specialists, see:  
+> 📄 [**`docs/reference-blog-announcement.md`**](docs/reference-blog-announcement.md)
+
+### 1. The Core Motivation: The 2 AM Incident Response Dilemma
+- **The Junior SRE Experience (Explain Like I'm 5)**:  
+  You are on-call at 2:00 AM. Your phone buzzes: an order checkout failed. You open Jaeger or Grafana Tempo and find the exact trace with `trace_id: 4bf92f3577b34da6a3ce929d0e0e4736`. To discover why the order failed, you open your log viewer (Loki, Elasticsearch, or CloudWatch) and search logs around the incident timestamp. In a production Kubernetes cluster handling thousands of requests per second, there are tens of thousands of log lines across dozens of pods. Because the application never had an OpenTelemetry SDK installed, none of the log lines contain a `trace_id`. You are forced to guess by timestamp—hoping clock skew doesn't mislead you.
+- **The Enterprise Reality (Why SDKs Fail to Reach 100% Coverage)**:  
+  Why not simply import OpenTelemetry SDKs into every service?
+  1. **Polyglot Fleet Friction**: Enterprises maintain hundreds of microservices written across Go, Python, Java, Node.js, and .NET by dozens of independent squads.
+  2. **Legacy & Frozen Codebases**: Critical legacy services lack active maintainers; modifying source code risks regressions and requires extensive compliance cycles.
+  3. **Third-Party & Vendor Binaries**: Closed-source commercial containers and sidecars cannot be modified.
+  4. **Quarter-Long Backlogs**: Coordinating code updates, testing, and deployments across an entire engineering organization can take an entire year.
+- **The OBI Revolution (Zero-Code Kernel Interception)**:  
+  OpenTelemetry eBPF Instrumentation (OBI) operates entirely inside the Linux kernel. It hooks the operating system's `write()` and `writev()` system calls on container stdout/stderr pipes. Whenever an application thread emits a log line, OBI checks its in-kernel BPF map (`traces_ctx_v1`) to determine what request that thread is currently serving, stamps the matching `trace_id` and `span_id` onto the log line in-flight, and re-emits it. **No SDKs, no app config, no recompilation, no redeployment.**
+
+### 2. Dual-Perspective Technical Guidance
+
+| Architectural Area | Junior Engineer Perspective (Conceptual) | Advanced Specialist Perspective (Systems & Kernel) |
+|---|---|---|
+| **Log Stamping** | Stamping an order number onto a chef's kitchen note before it leaves the kitchen. | `bpf_probe_write_user` zeroes user buffer with NULs; user daemon injects IDs via `log_events` ring buffer and re-emits to container fd. |
+| **Context Staleness** | A waiter handles Ticket A, drops it off, and picks up Ticket B—don't stamp Ticket A on Ticket B's drink! | Go `runtime.casgstatus` uprobes, Node.js `async_hooks` + `uv_fs_access`, Java ByteBuddy `ioctl` thread hierarchy traversal. |
+| **Log Pipeline Tuning** | A vacuum cleaner that sucks up blank lines before they clutter your screen. | Downstream log shippers (Collector, Vector, Fluent Bit, Promtail) decode CRI/Docker JSON and drop lines matching `^[\x00\s]*$`. |
+| **Write Limits** | Very long book pages might get split into two pages if they exceed 8 KB. | Single `write()`/`writev()` calls > 8 KiB split at the BPF stack limit: 8 KiB prefix is enriched; remainder leaks un-enriched. |
+| **Hybrid Mode** | If an app already has a nametag, don't pin a second, conflicting nametag on it. | When an in-process OTel SDK exports traces, OBI injects `trace_id` only and suppresses `span_id` to prevent APM waterfall corruption. |
+
+---
+
 ---
 
 ## 🤖 AI-Generated Multimedia & Video Series (NotebookLM & YouTube)
@@ -167,6 +201,7 @@ obi-trace-log-correlation/
 │   ├── benchmark-overhead.sh      # Latency and throughput overhead benchmark
 │   └── decommission.sh            # Safe cleanup and BPF map unpinning
 └── docs/                      # Comprehensive technical documentation
+    ├── reference-blog-announcement.md # Verbatim blog text, junior primers & specialist deep dives
     ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
     ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
     ├── day1-installation.md       # Multi-platform deployment guides
@@ -257,6 +292,7 @@ obi-trace-log-correlation/
     - ⏱️ [`benchmark-overhead.sh`](scripts/benchmark-overhead.sh) — *Overhead benchmarking tool measuring latency, throughput, and CPU usage*
     - 🧹 [`decommission.sh`](scripts/decommission.sh) — *Safe cleanup script unpinning `/sys/fs/bpf/otel` maps and tearing down resources*
   - 📁 **[`docs/`](docs/)** — *Comprehensive technical and operational documentation*
+    - 📜 [`reference-blog-announcement.md`](docs/reference-blog-announcement.md) — *Verbatim OpenTelemetry announcement, junior primer, and kernel deep dive*
     - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
     - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
     - 📦 [`day1-installation.md`](docs/day1-installation.md) — *Multi-platform installation guide and bootstrap steps*
@@ -316,6 +352,7 @@ obi-trace-log-correlation/
 - **[`scripts/decommission.sh`](scripts/decommission.sh)**: Clean teardown script that detaches kernel probes, unpins persistent BPF maps under `/sys/fs/bpf/otel/`, and deletes cluster namespaces and RBAC.
 
 #### 📁 `docs/` — Technical Architecture & Operational Guides
+- **[`docs/reference-blog-announcement.md`](docs/reference-blog-announcement.md)**: Verbatim text of the official OpenTelemetry announcement (*Zero-code trace-log correlation with OBI*), accompanied by multi-tiered explanatory breakdowns for juniors (ELI5) and advanced kernel specialists (VFS mechanics, BPF memory mutation, and context staleness).
 - **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
 - **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.
 - **[`docs/day1-installation.md`](docs/day1-installation.md)**: Step-by-step deployment guide across all supported Kubernetes platforms.
