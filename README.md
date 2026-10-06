@@ -211,6 +211,77 @@ flowchart TD
     end
 ```
 
+### Architectural Diagram Walkthrough & Operational Lifecycle
+
+The diagram above illustrates the complete end-to-end lifecycle of a distributed transaction, from socket ingress down into kernel VFS interception and up to the incident response UI.
+
+---
+
+#### 🐣 Junior Engineer Walkthrough: The Lifecycle of a Request & Log Line
+
+If you are new to distributed systems, eBPF, or Linux internals, follow this step-by-step journey of what happens behind the scenes:
+
+- **Step 1: The Request Arrives (`AppNamespace`)**
+  - An HTTP or gRPC request arrives at your microservice (e.g., `POST /checkout`).
+  - The application code starts running its standard business logic. The application **does not have any OpenTelemetry SDK installed**—it is just plain, unmodified code.
+- **Step 2: The Kernel Catches the Network Call (`KernelSpace`)**
+  - Before the application even processes the request bytes, an OBI network probe in the Linux kernel intercepts the incoming socket traffic.
+  - It reads the W3C `traceparent` header (or creates a new root trace if it is the first service) and saves the active `trace_id` and `span_id` in a kernel memory ledger called `traces_ctx_v1`.
+  - Crucially, it links these IDs to the **exact thread** running that code.
+- **Step 3: The Application Emits a Log Line**
+  - Your application calls standard logging: `log.Info("payment authorized", "amount", 42)`.
+  - The programming language tells the Linux kernel: *"Please write this text to stdout (the console)."* This triggers a Linux `write()` system call.
+- **Step 4: The Kernel Invisible Swap (`bpf_probe_write_user`)**
+  - OBI's kernel probe catches the `write()` system call in-flight.
+  - It checks the thread ID against the kernel ledger and sees: *"Aha! This thread is currently processing trace `4bf92f35...`!"*
+  - It copies the original log message and the trace IDs into a fast queue (the BPF Ring Buffer).
+  - **The Magic Trick**: Because the kernel cannot simply "cancel" a write that already started, OBI writes zeroes (`\0` NUL bytes) over the original log message in memory. This turns the original message into a harmless blank placeholder so you don't get duplicate log lines!
+- **Step 5: The OBI Daemon Enriches and Re-emits (`OBIDaemonSet`)**
+  - The user-space OBI daemon pulls the log message from the fast ring buffer queue.
+  - It formats the message, injecting `"trace_id": "4bf9..."` and `"span_id": "00f0..."` into the JSON structure (or appends them as `key=value` on plain text).
+  - It writes this freshly stamped log directly back to the container's log stream file (`/var/log/pods`).
+- **Step 6: The Log Shipper Cleans Up the Garbage (`LogShipping`)**
+  - The container log file now has two lines: the blank placeholder line (NUL bytes) and the newly enriched line.
+  - Your log shipping agent (OTel Collector, Vector, Fluent Bit, or Promtail) runs a 1-line filter rule (`^[\x00\s]*$`) that silently discards the blank placeholder line, keeping only the enriched line.
+- **Step 7: Instant Incident Response (`ObservabilityUI`)**
+  - You open Jaeger, click a failed span, copy the `trace_id`, paste it into Grafana Loki, and immediately see the exact log lines for that request! No timestamp guessing required.
+
+---
+
+#### 🚀 Advanced Specialist Deep Dive: Systems, Kernel & Pipeline Mechanics
+
+For Platform Architects, Linux Kernel Engineers, and Staff SREs, here is the technical breakdown of the subgraphs and kernel data structures:
+
+- **1. Ingress Socket Interception & Context Pinning (`traces_ctx_v1`)**:
+  - OBI attaches kprobes and uprobes to transport socket read paths (`sys_enter_read`, `sys_enter_recvfrom`, SSL/TLS uprobes).
+  - It extracts or generates 128-bit W3C `trace_id` and 64-bit `span_id` values, serializing them into an `obi_ctx_info_t` struct.
+  - Context is inserted into `traces_ctx_v1`, a kernel BPF map of type `BPF_MAP_TYPE_LRU_HASH` pinned by name under `/sys/fs/bpf/otel/`. The map is keyed by `u64 pid_tgid` (upper 32 bits PID, lower 32 bits TID) with `BPF_ANY` update semantics to ensure lockless, thread-safe, and idempotent writes.
+- **2. VFS Syscall Hook Points & Iterator Subsystems (`pipe_write` / `ksys_write`)**:
+  - Container runtimes redirect container stdout/stderr to Linux pipes. OBI attaches probes to `pipe_write`, `tty_write`, and `ksys_write`.
+  - For vectored I/O (`writev`), an auxiliary kprobe on `do_writev` captures the active file descriptor and tracks it per thread so `pipe_write` can inspect file descriptor metadata.
+  - **Kernel Iterator Differences**:
+    - **Linux >= 6.0**: Uses `ITER_UBUF` for single-buffer `write()` calls, enabling zero-copy inspection and in-place buffer substitution.
+    - **Linux 5.8–5.19**: Uses `ITER_IOVEC`, restricting full write interception to runtimes utilizing vectored I/O (`writev()`).
+- **3. Memory Mutation Semantics (`bpf_probe_write_user`)**:
+  - In Linux eBPF, a tracing probe cannot divert or abort an in-flight system call once invoked.
+  - To prevent duplicate entries in `/var/log/pods` (the original un-enriched write plus the daemon's enriched re-emission), OBI invokes the kernel helper `bpf_probe_write_user()`.
+  - It zeroes the user-space buffer memory with NUL characters (`\x00`) up to the write length, terminating with a newline (`\n`).
+  - **Security Requirements**: The target host requires `CAP_SYS_ADMIN` capability. Kernel lockdown (`/sys/kernel/security/lockdown`) must be `[none]`—in `integrity` or `confidentiality` mode, `bpf_probe_write_user` is explicitly prohibited by the Linux kernel.
+- **4. Asynchronous Ringbuffer Dispatch (`log_events`)**:
+  - Captured log chunks and trace context structs are submitted to the kernel `log_events` ring buffer via `bpf_ringbuf_submit()`.
+  - Ring buffers provide lockless, multi-producer single-consumer queues with significantly lower overhead and memory contention than legacy perf event buffers.
+- **5. User-Space Re-emission & File Descriptor Injection**:
+  - The OBI user-space reader daemon consumes raw `log_event_t` events from the ring buffer.
+  - It inspects the payload structure (distinguishing JSON, NDJSON, and unstructured plain text) and injects `trace_id` and `span_id`.
+  - It re-emits the payload directly to the target container's stdout file descriptor via `/proc/<pid>/fd/<fd>`, preserving original container log format envelopes.
+- **6. Downstream Ingestion & The NUL Placeholder Filter**:
+  - The suppressed buffer written by the application process reaches the container runtime logging engine as a line of NUL characters (`\0` or `\u0000` in JSON CRI envelopes).
+  - Log forwarders (OpenTelemetry Collector, Vector, Fluent Bit, Promtail) decode the envelope into raw strings, where a single drop regex rule `^[\x00\s]*$` excludes the placeholder line before transmitting logs over the network.
+- **7. The 8 KiB Single-Write Boundary**:
+  - The eBPF verification engine enforces a strict 8,192-byte (8 KiB) maximum capture buffer per system call.
+  - Writes $\le 8\text{ KiB}$ are fully captured, zeroed, and re-emitted with trace enrichment.
+  - Writes $> 8\text{ KiB}$ are chunked: the initial 8 KiB is enriched, while the remaining tail leaks through un-enriched to stdout, splitting one logical log line into two physical records.
+
 ---
 
 ## Supported Use Cases
