@@ -126,7 +126,7 @@ This repository includes a comprehensive multi-format educational series synthes
 
 ## 📊 Architectural Infographic: Zero-Code Trace-Log Correlation with OBI
 
-![Zero-Code Trace-Log Correlation with OpenTelemetry OBI](docs/images/zero-code-trace-log-correlation-infographic.jpg)
+[![Zero-Code Trace-Log Correlation with OpenTelemetry OBI](docs/images/zero-code-trace-log-correlation-infographic.png)](docs/images/zero-code-trace-log-correlation-infographic.png)
 
 ### Comprehensive Breakdown of the 5 Core Architectural Pillars
 
@@ -333,7 +333,8 @@ obi-trace-log-correlation/
 │   └── decommission.sh            # Safe cleanup and BPF map unpinning
 └── docs/                      # Comprehensive technical documentation
     ├── images/                    # Architectural infographics and visual assets
-    │   └── zero-code-trace-log-correlation-infographic.jpg
+    │   ├── zero-code-trace-log-correlation-infographic.png # Full-resolution (2752x1536) master PNG
+    │   └── zero-code-trace-log-correlation-infographic.jpg # High-definition (2752x1536) JPEG
     ├── reference-blog-announcement.md # Verbatim blog text, junior primers & specialist deep dives
     ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
     ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
@@ -426,7 +427,8 @@ obi-trace-log-correlation/
     - 🧹 [`decommission.sh`](scripts/decommission.sh) — *Safe cleanup script unpinning `/sys/fs/bpf/otel` maps and tearing down resources*
   - 📁 **[`docs/`](docs/)** — *Comprehensive technical and operational documentation*
     - 📁 **[`docs/images/`](docs/images/)** — *Architectural infographics and visual assets*
-      - 🖼️ [`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg) — *High-resolution architectural infographic detailing the 5 core pillars*
+      - 🖼️ [`zero-code-trace-log-correlation-infographic.png`](docs/images/zero-code-trace-log-correlation-infographic.png) — *Full-resolution master architectural infographic (2752x1536 PNG, lossless)*
+      - 🖼️ [`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg) — *High-definition architectural infographic (2752x1536 JPG)*
     - 📜 [`reference-blog-announcement.md`](docs/reference-blog-announcement.md) — *Verbatim OpenTelemetry announcement, junior primer, and kernel deep dive*
     - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
     - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
@@ -487,7 +489,7 @@ obi-trace-log-correlation/
 - **[`scripts/decommission.sh`](scripts/decommission.sh)**: Clean teardown script that detaches kernel probes, unpins persistent BPF maps under `/sys/fs/bpf/otel/`, and deletes cluster namespaces and RBAC.
 
 #### 📁 `docs/` — Technical Architecture & Operational Guides
-- **[`docs/images/zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg)**: High-resolution architectural infographic illustrating the 5 core pillars: the inefficient manual log search problem, kernel-level eBPF context injection, before/after log transformation, compatibility checklist, and production rollout strategy.
+- **[`docs/images/zero-code-trace-log-correlation-infographic.png`](docs/images/zero-code-trace-log-correlation-infographic.png)**: Full-resolution master architectural infographic (2752x1536 lossless PNG) illustrating the 5 core pillars: the inefficient manual log search problem, kernel-level eBPF context injection, before/after log transformation, compatibility checklist, and production rollout strategy. Also available in high-definition format as **[`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg)**.
 - **[`docs/reference-blog-announcement.md`](docs/reference-blog-announcement.md)**: Verbatim text of the official OpenTelemetry announcement (*Zero-code trace-log correlation with OBI*), accompanied by multi-tiered explanatory breakdowns for juniors (ELI5) and advanced kernel specialists (VFS mechanics, BPF memory mutation, and context staleness).
 - **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
 - **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.

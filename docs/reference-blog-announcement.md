@@ -189,7 +189,7 @@ OBI intercepts that `write()` call inside the kernel:
 
 ### Visual Architecture Infographic
 
-![Zero-Code Trace-Log Correlation Architecture Infographic](images/zero-code-trace-log-correlation-infographic.jpg)
+[![Zero-Code Trace-Log Correlation Architecture Infographic](images/zero-code-trace-log-correlation-infographic.png)](images/zero-code-trace-log-correlation-infographic.png)
 
 ---
 

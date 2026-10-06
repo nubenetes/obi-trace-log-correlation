@@ -62,7 +62,7 @@ Why can't organizations just add the OpenTelemetry SDK to their code?
 
 ## 3. Conceptual Architecture (Mental Model)
 
-![Zero-Code Trace-Log Correlation Architecture Infographic](images/zero-code-trace-log-correlation-infographic.jpg)
+[![Zero-Code Trace-Log Correlation Architecture Infographic](images/zero-code-trace-log-correlation-infographic.png)](images/zero-code-trace-log-correlation-infographic.png)
 
 ```mermaid
 flowchart TD
