@@ -45,6 +45,80 @@ When an incident occurs in production, operators often get paged with a failing 
 
 ---
 
+---
+
+## 📑 Table of Contents
+
+- [Executive Overview](#executive-overview)
+- [📖 Official Reference & Theoretical Motivation](#-official-reference--theoretical-motivation)
+  - [1. The Core Motivation: The 2 AM Incident Response Dilemma](#1-the-core-motivation-the-2-am-incident-response-dilemma)
+  - [2. Dual-Perspective Technical Guidance](#2-dual-perspective-technical-guidance)
+- [🤖 AI-Generated Multimedia & Video Series (NotebookLM & YouTube)](#-ai-generated-multimedia--video-series-notebooklm--youtube)
+  - [🎙️ Architectural Masterclass Podcasts (Audio)](#-architectural-masterclass-podcasts-audio)
+  - [🎬 Full-Length Technical Deep Dives (Videos)](#-full-length-technical-deep-dives-videos)
+  - [⚡ Topic-Focused Technical Shorts](#-topic-focused-technical-shorts)
+- [📊 Architectural Infographic: Zero-Code Trace-Log Correlation with OBI](#-architectural-infographic-zero-code-trace-log-correlation-with-obi)
+  - [Comprehensive Breakdown of the 5 Core Architectural Pillars](#comprehensive-breakdown-of-the-5-core-architectural-pillars)
+    - [1. 🔍 The Problem: Inefficient Manual Log Search](#1--the-problem-inefficient-manual-log-search)
+    - [2. ⚡ The Solution: Kernel-Level Context Injection via eBPF](#2--the-solution-kernel-level-context-injection-via-ebpf)
+    - [3. 🔄 Visual Log Transformation: Before & After](#3--visual-log-transformation-before--after)
+    - [4. 📋 Environment & Runtime Compatibility Checklist](#4--environment--runtime-compatibility-checklist)
+    - [5. 🚀 Production Enablement & Deployment Strategy](#5--production-enablement--deployment-strategy)
+- [Architecture](#architecture)
+  - [Architectural Diagram Walkthrough & Operational Lifecycle](#architectural-diagram-walkthrough--operational-lifecycle)
+    - [🐣 Junior Engineer Walkthrough: The Lifecycle of a Request & Log Line](#-junior-engineer-walkthrough-the-lifecycle-of-a-request--log-line)
+    - [🚀 Advanced Specialist Deep Dive: Systems, Kernel & Pipeline Mechanics](#-advanced-specialist-deep-dive-systems-kernel--pipeline-mechanics)
+- [Supported Use Cases](#supported-use-cases)
+- [Repository Structure](#repository-structure)
+  - [Compact Overview (ASCII Tree)](#compact-overview-ascii-tree)
+  - [Interactive Repository Map](#interactive-repository-map)
+  - [Detailed Component & Directory Breakdown](#detailed-component--directory-breakdown)
+    - [📁 `demo-apps/` — Polyglot Application Microservices](#-demo-apps--polyglot-application-microservices)
+    - [📁 `docker-compose/` — Local Evaluation Environment](#-docker-compose--local-evaluation-environment)
+    - [📁 `k8s/base/` — Production Kubernetes Foundations](#-k8sbase--production-kubernetes-foundations)
+    - [📁 `k8s/overlays/` — Enterprise Cloud & On-Prem Distribution Overlays](#-k8soverlays--enterprise-cloud--on-prem-distribution-overlays)
+    - [📁 `log-pipelines/` — Suppressed NUL Byte Filter Configurations](#-log-pipelines--suppressed-nul-byte-filter-configurations)
+    - [📁 `scripts/` — Production Lifecycle & Operational Tooling](#-scripts--production-lifecycle--operational-tooling)
+    - [📁 `docs/` — Technical Architecture & Operational Guides](#-docs--technical-architecture--operational-guides)
+- [📚 Technical Documentation Inventory (`docs/`)](#-technical-documentation-inventory-docs)
+  - [Complete Documentation Matrix](#complete-documentation-matrix)
+  - [Role-Based Learning Roadmaps](#role-based-learning-roadmaps)
+  - [Inter-Document Navigation Guide](#inter-document-navigation-guide)
+- [Quickstart: Local Evaluation (60 Seconds)](#quickstart-local-evaluation-60-seconds)
+  - [Inspecting Enriched Logs](#inspecting-enriched-logs)
+- [Production Kubernetes Deployments](#production-kubernetes-deployments)
+  - [Red Hat OpenShift 4.20+](#red-hat-openshift-420)
+  - [Azure Kubernetes Service (AKS)](#azure-kubernetes-service-aks)
+  - [AWS Elastic Kubernetes Service (EKS)](#aws-elastic-kubernetes-service-eks)
+  - [Google Kubernetes Engine (GKE Standard)](#google-kubernetes-engine-gke-standard)
+  - [Rancher RKE2 / K3s](#rancher-rke2--k3s)
+- [The Suppressed NUL Byte Filter Requirement](#the-suppressed-nul-byte-filter-requirement)
+- [Lifecycle Operations Summary](#lifecycle-operations-summary)
+- [Video Walkthroughs & Architecture References (YouTube)](#video-walkthroughs--architecture-references-youtube)
+  - [🇬🇧 Full-Length Technical Deep Dives (6 Videos)](#-full-length-technical-deep-dives-6-videos)
+    - [1. How OBI Correlation Works: Zero-Code Trace-Log Correlation with eBPF](#1-how-obi-correlation-works-zero-code-trace-log-correlation-with-ebpf)
+    - [2. Zero-Code Trace-Log Correlation: OpenTelemetry eBPF (OBI) Deep Dive](#2-zero-code-trace-log-correlation-opentelemetry-ebpf-obi-deep-dive)
+    - [3. How to Inject Trace IDs into Logs Without Code Changes Using OBI eBPF](#3-how-to-inject-trace-ids-into-logs-without-code-changes-using-obi-ebpf)
+    - [4. Tuning Log Shipper Pipelines for OBI eBPF: Null-Byte Filters & 8KB Log Splits](#4-tuning-log-shipper-pipelines-for-obi-ebpf-null-byte-filters--8kb-log-splits)
+    - [5. Under the Hood of OBI eBPF: write vs writev Syscalls, Kernel Security & Limits](#5-under-the-hood-of-obi-ebpf-write-vs-writev-syscalls-kernel-security--limits)
+    - [6. Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide](#6-zero-code-trace-log-correlation-with-ebpf-production-architecture--triage-guide)
+  - [⚡ Topic-Focused Technical Shorts (8 Shorts)](#-topic-focused-technical-shorts-8-shorts)
+    - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
+    - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
+    - [3. How eBPF Automates Trace-Log Correlation in Go Without SDKs](#3-how-ebpf-automates-trace-log-correlation-in-go-without-sdks)
+    - [4. How eBPF Injects Trace IDs into Logs Without SDKs or Code Changes](#4-how-ebpf-injects-trace-ids-into-logs-without-sdks-or-code-changes)
+    - [5. How eBPF Instruments Code Silently: OpenTelemetry OBI Zero-Code](#5-how-ebpf-instruments-code-silently-opentelemetry-obi-zero-code)
+    - [6. How OBI Injects Trace IDs Without Code: In-Flight eBPF Kernel Interception](#6-how-obi-injects-trace-ids-without-code-in-flight-ebpf-kernel-interception)
+    - [7. Tuning Log Pipelines for OBI: Filtering Null Bytes and 8KB Multi-Line Splits](#7-tuning-log-pipelines-for-obi-filtering-null-bytes-and-8kb-multi-line-splits)
+    - [8. Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats](#8-why-ebpf-trace-log-correlation-loses-context-async-buffers-and-runtime-caveats)
+  - [🎙️ Architectural Masterclass Podcasts (2 Episodes)](#-architectural-masterclass-podcasts-2-episodes)
+    - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
+    - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
+- [References & Official Links](#references--official-links)
+- [License](#license)
+
+---
+
 ## 📖 Official Reference & Theoretical Motivation
 
 > [!IMPORTANT]
@@ -500,6 +574,67 @@ obi-trace-log-correlation/
 - **[`docs/troubleshooting.md`](docs/troubleshooting.md)**: Diagnostic runbook for missing trace contexts, kernel lockdown denials, split log lines, and permission errors.
 - **[`docs/decommission-guide.md`](docs/decommission-guide.md)**: Clean de-provisioning instructions ensuring no orphaned kernel memory remains.
 - **[`docs/references.md`](docs/references.md)**: Comprehensive bibliography citing official OpenTelemetry blog posts, specifications, GitHub repositories, and community Slack channels.
+
+---
+
+## 📚 Technical Documentation Inventory (`docs/`)
+
+The [`docs/`](docs/) directory contains comprehensive, standalone engineering documentation covering every facet of zero-code trace-log correlation—from Linux kernel system call hooks to day-to-day SRE incident response runbooks and enterprise Kubernetes distribution overlays.
+
+### Complete Documentation Matrix
+
+| Document | Scope & Focus | Primary Audience | Operational Phase | Core Technical Concepts | Est. Read Time |
+| :--- | :--- | :--- | :---: | :--- | :---: |
+| 📜 **[`reference-blog-announcement.md`](docs/reference-blog-announcement.md)** | Verbatim official announcement & dual-perspective breakdown | Junior Engineers, SREs, Kernel Specialists | Theory & Motivation | W3C TraceContext, 2 AM triage problem, VFS interception, BPF map context lifecycle | 15 min |
+| 🏛️ **[`architecture.md`](docs/architecture.md)** | Low-level Linux kernel interception architecture | Staff SREs, Systems Engineers, Architects | Architecture | `pipe_write`, `ksys_write`, `do_writev`, `traces_ctx_v1` LRU map, user-space ringbuffer | 20 min |
+| 📋 **[`day0-planning-sizing.md`](docs/day0-planning-sizing.md)** | Infrastructure prerequisites, hardware sizing & security model | Platform Engineers, Security & Cloud Architects | Day 0: Planning | Linux 6.0+ matrix, BTF, `CAP_SYS_ADMIN`, `CAP_BPF`, kernel lockdown, map memory formula | 12 min |
+| 📦 **[`day1-installation.md`](docs/day1-installation.md)** | Step-by-step multi-cloud Kubernetes deployment guide | DevOps, Kubernetes Administrators, SREs | Day 1: Deployment | OpenShift 4.20+ (SCC), AKS, EKS, GKE, RKE2, Kustomize overlays, automated CLI deployment | 18 min |
+| 🚨 **[`day2-operations-triage.md`](docs/day2-operations-triage.md)** | Incident triage runbook, queries & canary rollouts | On-Call Engineers, SREs, Incident Commanders | Day 2: Operations | Jaeger-to-Loki navigation, LogQL & Elasticsearch queries, Prometheus alerts, canary CLI | 15 min |
+| 💧 **[`log-filtering-guide.md`](docs/log-filtering-guide.md)** | Suppressed NUL byte filter patterns & 8 KiB write limits | Log Pipeline Engineers, Observability Teams | Day 1 & Day 2 | `bpf_probe_write_user` suppression, NUL drop regex (`^[\x00\s]*$`), 8 KiB chunk split reassembly | 14 min |
+| ⚡ **[`runtime-compatibility.md`](docs/runtime-compatibility.md)** | Language runtime specifics & context staleness fixes | Application Developers, Software Architects | Design & Runtime | Go goroutine scheduler, Python unbuffered mode, Node.js async streams, Java Loom threads | 16 min |
+| 🔧 **[`troubleshooting.md`](docs/troubleshooting.md)** | Practical diagnostics, error codes & recovery steps | Platform Engineers, On-Call SREs | Operations & Triage | Missing `trace_id`, kernel lockdown rejection, duplicate logs, BPF map saturation | 12 min |
+| 🧹 **[`decommission-guide.md`](docs/decommission-guide.md)** | Safe decommissioning, probe detachment & cleanup | Platform Engineers, Cluster Operators | Decommission | Probe detachment, unpinning `/sys/fs/bpf/otel`, RBAC/SCC cleanup, pipeline filter retirement | 10 min |
+| 📚 **[`references.md`](docs/references.md)** | Upstream bibliographies, specifications & community links | All Engineers | Reference | Official OTel blog, OpenTelemetry OBI repo, devdocs, upstream demo gist, CNCF Slack | 8 min |
+
+---
+
+### Role-Based Learning Roadmaps
+
+Depending on your engineering role and immediate objective, follow these recommended reading sequences:
+
+```mermaid
+flowchart TD
+    Start["Choose Your Role"] --> Junior["🐣 Junior Engineer / App Developer"]
+    Start --> SRE["🚨 Site Reliability Engineer / On-Call SRE"]
+    Start --> Platform["🏛️ Platform Architect / Kernel Specialist"]
+    Start --> SecOps["🔒 Security & Compliance Officer"]
+
+    Junior --> J1["1. reference-blog-announcement.md (Junior Primer)"]
+    J1 --> J2["2. runtime-compatibility.md (Language Nuances)"]
+    J2 --> J3["3. day2-operations-triage.md (How to Debug Outages)"]
+
+    SRE --> S1["1. day2-operations-triage.md (Incident Runbooks)"]
+    S1 --> S2["2. log-filtering-guide.md (Log Pipeline Drop Filters)"]
+    S2 --> S3["3. troubleshooting.md (Diagnostics & Recovery)"]
+
+    Platform --> P1["1. architecture.md (VFS & eBPF Subsystems)"]
+    P1 --> P2["2. day0-planning-sizing.md (Prerequisites & Memory)"]
+    P2 --> P3["3. day1-installation.md (Multi-Cloud Overlays)"]
+    P3 --> P4["4. decommission-guide.md (Clean Teardown)"]
+
+    SecOps --> SC1["1. day0-planning-sizing.md (Kernel Lockdown & Capabilities)"]
+    SC1 --> SC2["2. k8s/overlays/openshift-4.20/README.md (Security Context Constraints)"]
+    SC2 --> SC3["3. architecture.md (bpf_probe_write_user Memory Safety)"]
+```
+
+---
+
+### Inter-Document Navigation Guide
+
+To deliver a frictionless reading experience across GitHub and local clones, every document in the [`docs/`](docs/) directory includes:
+1. **Header Breadcrumb Bar**: Direct access at the top of each page to return to the [Repository Overview (`README.md`)](README.md) or switch instantly to any of the 10 companion guides.
+2. **Sequential Footer Navigation Matrix**: Direct previous (`← Previous`) and next (`Next →`) links following the logical operational lifecycle (Day 0 ➔ Day 1 ➔ Day 2 ➔ Decommission).
+3. **Complete Guide Directory**: An exhaustive catalog at the bottom of every page ensuring you never hit a navigational dead end.
 
 ---
 
