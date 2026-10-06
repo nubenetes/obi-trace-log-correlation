@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: obi
+  namespace: obi
+spec:
+  template:
+    spec:
+      tolerations:
+        - effect: "NoSchedule"
+          key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+        - effect: "NoSchedule"
+          key: "node-role.kubernetes.io/etcd"
+          operator: "Exists"

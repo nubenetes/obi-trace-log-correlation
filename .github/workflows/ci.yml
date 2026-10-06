@@ -1,0 +1,52 @@
+name: CI & Manifest Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Verify Go Demo Apps Build
+        run: |
+          cd demo-apps/go/frontend && go build -v ./...
+          cd ../backend && go build -v ./...
+          cd ../../plaintext && go build -v ./...
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Python App Syntax
+        run: |
+          python -m py_compile demo-apps/python/app.py
+
+      - name: ShellCheck Scripts
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: './scripts'
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose -f docker-compose/compose.yaml config
+
+      - name: Validate Kubernetes Manifests with Kustomize
+        run: |
+          kubectl kustomize k8s/base > /dev/null
+          kubectl kustomize k8s/overlays/openshift-4.20 > /dev/null
+          kubectl kustomize k8s/overlays/aks > /dev/null
+          kubectl kustomize k8s/overlays/eks > /dev/null
+          kubectl kustomize k8s/overlays/gke > /dev/null
+          kubectl kustomize k8s/overlays/rke > /dev/null

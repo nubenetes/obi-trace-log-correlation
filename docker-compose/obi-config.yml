@@ -1,0 +1,39 @@
+file_format: '1.0'
+
+tracer_provider:
+  processors:
+    - batch:
+        exporter:
+          otlp_grpc:
+            endpoint: http://jaeger:4317
+            tls:
+              insecure: true
+
+extensions:
+  obi:
+    version: '2.0'
+    capture:
+      policy:
+        default_action: exclude
+      rules:
+        - action: include
+          match:
+            process:
+              exe_path_glob:
+                - /frontend
+                - /backend
+    correlation:
+      log_trace_annotation:
+        enabled: true
+        match:
+          - process:
+              exe_path_glob:
+                - /frontend
+                - /backend
+        plain_text:
+          enabled: true
+          placement: suffix
+          multiline: first_line
+        field_names:
+          trace_id: trace_id
+          span_id: span_id

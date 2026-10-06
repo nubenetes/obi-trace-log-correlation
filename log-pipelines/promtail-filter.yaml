@@ -1,0 +1,10 @@
+# Promtail / Grafana Agent pipeline stage for OBI Trace-Log Correlation
+# Drops suppressed placeholder lines containing NUL (\x00) characters.
+
+scrape_configs:
+  - job_name: kubernetes-pods
+    pipeline_stages:
+      - cri: {}
+      # Drop suppressed NUL placeholder lines
+      - drop:
+          expression: "^[\\x00\\s]*$"

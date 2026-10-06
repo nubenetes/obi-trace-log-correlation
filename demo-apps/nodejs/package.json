@@ -1,0 +1,10 @@
+{
+  "name": "nodejs-obi-demo",
+  "version": "1.0.0",
+  "description": "Node.js demo service for OBI trace-log correlation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}

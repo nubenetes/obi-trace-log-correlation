@@ -1,0 +1,52 @@
+name: obi-trace-log-correlation
+
+services:
+  backend:
+    build:
+      context: ../demo-apps/go/backend
+      dockerfile: Dockerfile
+    container_name: demo-backend
+    environment:
+      - PORT=8081
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ../demo-apps/go/frontend
+      dockerfile: Dockerfile
+    container_name: demo-frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - BACKEND_URL=http://backend:8081
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    container_name: demo-jaeger
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    ports:
+      - "16686:16686" # Jaeger Web UI
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    restart: unless-stopped
+
+  obi:
+    image: otel/ebpf-instrument:v0.14.0
+    container_name: demo-obi
+    pid: host
+    privileged: true
+    environment:
+      - OTEL_EBPF_CONFIG_PATH=/config/obi-config.yml
+    volumes:
+      - ./obi-config.yml:/config/obi-config.yml:ro
+      - /sys/fs/bpf:/sys/fs/bpf
+    depends_on:
+      - frontend
+      - backend
+      - jaeger
+    restart: unless-stopped

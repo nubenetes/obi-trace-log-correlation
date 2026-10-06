@@ -1,0 +1,38 @@
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: obi-ebpf-scc
+  annotations:
+    kubernetes.io/description: "obi-ebpf-scc allows OpenTelemetry eBPF Instrumentation (OBI) to inspect host PID, mount /sys/fs/bpf, and attach kernel probes in OpenShift 4.20+"
+allowPrivilegedContainer: true
+allowHostDirVolumePlugin: true
+allowHostPID: true
+allowHostNetwork: false
+allowHostPorts: false
+allowHostIPC: false
+readOnlyRootFilesystem: false
+allowedCapabilities:
+  - SYS_ADMIN
+  - SYS_RESOURCE
+  - SYS_PTRACE
+  - BPF
+  - PERFMON
+  - DAC_READ_SEARCH
+defaultAddCapabilities: []
+requiredDropCapabilities: []
+runAsUser:
+  type: RunAsAny
+seLinuxContext:
+  type: RunAsAny
+fsGroup:
+  type: RunAsAny
+supplementalGroups:
+  type: RunAsAny
+volumes:
+  - configMap
+  - downwardAPI
+  - emptyDir
+  - hostPath
+  - secret
+users:
+  - system:serviceaccount:obi:obi-agent

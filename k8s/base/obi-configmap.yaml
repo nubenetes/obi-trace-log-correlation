@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: obi-config
+  namespace: obi
+  labels:
+    app.kubernetes.io/name: obi
+    app.kubernetes.io/component: configuration
+data:
+  obi-config.yml: |
+    file_format: '1.0'
+
+    # Export traces to the in-cluster OpenTelemetry Collector
+    tracer_provider:
+      processors:
+        - batch:
+            exporter:
+              otlp_grpc:
+                endpoint: http://otel-collector.obi.svc.cluster.local:4317
+                tls:
+                  insecure: true
+
+    extensions:
+      obi:
+        version: '2.0'
+        # Workload discovery: target our demo services in demo-apps namespace
+        capture:
+          policy:
+            default_action: exclude
+          rules:
+            - action: include
+              match:
+                process:
+                  exe_path_glob:
+                    - /frontend
+                    - /backend
+                    - /app/python
+                    - /app/server.js
+                    - /plaintext
+
+        # Zero-code Trace-Log Correlation
+        correlation:
+          log_trace_annotation:
+            enabled: true
+            match:
+              - process:
+                  exe_path_glob:
+                    - /frontend
+                    - /backend
+                    - /app/python
+                    - /app/server.js
+                    - /plaintext
+            plain_text:
+              enabled: true
+              placement: suffix
+              multiline: first_line
+            field_names:
+              trace_id: trace_id
+              span_id: span_id

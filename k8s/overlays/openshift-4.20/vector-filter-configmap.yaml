@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openshift-vector-filter-patch
+  namespace: openshift-logging
+  labels:
+    app.kubernetes.io/name: cluster-logging
+data:
+  vector-filter.toml: |
+    # OpenShift Cluster Logging Vector filter to drop suppressed OBI NUL byte placeholder lines
+    [transforms.filter_obi_nul_placeholders]
+    type = "filter"
+    inputs = ["input_application_logs"]
+    condition = '!match(string!(.message), r"^[\x00\s]*$")'

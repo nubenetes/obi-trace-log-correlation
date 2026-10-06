@@ -1,0 +1,7 @@
+# Vector transform filter for OBI Trace-Log Correlation
+# Drops suppressed placeholder lines containing NUL (\x00) characters.
+
+[transforms.filter_obi_nul_placeholders]
+type = "filter"
+inputs = ["kubernetes_logs"]
+condition = '!match(string!(.message), r"^[\x00\s]*$")'

@@ -1,0 +1,36 @@
+# OpenTelemetry Collector filelog receiver configuration
+# Drops suppressed OBI placeholder lines containing NUL (\x00) bytes.
+
+receivers:
+  filelog:
+    include:
+      - /var/log/pods/*/*/*.log
+    exclude:
+      - /var/log/pods/obi_*/*/*.log
+    start_at: end
+    operators:
+      # Step 1: Decode CRI / Docker container JSON envelope
+      - type: container
+        id: container-parser
+
+      # Step 2: Drop placeholder lines replaced with NUL characters
+      # OBI overwrites suppressed original writes with \x00 bytes.
+      - type: filter
+        id: drop-obi-nul-placeholders
+        expr: 'body matches "^[\\x00\\s]*$"'
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+exporters:
+  otlp:
+    endpoint: tempo-or-loki:4317
+
+service:
+  pipelines:
+    logs:
+      receivers: [filelog]
+      processors: [batch]
+      exporters: [otlp]
