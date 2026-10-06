@@ -38,6 +38,9 @@ This repository includes a comprehensive multi-format educational series synthes
 | 1 | 📽️ Video Guide | [**How OBI Correlation Works: Zero-Code Trace-Log Correlation with eBPF**](https://www.youtube.com/watch?v=f_tQfyjhgow) | Kernel Interception & Buffer Manipulation | 🇺🇸 English *(CC 20+)* | `7:55` | [▶️ Watch Video](https://www.youtube.com/watch?v=f_tQfyjhgow) |
 | 2 | 📽️ Video Guide | [**Zero-Code Trace-Log Correlation: OpenTelemetry eBPF (OBI) Deep Dive**](https://www.youtube.com/watch?v=FVguXIDZwys) | Incident Response & Bidirectional Triage | 🇺🇸 English *(CC 20+)* | `8:18` | [▶️ Watch Video](https://www.youtube.com/watch?v=FVguXIDZwys) |
 | 3 | 📽️ Video Guide | [**How to Inject Trace IDs into Logs Without Code Changes Using OBI eBPF**](https://www.youtube.com/watch?v=lNjPSBTPn0M) | Runtime Injection & Log Shipping Pipelines | 🇺🇸 English *(CC 20+)* | `6:34` | [▶️ Watch Video](https://www.youtube.com/watch?v=lNjPSBTPn0M) |
+| 4 | 📽️ Video Guide | [**Tuning Log Shipper Pipelines for OBI eBPF: Null-Byte Filters & 8KB Log Splits**](https://www.youtube.com/watch?v=JbxR7WFacT8) | Downstream Log Pipelines & Buffer Chunking | 🇺🇸 English *(CC 20+)* | `6:16` | [▶️ Watch Video](https://www.youtube.com/watch?v=JbxR7WFacT8) |
+| 5 | 📽️ Video Guide | [**Under the Hood of OBI eBPF: write vs writev Syscalls, Kernel Security & Limits**](https://www.youtube.com/watch?v=WzYDb8pX9Ao) | Syscall Interception & Linux Security | 🇺🇸 English *(CC 20+)* | `8:28` | [▶️ Watch Video](https://www.youtube.com/watch?v=WzYDb8pX9Ao) |
+| 6 | 📽️ Video Guide | [**Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide**](https://www.youtube.com/watch?v=Vlo8nNAG-pw) | Production Architecture & SRE Triage | 🇺🇸 English *(CC 20+)* | `7:11` | [▶️ Watch Video](https://www.youtube.com/watch?v=Vlo8nNAG-pw) |
 
 ### ⚡ Topic-Focused Technical Shorts
 
@@ -48,6 +51,9 @@ This repository includes a comprehensive multi-format educational series synthes
 | 3 | [**How eBPF Automates Trace-Log Correlation in Go Without SDKs**](https://www.youtube.com/shorts/MHoXH29BrBE) | Go Runtime & JSON Enrichment | 🇺🇸 English *(CC 20+)* | `1:28` | [▶️ Watch Short](https://www.youtube.com/shorts/MHoXH29BrBE) |
 | 4 | [**How eBPF Injects Trace IDs into Logs Without SDKs or Code Changes**](https://www.youtube.com/shorts/asTJjcmQjbs) | Buffer Substitution Mechanics | 🇺🇸 English *(CC 20+)* | `1:21` | [▶️ Watch Short](https://www.youtube.com/shorts/asTJjcmQjbs) |
 | 5 | [**How eBPF Instruments Code Silently: OpenTelemetry OBI Zero-Code**](https://www.youtube.com/shorts/-3xdSEGKpps) | Non-Intrusive Kernel Observation | 🇺🇸 English *(CC 20+)* | `1:13` | [▶️ Watch Short](https://www.youtube.com/shorts/-3xdSEGKpps) |
+| 6 | [**How OBI Injects Trace IDs Without Code: In-Flight eBPF Kernel Interception**](https://www.youtube.com/shorts/y6SQ_a_xNGY) | Kernel Interception & Zero-Rebuild Stamping | 🇺🇸 English *(CC 20+)* | `1:05` | [▶️ Watch Short](https://www.youtube.com/shorts/y6SQ_a_xNGY) |
+| 7 | [**Tuning Log Pipelines for OBI: Filtering Null Bytes and 8KB Multi-Line Splits**](https://www.youtube.com/shorts/gSeqie44HqE) | Log Shipper Tuning & 8KB Reassembly | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/gSeqie44HqE) |
+| 8 | [**Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats**](https://www.youtube.com/shorts/b9oNWMJlUcc) | Runtime Buffering & Async Disconnect Fixes | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/b9oNWMJlUcc) |
 
 *For complete descriptions, technical breakdowns, and YouTube Studio links, see [Video Walkthroughs & Architecture References](#video-walkthroughs--architecture-references-youtube).*
 
@@ -263,7 +269,7 @@ End-to-end architectural walkthroughs and technical shorts for `obi-trace-log-co
 
 Below are the direct links and full descriptions for each session.
 
-### 🇬🇧 Full-Length Technical Deep Dives (3 Videos)
+### 🇬🇧 Full-Length Technical Deep Dives (6 Videos)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Full-Length Sessions</strong></summary>
@@ -346,14 +352,91 @@ Below are the direct links and full descriptions for each session.
 > ⏱️ Duration: 6:34
 > #OpenTelemetry #eBPF #Kubernetes #Observability #SRE #DevOps #Microservices #Logging #CloudNative #Docker
 
+#### 4. Tuning Log Shipper Pipelines for OBI eBPF: Null-Byte Filters & 8KB Log Splits
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=JbxR7WFacT8](https://www.youtube.com/watch?v=JbxR7WFacT8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/JbxR7WFacT8/edit](https://studio.youtube.com/video/JbxR7WFacT8/edit)
+- ⏱️ **Duration**: 6:16
+- 🏷️ **Domain**: Downstream Log Shipper Pipelines, NUL-Byte Filters & 8KB Chunking
+- 📝 **Full Description**:
+> 🔧 Tuning Log Shipper Pipelines for OBI eBPF: Null-Byte Filters and 8KB Log Splits
+>
+> A hands-on engineering guide to configuring downstream log shipping pipelines (Fluent Bit, Vector, OpenTelemetry Collector) for zero-code trace-log correlation powered by OpenTelemetry eBPF Instrumentation (OBI).
+>
+> 📌 Deep Dive Architecture & Pipeline Engineering:
+> • The Trace-Log Disconnect: Why 3:00 AM incident triage stalls when microservice logs lack trace context and engineers are forced to grep by timestamps.
+> • Operating System Kernel Interception: How OBI intercepts write system calls at the Linux kernel boundary without altering application code or Docker containers.
+> • Configuring OBI v2 Rules: Enabling correlation.log_trace_annotation and setting up seamless context stamping across container streams.
+> • Downstream Log Shipper Filtering: Why OBI zeroes out original un-enriched buffers with NUL bytes (\x00) and how to configure drop filters in Fluent Bit, Vector, and OTel Collector.
+> • Handling Large Log Splits: Managing payloads exceeding the 8 KiB kernel buffer boundary with multi-line reassembly rules in your collector.
+> • Safe Incremental Production Rollout: Best practices for canary service deployments, validating stdout and stderr streams, and verifying trace_id injection.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Log Pipeline Filter Configurations: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/log-pipelines
+>
+> ⏱️ Duration: 6:16
+> #OpenTelemetry #eBPF #Logging #FluentBit #Vector #Observability #SRE #Kubernetes #DevOps #CloudNative
+
+#### 5. Under the Hood of OBI eBPF: write vs writev Syscalls, Kernel Security & Limits
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=WzYDb8pX9Ao](https://www.youtube.com/watch?v=WzYDb8pX9Ao)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/WzYDb8pX9Ao/edit](https://studio.youtube.com/video/WzYDb8pX9Ao/edit)
+- ⏱️ **Duration**: 8:28
+- 🏷️ **Domain**: Kernel Interception, write vs writev Syscalls & Linux Security
+- 📝 **Full Description**:
+> 🔬 Under the Hood of OBI eBPF: write vs writev Syscalls, Kernel Security and Limits
+>
+> An advanced systems architecture breakdown uncovering the low-level Linux kernel mechanics behind OpenTelemetry eBPF Instrumentation (OBI) zero-code trace-log correlation.
+>
+> 📌 Deep Dive Topics Covered:
+> • The Missing Trace Context Dilemma: Why traditional application log streams lack distributed tracing metadata and how OBI resolves it at the system layer.
+> • Standard Output and Standard Error Pipeline Prerequisites: Tracking container runtime I/O streams and kernel file descriptors.
+> • Kernel Privileges and Linux Security: Mandatory prerequisites including Linux 6.0+, BTF (BPF Type Format), CAP_BPF, and CAP_SYS_ADMIN capabilities.
+> • Down to the Metal: Syscall Interception: Comparing write() versus writev() vector I/O syscalls, iovec array traversal, and mid-flight payload enrichment.
+> • The NUL Byte Suppression Trick: How bpf_probe_write_user suppresses the original buffer while re-emitting correlated logs to stdout.
+> • Safe Incremental Production Deployments: Production rollout strategies, 8 KiB buffer split behavior, and eliminating incident triage guesswork.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Architecture Internals & Kernel Specs: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
+>
+> ⏱️ Duration: 8:28
+> #OpenTelemetry #eBPF #Linux #Kernel #Observability #Syscalls #Kubernetes #SRE #DevOps #DistributedTracing
+
+#### 6. Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=Vlo8nNAG-pw](https://www.youtube.com/watch?v=Vlo8nNAG-pw)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/Vlo8nNAG-pw/edit](https://studio.youtube.com/video/Vlo8nNAG-pw/edit)
+- ⏱️ **Duration**: 7:11
+- 🏷️ **Domain**: Production Architecture, SRE Incident Triage & Runtime Limits
+- 📝 **Full Description**:
+> ⚡ Zero-Code Trace-Log Correlation with eBPF: Production Architecture and Triage Guide
+>
+> Discover how OpenTelemetry eBPF Instrumentation (OBI) revolutionizes microservice observability by eliminating the midnight debugging nightmare of grepping logs by timestamp.
+>
+> 📌 Production Roadmap & Architecture Highlights:
+> • The Midnight Debugging Problem: Why timestamp cross-referencing during 2:00 AM outages is painful, slow, and imprecise.
+> • Zero-Code Correlation Explained: Transparently injecting trace_id and span_id into application log output without modifying source code or rebuilding binaries.
+> • How eBPF Makes It Work: Using kernel uprobes, kprobes, and BPF maps to track execution threads and link active trace contexts to stdout streams.
+> • Environment Requirements and Limits: Linux kernel prerequisites, synchronous console writer requirements, and runtime buffering considerations.
+> • Enabling OBI in Production: Configuring DaemonSets, integrating with OpenTelemetry Collector, and setting up canary rollouts across Kubernetes clusters.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Kubernetes Deployment Overlays: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
+>
+> ⏱️ Duration: 7:11
+> #OpenTelemetry #eBPF #Observability #SRE #DevOps #Microservices #Kubernetes #DistributedTracing #CloudNative #Docker
+
 </details>
 
 <br/>
 
-### ⚡ Topic-Focused Technical Shorts (5 Shorts)
+### ⚡ Topic-Focused Technical Shorts (8 Shorts)
 
 <details>
-<summary>📂 <strong>Technical Video Shorts Breakdown (5 Shorts)</strong></summary>
+<summary>📂 <strong>Technical Video Shorts Breakdown (8 Shorts)</strong></summary>
 
 <br/>
 
@@ -460,6 +543,67 @@ Below are the direct links and full descriptions for each session.
 > Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #ZeroCode #Observability #CloudNative #DevOps #SRE #Kubernetes
+
+#### 6. How OBI Injects Trace IDs Without Code: In-Flight eBPF Kernel Interception
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/y6SQ_a_xNGY](https://www.youtube.com/shorts/y6SQ_a_xNGY)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/y6SQ_a_xNGY/edit](https://studio.youtube.com/video/y6SQ_a_xNGY/edit)
+- ⏱️ **Duration**: 1:05
+- 🏷️ **Domain**: Kernel Interception & Zero-Rebuild Stamping
+- 📝 **Full Description**:
+> ⚡ How OBI Injects Trace IDs Without Code: In-Flight eBPF Kernel Interception!
+>
+> Manually matching application logs to failed traces during an outage is painfully slow. Here is how OpenTelemetry eBPF Instrumentation (OBI) correlates them automatically:
+>
+> • Uninstrumented Service: An application writes a standard JSON log without any awareness of distributed traces.
+> • Kernel Interception: OBI intercepts the operating system write command in real time at the Linux kernel boundary.
+> • In-Flight Enrichment: Because eBPF tracks the active request handled by that exact thread, it appends the active trace ID directly into the text payload mid-flight.
+> • Zero Rebuilds: Downstream observability backends receive fully correlated JSON logs without changing a single line of code.
+>
+> 🔗 Official Blueprint Repo & Docs:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Observability #SRE #Kubernetes #DevOps #DistributedTracing #CloudNative
+
+#### 7. Tuning Log Pipelines for OBI: Filtering Null Bytes and 8KB Multi-Line Splits
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/gSeqie44HqE](https://www.youtube.com/shorts/gSeqie44HqE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/gSeqie44HqE/edit](https://studio.youtube.com/video/gSeqie44HqE/edit)
+- ⏱️ **Duration**: 1:24
+- 🏷️ **Domain**: Log Shipper Tuning & 8KB Reassembly
+- 📝 **Full Description**:
+> ⚡ Tuning Log Pipelines for OBI: Filtering Null Bytes and 8KB Multi-Line Splits!
+>
+> OBI zero-code trace enrichment is powerful, but how do you configure your log shippers for kernel-level anomalies?
+>
+> • Dropping NUL Byte Placeholders: To make room for enriched logs, OBI replaces original writes with blank null-byte placeholders (\x00). Configure an explicit drop filter in Fluent Bit, Vector, or OTel Collector to discard them.
+> • Handling 8KB Splits: When log lines exceed 8 KiB, OBI enriches the first chunk while the remainder arrives separately. Use a multi-line reassembly rule to stitch them back together into one clean record.
+> • Clean Telemetry: With these two pipeline rules, your log backend receives pristine, fully correlated JSON logs.
+>
+> 🔗 Official Blueprint Repo & Docs:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #FluentBit #Vector #Logging #Observability #SRE #Kubernetes #DevOps
+
+#### 8. Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/b9oNWMJlUcc](https://www.youtube.com/shorts/b9oNWMJlUcc)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/b9oNWMJlUcc/edit](https://studio.youtube.com/video/b9oNWMJlUcc/edit)
+- ⏱️ **Duration**: 1:24
+- 🏷️ **Domain**: Runtime Buffering & Async Disconnect Fixes
+- 📝 **Full Description**:
+> ⚡ Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats!
+>
+> Why does eBPF sometimes attach the wrong trace ID to application logs?
+>
+> • The Async Buffering Problem: eBPF stamps trace IDs at the moment of the OS write syscall. When languages buffer logs in memory (Python default buffering) or use async pipes (Node.js), the write is delayed.
+> • Mismatched Context: By the time the background flush occurs, the thread is serving a different request, causing eBPF to stamp the wrong trace badge.
+> • The Fix: Force synchronous writes (e.g. PYTHONUNBUFFERED=1), avoid Java virtual threads with OBI, or configure OBI to drop span IDs in hybrid SDK setups.
+>
+> 🔗 Official Blueprint Repo & Docs:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Python #NodeJS #Observability #Debugging #SRE #Kubernetes #DevOps
 
 </details>
 
