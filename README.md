@@ -1,9 +1,33 @@
 # OpenTelemetry eBPF (OBI) Zero-Code Trace-Log Correlation
 
-[![CI & Manifest Validation](https://github.com/nubenetes/obi-trace-log-correlation/actions/workflows/ci.yml/badge.svg)](https://github.com/nubenetes/obi-trace-log-correlation/actions)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Kernel Requirement](https://img.shields.io/badge/Kernel-Linux%206.0%2B-brightgreen.svg)](docs/day0-planning-sizing.md)
-[![OpenTelemetry OBI](https://img.shields.io/badge/OpenTelemetry-OBI%20v0.14.0-orange.svg)](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation)
+[![Release](https://img.shields.io/github/v/release/nubenetes/obi-trace-log-correlation?color=blue&logo=github)](https://github.com/nubenetes/obi-trace-log-correlation/releases)
+[![CI Status](https://img.shields.io/github/actions/workflow/status/nubenetes/obi-trace-log-correlation/ci.yml?branch=main&logo=githubactions&logoColor=white&label=CI%20Validation)](https://github.com/nubenetes/obi-trace-log-correlation/actions)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache)](LICENSE)
+[![Kernel Requirement](https://img.shields.io/badge/Kernel-Linux%206.0%2B-brightgreen.svg?logo=linux&logoColor=white)](docs/day0-planning-sizing.md)
+[![eBPF](https://img.shields.io/badge/Tech-eBPF%20Kernel%20Hooks-black.svg?logo=ebpf&logoColor=white)](docs/architecture.md)
+[![W3C TraceContext](https://img.shields.io/badge/Tracing-W3C%20TraceContext-purple.svg?logo=w3c)](https://www.w3.org/TR/trace-context/)
+
+<!-- Kubernetes Distribution Badges -->
+[![Red Hat OpenShift](https://img.shields.io/badge/OpenShift-4.20%2B%20(RHCOS%206.6%2B)-EE0000.svg?logo=redhatopenshift&logoColor=white)](k8s/overlays/openshift-4.20/README.md)
+[![Azure AKS](https://img.shields.io/badge/AKS-Azure%20Linux%20%7C%20Ubuntu%2024.04-0078D4.svg?logo=microsoftazure&logoColor=white)](k8s/overlays/aks/README.md)
+[![AWS EKS](https://img.shields.io/badge/EKS-AL2023%20%7C%20Bottlerocket-FF9900.svg?logo=amazoneks&logoColor=white)](k8s/overlays/eks/README.md)
+[![Google GKE](https://img.shields.io/badge/GKE-Standard%20COS-4285F4.svg?logo=googlecloud&logoColor=white)](k8s/overlays/gke/README.md)
+[![Rancher RKE2](https://img.shields.io/badge/RKE2%20%2F%20K3s-Hardened%20CIS-2453FF.svg?logo=rancher&logoColor=white)](k8s/overlays/rke/README.md)
+[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-Standalone%20Stack-2496ED.svg?logo=docker&logoColor=white)](docker-compose/README.md)
+
+<!-- Observability & Log Shipper Badges -->
+[![OpenTelemetry OBI](https://img.shields.io/badge/OpenTelemetry-OBI%20v0.14.0-F5A800.svg?logo=opentelemetry&logoColor=white)](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation)
+[![OTel Collector](https://img.shields.io/badge/OTel%20Collector-Contrib%20v0.111.0-F5A800.svg?logo=opentelemetry&logoColor=white)](k8s/base/otel-collector.yaml)
+[![Jaeger Tracing](https://img.shields.io/badge/Jaeger-1.62%2B-60D0E4.svg?logo=jaeger&logoColor=white)](docker-compose/compose.yaml)
+[![Vector](https://img.shields.io/badge/Vector-NUL%20Filter-172535.svg?logo=vector&logoColor=white)](log-pipelines/vector-filter.toml)
+[![Fluent Bit](https://img.shields.io/badge/Fluent%20Bit-Grep%20Filter-498AAB.svg?logo=fluentbit&logoColor=white)](log-pipelines/fluent-bit-filter.conf)
+[![Promtail / Alloy](https://img.shields.io/badge/Promtail%20%2F%20Alloy-Drop%20Stage-F46800.svg?logo=grafana&logoColor=white)](log-pipelines/promtail-filter.yaml)
+
+<!-- Runtimes & Operations -->
+[![Go](https://img.shields.io/badge/Go-1.23%2B%20(log%2Fslog)-00ADD8.svg?logo=go&logoColor=white)](demo-apps/go/)
+[![Python](https://img.shields.io/badge/Python-3.12%2B%20(unbuffered)-3776AB.svg?logo=python&logoColor=white)](demo-apps/python/)
+[![Node.js](https://img.shields.io/badge/Node.js-20%2B%20(pino)-5FA04E.svg?logo=nodedotjs&logoColor=white)](demo-apps/nodejs/)
+[![Lifecycle](https://img.shields.io/badge/Lifecycle-Day%200%20%7C%20Day%201%20%7C%20Day%202%20%7C%20Decom-2ea44f.svg?logo=github)](scripts/)
 
 Enterprise reference implementation, multi-cloud Kubernetes architectures, and end-to-end lifecycle automation for **Zero-Code Trace-Log Correlation** powered by [OpenTelemetry eBPF Instrumentation (OBI)](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/).
 
