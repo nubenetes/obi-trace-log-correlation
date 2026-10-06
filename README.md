@@ -131,49 +131,151 @@ flowchart TD
 
 ## Repository Structure
 
-```text
-obi-trace-log-correlation/
-├── demo-apps/                 # Polyglot uninstrumented application workloads
-│   ├── go/frontend/           # Uninstrumented Go HTTP service (log/slog JSON)
-│   ├── go/backend/            # Uninstrumented Go HTTP service (log/slog JSON)
-│   ├── python/                # Python unbuffered service (PYTHONUNBUFFERED=1)
-│   ├── nodejs/                # Node.js service with Pino JSON logging
-│   └── plaintext/             # Legacy plain-text service showing key=value annotations
-├── docker-compose/            # Self-contained local Linux evaluation stack
-│   ├── compose.yaml           # Frontend, Backend, Jaeger, and OBI DaemonSet
-│   └── obi-config.yml         # OBI Config v2 with correlation.log_trace_annotation
-├── k8s/                       # Production Kubernetes configurations
-│   ├── base/                  # Kustomize base (DaemonSet, RBAC, ConfigMap, Collector)
-│   └── overlays/              # Enterprise distribution overlays
-│       ├── openshift-4.20/    # OpenShift 4.20+ with custom SCC & Vector filter
-│       ├── aks/               # Azure Kubernetes Service (Azure Linux/Ubuntu)
-│       ├── eks/               # AWS Elastic Kubernetes Service (AL2023/Bottlerocket)
-│       ├── gke/               # Google Kubernetes Engine (Standard COS/Ubuntu)
-│       └── rke/               # Rancher RKE2 / K3s hardened profiles
-├── log-pipelines/             # Filter configurations to drop suppressed NUL placeholders
-│   ├── otel-collector-filelog.yaml
-│   ├── fluent-bit-filter.conf
-│   ├── vector-filter.toml
-│   └── promtail-filter.yaml
-├── scripts/                   # Production lifecycle automation scripts
-│   ├── day0-kernel-audit.sh       # Preflight kernel, BPF, and lockdown audit
-│   ├── day1-deploy.sh             # Multi-cloud automated deployment
-│   ├── day1-generate-traffic.sh   # Synthetic HTTP traffic generator
-│   ├── day2-verify-correlation.sh # Live verification of log trace IDs
-│   ├── day2-canary-rollout.sh     # Canary progressive rollout helper
-│   ├── benchmark-overhead.sh      # Latency and throughput overhead benchmark
-│   └── decommission.sh            # Safe cleanup and BPF map unpinning
-└── docs/                      # Comprehensive technical documentation
-    ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
-    ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
-    ├── day1-installation.md       # Multi-platform deployment guides
-    ├── day2-operations-triage.md  # Incident triage queries (Loki, Jaeger, ES)
-    ├── log-filtering-guide.md     # In-depth explanation of NUL bytes & filters
-    ├── runtime-compatibility.md   # Language runtime specifics (Go, Python, Java, .NET)
-    ├── troubleshooting.md         # Diagnostic runbook for common pitfalls
-    ├── decommission-guide.md      # Clean teardown procedures
-    └── references.md              # Catalog of official links and resources
-```
+> [!TIP]
+> **Interactive Repository Map**: Every directory and file link in the tree below is hyperlinked directly to its source. Click any item to explore its code, configuration, or documentation without losing context.
+
+- 📂 **[`obi-trace-log-correlation/`](.)**
+  - 📁 **[`demo-apps/`](demo-apps/)** — *Polyglot uninstrumented application workloads (Zero-Code)*
+    - 📁 **[`demo-apps/go/`](demo-apps/go/)**
+      - 📁 **[`demo-apps/go/frontend/`](demo-apps/go/frontend/)**
+        - 📄 [`main.go`](demo-apps/go/frontend/main.go) — *Uninstrumented Go HTTP frontend service emitting JSON logs via `log/slog`*
+        - 🐳 [`Dockerfile`](demo-apps/go/frontend/Dockerfile) — *Multi-stage minimal Alpine container build with non-root user*
+        - 📦 [`go.mod`](demo-apps/go/frontend/go.mod) — *Go 1.23 module declaration*
+      - 📁 **[`demo-apps/go/backend/`](demo-apps/go/backend/)**
+        - 📄 [`main.go`](demo-apps/go/backend/main.go) — *Uninstrumented Go backend handling incoming requests and logging JSON to stdout*
+        - 🐳 [`Dockerfile`](demo-apps/go/backend/Dockerfile) — *Multi-stage container build with non-root security context*
+        - 📦 [`go.mod`](demo-apps/go/backend/go.mod) — *Go 1.23 module declaration*
+    - 📁 **[`demo-apps/python/`](demo-apps/python/)**
+      - 🐍 [`app.py`](demo-apps/python/app.py) — *Python HTTP service with synchronous structured JSON logging*
+      - 🐳 [`Dockerfile`](demo-apps/python/Dockerfile) — *Container build configuring `ENV PYTHONUNBUFFERED=1` for synchronous stdout writes*
+      - 📄 [`requirements.txt`](demo-apps/python/requirements.txt) — *Python dependency manifest (zero external dependencies required)*
+    - 📁 **[`demo-apps/nodejs/`](demo-apps/nodejs/)**
+      - 🟩 [`server.js`](demo-apps/nodejs/server.js) — *Node.js HTTP service using Pino-compatible structured JSON logging to stdout*
+      - 🐳 [`Dockerfile`](demo-apps/nodejs/Dockerfile) — *Node 20 Alpine container build*
+      - 📦 [`package.json`](demo-apps/nodejs/package.json) — *Node.js package manifest and entrypoint definition*
+    - 📁 **[`demo-apps/plaintext/`](demo-apps/plaintext/)**
+      - 📄 [`main.go`](demo-apps/plaintext/main.go) — *Legacy plain-text service demonstrating OBI's key-value annotations (`trace_id=... span_id=...`)*
+      - 🐳 [`Dockerfile`](demo-apps/plaintext/Dockerfile) — *Minimal Alpine container build*
+      - 📦 [`go.mod`](demo-apps/plaintext/go.mod) — *Go 1.23 module declaration*
+  - 📁 **[`docker-compose/`](docker-compose/)** — *Self-contained local Linux evaluation environment*
+    - 🐙 [`compose.yaml`](docker-compose/compose.yaml) — *Multi-container stack (Frontend, Backend, Jaeger 1.62, and OBI v0.14.0)*
+    - ⚙️ [`obi-config.yml`](docker-compose/obi-config.yml) — *OBI Config v2 with `extensions.obi.correlation.log_trace_annotation`*
+    - 📖 [`README.md`](docker-compose/README.md) — *Local 60-second evaluation guide and step-by-step instructions*
+  - 📁 **[`k8s/`](k8s/)** — *Enterprise Kubernetes manifests and multi-cloud overlays*
+    - 📁 **[`k8s/base/`](k8s/base/)** — *Kustomize foundational base manifests*
+      - ☸️ [`kustomization.yaml`](k8s/base/kustomization.yaml) — *Kustomize base resource aggregator*
+      - 🏷️ [`namespace.yaml`](k8s/base/namespace.yaml) — *`obi` (privileged) and `demo-apps` (restricted) namespaces with PSA labels*
+      - 🛡️ [`rbac.yaml`](k8s/base/rbac.yaml) — *ServiceAccount, ClusterRole, and ClusterRoleBinding for Kubernetes metadata decoration*
+      - ⚙️ [`obi-configmap.yaml`](k8s/base/obi-configmap.yaml) — *Production OBI Config v2 ConfigMap with workload match rules and trace-log correlation*
+      - 🚀 [`obi-daemonset.yaml`](k8s/base/obi-daemonset.yaml) — *Production DaemonSet with `hostPID: true`, `privileged: true`, and `/sys/fs/bpf` mount*
+      - 📦 [`demo-services.yaml`](k8s/base/demo-services.yaml) — *Deployments and Services for Frontend and Backend demo applications*
+      - 🔭 [`otel-collector.yaml`](k8s/base/otel-collector.yaml) — *In-cluster OTel Collector DaemonSet with `filelog` receiver and NUL placeholder filter*
+    - 📁 **[`k8s/overlays/`](k8s/overlays/)** — *Enterprise distribution overlays and hardened profiles*
+      - 📁 **[`k8s/overlays/openshift-4.20/`](k8s/overlays/openshift-4.20/)** — *Red Hat OpenShift 4.20+ overlay (RHCOS Linux 6.6+)*
+        - 🛡️ [`security-context-constraints.yaml`](k8s/overlays/openshift-4.20/security-context-constraints.yaml) — *Custom `obi-ebpf-scc` granting `hostPID`, `CAP_SYS_ADMIN`, and hostPath mounts*
+        - 🩹 [`obi-daemonset-patch.yaml`](k8s/overlays/openshift-4.20/obi-daemonset-patch.yaml) — *SELinux `spc_t` type and infra/master tolerations patch*
+        - ⚙️ [`vector-filter-configmap.yaml`](k8s/overlays/openshift-4.20/vector-filter-configmap.yaml) — *OpenShift Cluster Logging Vector drop filter for NUL placeholders*
+        - ☸️ [`kustomization.yaml`](k8s/overlays/openshift-4.20/kustomization.yaml) — *OpenShift 4.20+ Kustomization declaration*
+        - 📖 [`README.md`](k8s/overlays/openshift-4.20/README.md) — *Detailed OpenShift 4.20+ deployment runbook and security guide*
+      - 📁 **[`k8s/overlays/aks/`](k8s/overlays/aks/)** — *Azure Kubernetes Service (AKS) overlay*
+        - 🩹 [`obi-daemonset-patch.yaml`](k8s/overlays/aks/obi-daemonset-patch.yaml) — *NodeSelector targeting Azure Linux (CBL-Mariner) / Ubuntu 24.04 (kernel >= 6.0)*
+        - ☸️ [`kustomization.yaml`](k8s/overlays/aks/kustomization.yaml) — *AKS Kustomization declaration*
+        - 📖 [`README.md`](k8s/overlays/aks/README.md) — *AKS deployment guide and Azure Monitor / OTel Collector pipeline notes*
+      - 📁 **[`k8s/overlays/eks/`](k8s/overlays/eks/)** — *AWS Elastic Kubernetes Service (EKS) overlay*
+        - 🩹 [`obi-daemonset-patch.yaml`](k8s/overlays/eks/obi-daemonset-patch.yaml) — *NodeSelector targeting Amazon Linux 2023 (AL2023) / Bottlerocket node pools*
+        - ☸️ [`kustomization.yaml`](k8s/overlays/eks/kustomization.yaml) — *EKS Kustomization declaration*
+        - 📖 [`README.md`](k8s/overlays/eks/README.md) — *EKS deployment guide and AWS VPC CNI eBPF coexistence details*
+      - 📁 **[`k8s/overlays/gke/`](k8s/overlays/gke/)** — *Google Kubernetes Engine (GKE Standard) overlay*
+        - 🩹 [`obi-daemonset-patch.yaml`](k8s/overlays/gke/obi-daemonset-patch.yaml) — *NodeSelector targeting GKE Standard Linux nodes with COS / Ubuntu*
+        - ☸️ [`kustomization.yaml`](k8s/overlays/gke/kustomization.yaml) — *GKE Kustomization declaration*
+        - 📖 [`README.md`](k8s/overlays/gke/README.md) — *GKE deployment guide and Datapath v2 (Cilium) coexistence details*
+      - 📁 **[`k8s/overlays/rke/`](k8s/overlays/rke/)** — *Rancher RKE2 / K3s hardened profiles overlay*
+        - 🩹 [`obi-daemonset-patch.yaml`](k8s/overlays/rke/obi-daemonset-patch.yaml) — *Control-plane and etcd node tolerations patch*
+        - ☸️ [`kustomization.yaml`](k8s/overlays/rke/kustomization.yaml) — *RKE2 Kustomization declaration*
+        - 📖 [`README.md`](k8s/overlays/rke/README.md) — *RKE2 CIS hardening notes and `/sys/fs/bpf` mount configuration*
+  - 📁 **[`log-pipelines/`](log-pipelines/)** — *Log forwarder configurations to drop suppressed NUL placeholders*
+    - 🔭 [`otel-collector-filelog.yaml`](log-pipelines/otel-collector-filelog.yaml) — *OpenTelemetry Collector `filelog` receiver with `body matches "^[\\x00\\s]*$"`*
+    - ⚡ [`vector-filter.toml`](log-pipelines/vector-filter.toml) — *Vector VRL filter transform dropping records matching `^[\x00\s]*$`*
+    - 📜 [`fluent-bit-filter.conf`](log-pipelines/fluent-bit-filter.conf) — *Fluent Bit `grep` filter excluding `^[\x00\s]*$`*
+    - 🔥 [`promtail-filter.yaml`](log-pipelines/promtail-filter.yaml) — *Promtail / Loki pipeline stage dropping `^[\x00\s]*$`*
+  - 📁 **[`scripts/`](scripts/)** — *Production lifecycle automation scripts*
+    - 🛠️ [`common.sh`](scripts/common.sh) — *Shared logging, ANSI color formatting, and error trap library*
+    - 🔍 [`day0-kernel-audit.sh`](scripts/day0-kernel-audit.sh) — *Preflight audit verifying kernel >= 6.0, `/sys/fs/bpf`, lockdown, and cluster nodes*
+    - 🚀 [`day1-deploy.sh`](scripts/day1-deploy.sh) — *Multi-cloud deployment CLI supporting `openshift`, `aks`, `eks`, `gke`, `rke`, `docker-compose`*
+    - 🚦 [`day1-generate-traffic.sh`](scripts/day1-generate-traffic.sh) — *Synthetic HTTP load generator triggering distributed transactions*
+    - ✅ [`day2-verify-correlation.sh`](scripts/day2-verify-correlation.sh) — *Live verification script validating matching `trace_id` values across container logs*
+    - 🐤 [`day2-canary-rollout.sh`](scripts/day2-canary-rollout.sh) — *Canary progressive rollout and rollback helper for OBI match rules*
+    - ⏱️ [`benchmark-overhead.sh`](scripts/benchmark-overhead.sh) — *Overhead benchmarking tool measuring latency, throughput, and CPU usage*
+    - 🧹 [`decommission.sh`](scripts/decommission.sh) — *Safe cleanup script unpinning `/sys/fs/bpf/otel` maps and tearing down resources*
+  - 📁 **[`docs/`](docs/)** — *Comprehensive technical and operational documentation*
+    - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
+    - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
+    - 📦 [`day1-installation.md`](docs/day1-installation.md) — *Multi-platform installation guide and bootstrap steps*
+    - 🚨 [`day2-operations-triage.md`](docs/day2-operations-triage.md) — *Incident triage playbook with LogQL/Jaeger queries and Prometheus alerts*
+    - 💧 [`log-filtering-guide.md`](docs/log-filtering-guide.md) — *Technical explanation of NUL placeholder lines and the 8 KiB write boundary*
+    - 🌐 [`runtime-compatibility.md`](docs/runtime-compatibility.md) — *Language runtime specifics for Go, Python, Java (Loom), Node.js, and .NET*
+    - 🩺 [`troubleshooting.md`](docs/troubleshooting.md) — *Diagnostic runbook for common pitfalls*
+    - 🛑 [`decommission-guide.md`](docs/decommission-guide.md) — *Clean teardown procedures ensuring zero orphaned kernel resources*
+    - 🔗 [`references.md`](docs/references.md) — *Official OpenTelemetry blog links, developer docs, and community resources*
+  - 📁 **[`.github/workflows/`](.github/workflows/)** — *GitHub Actions CI/CD automation*
+    - 🤖 [`ci.yml`](.github/workflows/ci.yml) — *Continuous integration workflow validating shell scripts, manifests, and container builds*
+  - 📜 [`LICENSE`](LICENSE) — *Apache License, Version 2.0*
+  - 🙈 [`.gitignore`](.gitignore) — *Git ignore rules for binaries, build artifacts, and virtual environments*
+  - 📘 [`README.md`](README.md) — *Master repository documentation, architecture diagrams, and quickstart guides*
+
+---
+
+### Detailed Component & Directory Breakdown
+
+#### 📁 `demo-apps/` — Polyglot Application Microservices
+- **Go Frontend ([`demo-apps/go/frontend/`](demo-apps/go/frontend/))**: An uninstrumented HTTP microservice listening on port 8080. It utilizes Go 1.23 standard library `log/slog` to write JSON records to stdout. When `/checkout` is invoked, it logs an order event and dispatches an HTTP GET request to the downstream backend. OBI automatically intercepts the outbound HTTP client call, generates a W3C `traceparent` header, joins the spans, and enriches stdout writes with `trace_id` and `span_id`.
+- **Go Backend ([`demo-apps/go/backend/`](demo-apps/go/backend/))**: An uninstrumented HTTP microservice listening on port 8081. It serves the `/hello` endpoint and logs structured JSON with `log/slog`. OBI extracts incoming W3C trace context from the kernel socket buffer and decorates the backend logs with the identical `trace_id`.
+- **Python Service ([`demo-apps/python/`](demo-apps/python/))**: Demonstrates Python compatibility. Configured with `ENV PYTHONUNBUFFERED=1` in its Dockerfile to prevent stdout buffering in container pipes, ensuring write syscalls execute synchronously on the request-handling thread.
+- **Node.js Service ([`demo-apps/nodejs/`](demo-apps/nodejs/))**: An Express service utilizing Pino JSON structured logging, demonstrating how OBI's kernel hooks track asynchronous event-loop callbacks.
+- **Plain-Text Service ([`demo-apps/plaintext/`](demo-apps/plaintext/))**: Emits unstructured free-form log lines (`legacy transaction executed user=john_doe...`), showcasing OBI's ability to append key-value annotations (`trace_id=... span_id=...`) to non-JSON output.
+
+#### 📁 `docker-compose/` — Local Evaluation Environment
+- **[`docker-compose/compose.yaml`](docker-compose/compose.yaml)**: Launches a 4-container topology on a Linux host (`frontend`, `backend`, `jaeger:1.62.0`, and `otel/ebpf-instrument:v0.14.0`). Configured with `pid: host` and `privileged: true`, mounting `/sys/fs/bpf` to enable live eBPF probe attachment without requiring a full Kubernetes cluster.
+- **[`docker-compose/obi-config.yml`](docker-compose/obi-config.yml)**: Configures OBI using Config v2 syntax. Defines `capture.rules` matching target binary globs (`/frontend`, `/backend`) and enables `extensions.obi.correlation.log_trace_annotation`.
+
+#### 📁 `k8s/base/` — Production Kubernetes Foundations
+- **[`k8s/base/namespace.yaml`](k8s/base/namespace.yaml)**: Declares dedicated namespaces with Pod Security Standards (`privileged` for `obi` and `restricted` for `demo-apps`).
+- **[`k8s/base/rbac.yaml`](k8s/base/rbac.yaml)**: Provisions the `ServiceAccount`, `ClusterRole`, and `ClusterRoleBinding` granting OBI read access to Pods, Nodes, and Services for decorating telemetry with Kubernetes metadata attributes.
+- **[`k8s/base/obi-configmap.yaml`](k8s/base/obi-configmap.yaml)**: The cluster-wide ConfigMap containing OBI Config v2, pointing OTLP traces export to the in-cluster collector.
+- **[`k8s/base/obi-daemonset.yaml`](k8s/base/obi-daemonset.yaml)**: The enterprise DaemonSet deploying OBI across all cluster nodes. Includes `hostPID: true`, Bidirectional `/sys/fs/bpf` mount propagation, host `/sys/kernel/debug` access, and resource requests/limits.
+- **[`k8s/base/otel-collector.yaml`](k8s/base/otel-collector.yaml)**: Deploys the OpenTelemetry Collector with both OTLP receivers and the `filelog` receiver tailing `/var/log/pods`. Configured with the essential NUL placeholder drop filter.
+- **[`k8s/base/demo-services.yaml`](k8s/base/demo-services.yaml)**: Deployments and ClusterIP Services for the frontend and backend sample workloads.
+
+#### 📁 `k8s/overlays/` — Enterprise Cloud & On-Prem Distribution Overlays
+- **[`k8s/overlays/openshift-4.20/`](k8s/overlays/openshift-4.20/)**: Tailored for Red Hat OpenShift 4.20+ running RHCOS with Linux kernel 6.6+. Features a custom `SecurityContextConstraints` (`obi-ebpf-scc`) to authorize hostPID and eBPF capabilities, SELinux `spc_t` container settings, and a Vector filter ConfigMap for OpenShift Cluster Logging.
+- **[`k8s/overlays/aks/`](k8s/overlays/aks/)**: Configured for Azure Kubernetes Service node pools running Azure Linux (CBL-Mariner) or Ubuntu 24.04 (kernel >= 6.0), including nodeSelectors and Azure Monitor considerations.
+- **[`k8s/overlays/eks/`](k8s/overlays/eks/)**: Configured for AWS Elastic Kubernetes Service node pools running Amazon Linux 2023 (AL2023) or Bottlerocket, addressing AWS VPC CNI eBPF coexistence.
+- **[`k8s/overlays/gke/`](k8s/overlays/gke/)**: Configured for Google Kubernetes Engine Standard clusters running Container-Optimized OS (COS) or Ubuntu, detailing coexistence with GKE Datapath v2.
+- **[`k8s/overlays/rke/`](k8s/overlays/rke/)**: Hardened overlay for Rancher RKE2 and K3s distributions complying with CIS benchmarks.
+
+#### 📁 `log-pipelines/` — Suppressed NUL Byte Filter Configurations
+- Explains and provides ready-to-use configuration drop filters for log forwarders ([`otel-collector-filelog.yaml`](log-pipelines/otel-collector-filelog.yaml), [`vector-filter.toml`](log-pipelines/vector-filter.toml), [`fluent-bit-filter.conf`](log-pipelines/fluent-bit-filter.conf), [`promtail-filter.yaml`](log-pipelines/promtail-filter.yaml)). These filters match `^[\x00\s]*$` to silently discard the zeroed-out memory placeholders produced by `bpf_probe_write_user`.
+
+#### 📁 `scripts/` — Production Lifecycle & Operational Tooling
+- **[`scripts/common.sh`](scripts/common.sh)**: Shared bash helper library providing colorized logging, error traps, and dependency checks.
+- **[`scripts/day0-kernel-audit.sh`](scripts/day0-kernel-audit.sh)**: Comprehensive preflight audit verifying kernel release >= 6.0, `/sys/fs/bpf` bpffs mount, kernel lockdown mode, BPF JIT status, and cluster node readiness.
+- **[`scripts/day1-deploy.sh`](scripts/day1-deploy.sh)**: Multi-cloud deployment orchestrator supporting `--cluster [openshift|aks|eks|gke|rke|docker-compose]` with idempotent rollouts.
+- **[`scripts/day1-generate-traffic.sh`](scripts/day1-generate-traffic.sh)**: Synthetic HTTP load generator triggering distributed requests to verify trace generation.
+- **[`scripts/day2-verify-correlation.sh`](scripts/day2-verify-correlation.sh)**: Automated verification tool that extracts container logs from both microservices, parses JSON fields, confirms matching `trace_id` values, and validates traces in the Jaeger API.
+- **[`scripts/day2-canary-rollout.sh`](scripts/day2-canary-rollout.sh)**: Canary progressive rollout automation allowing SREs to add or remove services from OBI's log annotation `match` list dynamically without restarting applications.
+- **[`scripts/benchmark-overhead.sh`](scripts/benchmark-overhead.sh)**: Performance testing tool measuring request latency, throughput, and CPU/memory overhead added by kernel write interception.
+- **[`scripts/decommission.sh`](scripts/decommission.sh)**: Clean teardown script that detaches kernel probes, unpins persistent BPF maps under `/sys/fs/bpf/otel/`, and deletes cluster namespaces and RBAC.
+
+#### 📁 `docs/` — Technical Architecture & Operational Guides
+- **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
+- **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.
+- **[`docs/day1-installation.md`](docs/day1-installation.md)**: Step-by-step deployment guide across all supported Kubernetes platforms.
+- **[`docs/day2-operations-triage.md`](docs/day2-operations-triage.md)**: SRE incident triage guide with sample LogQL, Elasticsearch, and CloudWatch queries, alert definitions, and canary rollout strategies.
+- **[`docs/log-filtering-guide.md`](docs/log-filtering-guide.md)**: Deep dive into why suppressed writes contain NUL bytes and how the 8 KiB single-write limit affects large payloads.
+- **[`docs/runtime-compatibility.md`](docs/runtime-compatibility.md)**: Programming language runtime guidance covering Go, Python unbuffered mode, Java platform threads vs virtual threads (Project Loom), Node.js async hooks, and .NET synchronous writers.
+- **[`docs/troubleshooting.md`](docs/troubleshooting.md)**: Diagnostic runbook for missing trace contexts, kernel lockdown denials, split log lines, and permission errors.
+- **[`docs/decommission-guide.md`](docs/decommission-guide.md)**: Clean de-provisioning instructions ensuring no orphaned kernel memory remains.
+- **[`docs/references.md`](docs/references.md)**: Comprehensive bibliography citing official OpenTelemetry blog posts, specifications, GitHub repositories, and community Slack channels.
 
 ---
 
