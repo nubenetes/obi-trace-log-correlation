@@ -119,10 +119,11 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [8. Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats](#8-why-ebpf-trace-log-correlation-loses-context-async-buffers-and-runtime-caveats)
     - [9. Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF](#9-why-service-meshes-fail-at-log-correlation-network-perimeter-vs-kernel-ebpf)
     - [10. Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos](#10-por-qué-combinar-service-mesh-y-ebpf-observabilidad-completa-sin-puntos-ciegos)
-  - [🎙️ Architectural Masterclass Podcasts (3 Episodes)](#-architectural-masterclass-podcasts-3-episodes)
+  - [🎙️ Architectural Masterclass Podcasts (4 Episodes)](#-architectural-masterclass-podcasts-4-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
     - [3. Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)](#3-podcast-zero-code-trace-log-correlation-service-mesh-vs-kernel-ebpf-obi)
+    - [4. Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)](#4-podcast-correlación-zero-code-de-logs-y-trazas-service-mesh-vs-kernel-ebpf-obi)
 - [References & Official Links](#references--official-links)
 - [License](#license)
 
@@ -442,6 +443,7 @@ This repository includes a comprehensive multi-format educational series synthes
 | 1 | 🎙️ Audio Podcast | [**Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive**](https://www.youtube.com/watch?v=QUSwbpEERlI) | Complete Architecture, Kernel Hooks & SRE Triage | 🇺🇸 English *(CC 20+)* | `47:47` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=QUSwbpEERlI) |
 | 2 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=mpSVsUIpaMc) | Arquitectura Kernel, Filtrado NUL y Producción | 🇪🇸 Spanish *(CC 20+)* | `21:37` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=mpSVsUIpaMc) |
 | 3 | 🎙️ Audio Podcast | [**Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=qJUrpdWvHTs) | Service Mesh vs Kernel eBPF & Full-Stack Synergy | 🇺🇸 English *(CC 20+)* | `58:23` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=qJUrpdWvHTs) |
+| 4 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | Service Mesh vs eBPF, Frontend W3C y Sinergia | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
 
 ### 🎬 Full-Length Technical Deep Dives (Videos)
 
@@ -1497,7 +1499,7 @@ Below are the direct links and full descriptions for each session.
 
 <br/>
 
-### 🎙️ Architectural Masterclass Podcasts (3 Episodes)
+### 🎙️ Architectural Masterclass Podcasts (4 Episodes)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Architectural Podcasts</strong></summary>
@@ -1590,6 +1592,34 @@ Below are the direct links and full descriptions for each session.
 >
 > ⏱️ Duration: 58:23
 > #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observability #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
+
+#### 4. Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=kP_FrCcn_jE](https://www.youtube.com/watch?v=kP_FrCcn_jE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/kP_FrCcn_jE/edit](https://studio.youtube.com/video/kP_FrCcn_jE/edit)
+- ⏱️ **Duration**: 12:50
+- 🏷️ **Domain**: Service Mesh vs eBPF, Frontend W3C Context & Mutación de Memoria
+- 📝 **Full Description**:
+> 🎙️ Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas – Service Mesh vs. Kernel eBPF
+>
+> Episodio completo de 13 minutos en formato podcast técnico en español analizando la sinergia arquitectónica entre Service Mesh (Istio Ambient, Envoy) y la instrumentación en el Kernel de Linux mediante eBPF (OpenTelemetry OBI).
+>
+> Una conversación técnica profunda para ingenieros de fiabilidad (SRE), arquitectos cloud y desarrolladores sobre por qué las mallas de servicio son ciegas a los registros locales de las aplicaciones y cómo eBPF resuelve este dilema sin tocar una sola línea de código.
+>
+> 📌 Puntos Clave y Hoja de Ruta de la Sesión:
+> • El Incidente de las 2:00 AM: Recibir una alerta crítica con un Trace ID específico y encontrar cero resultados al buscar en los logs distribuidos.
+> • La Frontera del Service Mesh: Por qué los proxies de red actúan en el muelle de carga (sockets TCP/HTTP) sin visibilidad alguna sobre los pipes internos stdout y stderr del contenedor.
+> • La Solución en el Kernel: Cómo OBI intercepta llamadas al sistema write() y writev() en Linux, inyectando el Trace ID activo en memoria antes de consolidar el registro.
+> • Del Navegador al Kernel: Conectando el frontend (React, Angular) mediante cabeceras W3C traceparent capturadas por el servidor vía sys_recvfrom.
+> • Supresión NUL y Límites de 8 KiB: El truco de bpf_probe_write_user para silenciar el buffer original y estrategias de reensamblaje multilínea en los colectores.
+> • La Verdad en Producción: Reflexión final sobre el papel del sistema operativo como editor fantasma en la telemetría moderna.
+>
+> 🔗 Repositorio Oficial y Documentación de Referencia:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía Arquitectónica Service Mesh vs. eBPF: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 12:50
+> #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observabilidad #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
 
 </details>
 
