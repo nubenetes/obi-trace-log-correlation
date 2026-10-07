@@ -33,6 +33,16 @@ jobs:
         run: |
           python -m py_compile demo-apps/python/app.py
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify Node.js & Angular Scripts Syntax
+        run: |
+          node -c demo-apps/nodejs/server.js
+          node -c demo-apps/frontend-angular/server.js
+
       - name: ShellCheck Scripts
         uses: ludeeus/action-shellcheck@master
         with:

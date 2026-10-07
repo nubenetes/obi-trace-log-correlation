@@ -29,6 +29,8 @@
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B%20(pino)-5FA04E.svg?logo=nodedotjs&logoColor=white)](demo-apps/nodejs/)
 [![Java](https://img.shields.io/badge/Java-21%2B%20(Platform%20vs%20Loom)-ED8B00.svg?logo=openjdk&logoColor=white)](demo-apps/java/)
 [![.NET](https://img.shields.io/badge/.NET-8.0%2B%20(Serilog%20Sync)-512BD4.svg?logo=dotnet&logoColor=white)](demo-apps/dotnet/)
+[![Ruby](https://img.shields.io/badge/Ruby-3.3%2B%20(Puma%20Clustered)-CC342D.svg?logo=ruby&logoColor=white)](demo-apps/ruby/)
+[![Angular](https://img.shields.io/badge/Angular-17%2B%20(SPA%20%2B%20SSR)-DD0031.svg?logo=angular&logoColor=white)](demo-apps/frontend-angular/)
 [![Lifecycle](https://img.shields.io/badge/Lifecycle-Day%200%20%7C%20Day%201%20%7C%20Day%202%20%7C%20Decom-2ea44f.svg?logo=github)](scripts/)
 
 Enterprise reference implementation, multi-cloud Kubernetes architectures, and end-to-end lifecycle automation for **Zero-Code Trace-Log Correlation** powered by [OpenTelemetry eBPF Instrumentation (OBI)](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/).
@@ -416,12 +418,14 @@ For Platform Architects, Linux Kernel Engineers, and Staff SREs, here is the tec
 ```text
 obi-trace-log-correlation/
 ├── demo-apps/                 # Polyglot uninstrumented application workloads
+│   ├── frontend-angular/      # Angular 17+ SPA & SSR service (W3C traceparent bridge)
 │   ├── go/frontend/           # Uninstrumented Go HTTP service (log/slog JSON)
 │   ├── go/backend/            # Uninstrumented Go HTTP service (log/slog JSON)
 │   ├── python/                # Python unbuffered service (PYTHONUNBUFFERED=1)
 │   ├── nodejs/                # Node.js service with Pino JSON logging
 │   ├── java/                  # Java 21 microservice (Platform Threads vs Loom)
 │   ├── dotnet/                # .NET 8.0 microservice (Serilog Sync vs AddConsole)
+│   ├── ruby/                  # Ruby 3.3 Puma service (STDOUT.sync vs Block Buffering)
 │   └── plaintext/             # Legacy plain-text service showing key=value annotations
 ├── docker-compose/            # Self-contained local Linux evaluation stack
 │   ├── compose.yaml           # Frontend, Backend, Jaeger, and OBI DaemonSet
@@ -471,6 +475,12 @@ obi-trace-log-correlation/
 
 - 📂 **[`obi-trace-log-correlation/`](.)**
   - 📁 **[`demo-apps/`](demo-apps/)** — *Polyglot uninstrumented application workloads (Zero-Code)*
+    - 📁 **[`demo-apps/frontend-angular/`](demo-apps/frontend-angular/)**
+      - 🌐 [`server.js`](demo-apps/frontend-angular/server.js) — *Express SSR server pre-rendering Angular templates and handling client log ingestion*
+      - 🧩 [`src/app/telemetry.interceptor.ts`](demo-apps/frontend-angular/src/app/telemetry.interceptor.ts) — *Angular 17+ HTTP interceptor injecting W3C `traceparent` headers*
+      - 🅰️ [`src/app/app.component.ts`](demo-apps/frontend-angular/src/app/app.component.ts) — *Angular component demonstrating client actions and telemetry bridging*
+      - 🐳 [`Dockerfile`](demo-apps/frontend-angular/Dockerfile) — *Multi-stage Alpine container build with non-root security context*
+      - 📖 [`README.md`](demo-apps/frontend-angular/README.md) — *Frontend SPA vs SSR architecture guide and W3C header propagation runbook*
     - 📁 **[`demo-apps/go/`](demo-apps/go/)**
       - 📁 **[`demo-apps/go/frontend/`](demo-apps/go/frontend/)**
         - 📄 [`main.go`](demo-apps/go/frontend/main.go) — *Uninstrumented Go HTTP frontend service emitting JSON logs via `log/slog`*
@@ -498,6 +508,12 @@ obi-trace-log-correlation/
       - 🐳 [`Dockerfile`](demo-apps/dotnet/Dockerfile) — *Multi-stage Alpine container build (`mcr.microsoft.com/dotnet/aspnet:8.0`)*
       - 📦 [`DotnetApp.csproj`](demo-apps/dotnet/DotnetApp.csproj) — *.NET 8.0 project manifest with Serilog packages*
       - 📖 [`README.md`](demo-apps/dotnet/README.md) — *.NET background channel logging analysis and solution guide*
+    - 📁 **[`demo-apps/ruby/`](demo-apps/ruby/)**
+      - 💎 [`app.rb`](demo-apps/ruby/app.rb) — *Ruby HTTP microservice with structured JSON logging and `STDOUT.sync` toggle*
+      - ⚙️ [`puma.rb`](demo-apps/ruby/puma.rb) — *Puma 6.x server configuration for clustered workers and unbuffered stdout*
+      - 📄 [`config.ru`](demo-apps/ruby/config.ru) — *Rack entrypoint for Puma server*
+      - 🐳 [`Dockerfile`](demo-apps/ruby/Dockerfile) — *Multi-stage Alpine container build (`ruby:3.3-alpine`)*
+      - 📖 [`README.md`](demo-apps/ruby/README.md) — *Puma clustered vs threaded runbook and `STDOUT.sync = true` guidance*
     - 📁 **[`demo-apps/plaintext/`](demo-apps/plaintext/)**
       - 📄 [`main.go`](demo-apps/plaintext/main.go) — *Legacy plain-text service demonstrating OBI's key-value annotations (`trace_id=... span_id=...`)*
       - 🐳 [`Dockerfile`](demo-apps/plaintext/Dockerfile) — *Minimal Alpine container build*
@@ -577,12 +593,14 @@ obi-trace-log-correlation/
 ### Detailed Component & Directory Breakdown
 
 #### 📁 `demo-apps/` — Polyglot Application Microservices
+- **Angular Frontend & SSR ([`demo-apps/frontend-angular/`](demo-apps/frontend-angular/))**: An Angular 17+ service demonstrating client-side W3C `traceparent` HTTP header injection via an Angular interceptor, paired with a Node.js SSR engine executing server-side rendering logs intercepted by OBI eBPF.
 - **Go Frontend ([`demo-apps/go/frontend/`](demo-apps/go/frontend/))**: An uninstrumented HTTP microservice listening on port 8080. It utilizes Go 1.23 standard library `log/slog` to write JSON records to stdout. When `/checkout` is invoked, it logs an order event and dispatches an HTTP GET request to the downstream backend. OBI automatically intercepts the outbound HTTP client call, generates a W3C `traceparent` header, joins the spans, and enriches stdout writes with `trace_id` and `span_id`.
 - **Go Backend ([`demo-apps/go/backend/`](demo-apps/go/backend/))**: An uninstrumented HTTP microservice listening on port 8081. It serves the `/hello` endpoint and logs structured JSON with `log/slog`. OBI extracts incoming W3C trace context from the kernel socket buffer and decorates the backend logs with the identical `trace_id`.
 - **Python Service ([`demo-apps/python/`](demo-apps/python/))**: Demonstrates Python compatibility. Configured with `ENV PYTHONUNBUFFERED=1` in its Dockerfile to prevent stdout buffering in container pipes, ensuring write syscalls execute synchronously on the request-handling thread.
 - **Node.js Service ([`demo-apps/nodejs/`](demo-apps/nodejs/))**: An Express service utilizing Pino JSON structured logging, demonstrating how OBI's kernel hooks track asynchronous event-loop callbacks.
 - **Java Service ([`demo-apps/java/`](demo-apps/java/))**: A Java 21 microservice demonstrating standard Platform Thread Pools (supported out of the box via ByteBuddy + `ioctl` hierarchy tracking) alongside an explicit toggle for Project Loom Virtual Threads (`USE_VIRTUAL_THREADS=true`) to demonstrate carrier OS thread collisions in eBPF.
 - **.NET Service ([`demo-apps/dotnet/`](demo-apps/dotnet/))**: An ASP.NET Core 8.0 microservice illustrating why default `AddConsole()` fails (due to its asynchronous `Channel<LogMessageEntry>` background processor thread) and showcasing the production fix using Serilog synchronous console logging (`USE_SYNCHRONOUS_LOGGER=true`).
+- **Ruby Puma Service ([`demo-apps/ruby/`](demo-apps/ruby/))**: A Ruby 3.3 Puma microservice illustrating clustered multi-process execution (isolated PIDs) vs multi-threaded execution, highlighting the critical role of `STDOUT.sync = true` to prevent `libc` 8 KiB block buffering on non-TTY container pipes.
 - **Plain-Text Service ([`demo-apps/plaintext/`](demo-apps/plaintext/))**: Emits unstructured free-form log lines (`legacy transaction executed user=john_doe...`), showcasing OBI's ability to append key-value annotations (`trace_id=... span_id=...`) to non-JSON output.
 
 #### 📁 `docker-compose/` — Local Evaluation Environment

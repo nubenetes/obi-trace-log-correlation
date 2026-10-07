@@ -26,6 +26,7 @@
   - [Java Runtime: Platform Threads vs Project Loom Virtual Thread Failures](#java-runtime-platform-threads-vs-project-loom-virtual-thread-failures)
   - [.NET Runtime: ASP.NET Core Background Channel Dilemma & Solutions](#net-runtime-aspnet-core-background-channel-dilemma--solutions)
   - [Ruby Runtime: Puma Reactor Paths & Background Job Limits](#ruby-runtime-puma-reactor-paths--background-job-limits)
+  - [Frontend SPAs & Full-Stack SSR: Angular, React & Next.js](#frontend-spas--full-stack-ssr-angular-react--nextjs)
   - [Plain-Text & Legacy Monoliths: Non-JSON Key-Value Enrichment](#plain-text--legacy-monoliths-non-json-key-value-enrichment)
 - [4. Deep Dive: Per-Runtime Kernel Refresh Mechanics](#4-deep-dive-per-runtime-kernel-refresh-mechanics)
   - [Go Runtime: `runtime.casgstatus` Uprobes](#go-runtime-runtimecasgstatus-uprobes)
@@ -87,6 +88,8 @@ The matrix below provides an operational overview of how mainstream programming 
 | **Java (Virtual Threads / Loom)** | Fiber carrier multiplexing | ❌ **Not Supported** | Do not rely on OBI for Loom fibers; use in-process OTel SDK | None (Virtual carrier hopping unmapped) | **Extreme** (Severe trace cross-contamination) |
 | **.NET (C# / ASP.NET)** | Block-buffered (4 KB) | ⚠️ **Requires Code** | Serilog synchronous console sink or `AutoFlush = true` | Synchronous console appender required | **High** with default `AddConsole()` background channel |
 | **Ruby (Puma)** | Synchronous `syswrite()` | ✅ **Yes** | Ensure `STDOUT.sync = true` in multi-process Puma | `rb_ary_shift` uprobes | Low within web worker threads |
+| **Frontend SPAs (Client Browser)** | In-browser DevTools memory | 🌐 **Bridged via HTTP** | OpenTelemetry Web SDK / Angular Interceptor `traceparent` injection | Not in kernel; bridged at backend socket ingress | **Zero on server** (Client execution outside host kernel) |
+| **Frontend SSR (Angular / Node.js)** | Synchronous stdout pipe | ✅ **Yes** | Direct synchronous stdout; avoid decoupled async queues | Node.js `async_hooks` uprobes | Low (High if using deferred async queues) |
 | **Legacy Plain-Text (C/C++/Go)** | VFS write syscalls | ✅ **Yes** | None (Appends `trace_id=... span_id=...` key-value pairs) | Direct `sys_enter_write` kprobe | Minimal |
 
 ---
@@ -469,20 +472,128 @@ Configure NLog without queueing:
 #### Why It Works Out of the Box
 Puma servers dispatch HTTP requests from worker threads. OBI instruments `rb_ary_shift` (`Array#shift` in Ruby C internals) to synchronize `traces_ctx_v1` whenever a worker pulls a request from the reactor queue.
 
-#### ✅ Working Sample: Puma Web Server
-```ruby
-# config/puma.rb
-threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
-threads threads_count, threads_count
-port ENV.fetch("PORT") { 3000 }
-environment ENV.fetch("RAILS_ENV") { "production" }
+A complete runnable microservice demonstrating both Puma clustered mode and stdout synchronization is provided in [`demo-apps/ruby/`](../demo-apps/ruby/) (featuring [`app.rb`](../demo-apps/ruby/app.rb), [`puma.rb`](../demo-apps/ruby/puma.rb), and [`Dockerfile`](../demo-apps/ruby/Dockerfile)).
 
-# Ensure stdout stream is unbuffered
-$stdout.sync = true
+#### Clustered Mode vs Multi-Threaded Mode
+* **Clustered Mode (`workers > 0`)**: Puma forks multiple worker OS processes, each with its own independent Linux `PID`. When OBI monitors socket ingress, each worker process maintains an isolated trace context entry in the kernel BPF map (`traces_ctx_v1`). There is zero cross-process trace leakage.
+* **Threaded Mode (`threads min, max`)**: Within a single Puma worker, requests run concurrently on separate Ruby threads managed by the Ruby VM (MRI GVL / Global VM Lock). OBI relies on runtime context hooks (`rb_ary_shift`) to track active thread transitions.
+
+#### ⚠️ The Non-TTY Pipe Buffering Trap: `STDOUT.sync = true`
+Inside Linux containers (Docker/containerd), stdout is connected to a non-TTY UNIX pipe. By default, Ruby's standard I/O layer switches to **8 KiB block buffering**.
+
+##### ❌ Broken Sample: Default Block-Buffered Stdout
+```ruby
+# app.rb - BROKEN: STDOUT.sync is false by default on non-TTY pipes
+log_line = { timestamp: Time.now.iso8601, msg: "Order placed" }.to_json + "\n"
+# ❌ FAILS: Log write is buffered in user-space up to 8 KiB!
+$stdout.write(log_line)
+```
+Because the log line is buffered in memory, the actual `write(1, ...)` syscall is deferred until 8 KiB accumulates or the process terminates. By then, the HTTP request has finished, and eBPF loses trace context.
+
+##### ✅ Working Sample: Unbuffered Synchronous Stdout
+```ruby
+# app.rb / config/puma.rb - FIXED FOR OBI CORRELATION
+STDOUT.sync = true # Forces immediate write() syscall on every write
+
+log_line = { timestamp: Time.now.iso8601, msg: "Order placed" }.to_json + "\n"
+# ✅ Correlated: Triggers immediate write(1, ...) syscall within active request context!
+$stdout.write(log_line)
 ```
 
 #### ⚠️ When It Does NOT Work: Asynchronous Background Workers
 Asynchronous queue workers (Sidekiq, GoodJob, Resque) running in separate worker processes or threads do not share the HTTP thread's kernel context. Pass W3C `traceparent` headers inside the serialized job payload if asynchronous background jobs must correlate with originating HTTP requests.
+
+---
+
+### Frontend SPAs & Full-Stack SSR: Angular, React & Next.js
+
+#### The Architectural Boundary: Client Browser vs Linux Kernel Space
+A Single Page Application (SPA) built with frameworks like Angular, React, Vue, or Svelte presents a unique architectural reality for eBPF-based observability:
+
+1. **Client-Side Execution (Outside Host Kernel)**:
+   - When an Angular application runs in Google Chrome, Safari, or an iOS/Android WebView, all JavaScript execution occurs on the end user's device.
+   - Browser calls to `console.log("User clicked checkout")` write into the browser engine's internal buffer or DevTools console.
+   - **No Linux system calls occur on the backend host.** Because eBPF probes (`kprobe:sys_enter_write`, `sys_enter_recvfrom`) reside strictly in the Linux kernel (Ring 0) of the servers hosting backend microservices, they cannot inspect the client's browser memory or device I/O.
+
+2. **The Distributed Tracing Solution (W3C HTTP Bridge)**:
+   - To achieve complete end-to-end trace correlation from the frontend click to backend microservice logs, the client application injects the standard W3C HTTP header (`traceparent`) into outgoing API requests.
+   - When the HTTP packet arrives at a Linux backend container, **OBI intercepts socket ingress**, registers the incoming Trace ID in `traces_ctx_v1`, and attaches it to all subsequent `write()` syscalls emitted by backend microservices.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User Browser (Angular SPA)
+    participant OTel as Angular HTTP Interceptor
+    participant Wire as HTTP Wire (traceparent)
+    participant Kernel as Linux Kernel (OBI eBPF)
+    participant Backend as Backend Container (stdout)
+    participant Collector as OpenTelemetry Collector / Jaeger
+
+    User->>OTel: Click "Submit Order"
+    OTel->>OTel: Generate W3C traceparent (00-4bf92...-01)
+    OTel->>Wire: POST /api/orders (traceparent header)
+    Wire->>Kernel: Socket Ingress (sys_enter_recvfrom)
+    Kernel->>Kernel: Extract traceparent -> Save in traces_ctx_v1[pid_tgid]
+    Kernel->>Backend: Deliver request to application
+    Backend->>Backend: log.info("Processing order")
+    Backend->>Kernel: Syscall: write(fd=1, buf)
+    Kernel->>Kernel: Lookup traces_ctx_v1[pid_tgid]
+    Kernel->>Kernel: bpf_probe_write_user: enrich JSON with trace_id
+    Kernel->>Collector: Correlated Log Stream & Distributed Trace
+```
+
+#### ✅ Client SPA Sample: Angular 17+ HTTP Interceptor
+As implemented in [`demo-apps/frontend-angular/src/app/telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts), Angular applications can inject W3C Trace Context into all outgoing `HttpClient` requests:
+
+```typescript
+import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
+
+export const openTelemetryInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
+  if (req.headers.has('traceparent')) {
+    return next(req);
+  }
+
+  // Generate 16-byte TraceID and 8-byte SpanID (or use @opentelemetry/sdk-trace-web)
+  const traceId = generateHex(16);
+  const spanId = generateHex(8);
+  const traceparent = `00-${traceId}-${spanId}-01`;
+
+  const tracedReq = req.clone({
+    setHeaders: { traceparent }
+  });
+
+  return next(tracedReq);
+};
+```
+
+#### Server-Side Rendering (SSR) & Server Component Pre-Rendering
+When Angular 17+ SSR (`@angular/ssr`) or Next.js runs in full-stack mode:
+* Initial component rendering executes **server-side in Node.js on a Linux host**.
+* Server-side `console.log()` statements **DO execute `write(1, ...)` syscalls on the Linux kernel host**.
+* OBI intercepts these SSR logs directly during page pre-rendering, associating them with the incoming page navigation trace.
+
+#### ❌ Broken SSR Mode: Decoupled Asynchronous Logging
+If an Angular SSR server dispatches logs to a decoupled background timer or asynchronous worker thread:
+```typescript
+// BROKEN: Logging after the SSR HTTP response has finished
+setTimeout(() => {
+  process.stdout.write(JSON.stringify({ msg: "SSR render completed" }) + "\n");
+}, 100);
+```
+Because the `write()` syscall executes after the request socket has closed, eBPF thread tracking loses the active trace context.
+
+#### ✅ Working SSR Mode: Direct Synchronous Stdout
+```typescript
+// WORKING: Synchronous write on the active SSR request event-loop tick
+process.stdout.write(JSON.stringify({
+  timestamp: new Date().toISOString(),
+  level: "INFO",
+  msg: "Angular SSR: Pre-rendered page /checkout",
+  pid: process.pid
+}) + "\n");
+```
+
+A complete runnable demonstration featuring both the Angular SPA HTTP interceptor and Node.js SSR server is available in [`demo-apps/frontend-angular/`](../demo-apps/frontend-angular/) (with [`server.js`](../demo-apps/frontend-angular/server.js), [`Dockerfile`](../demo-apps/frontend-angular/Dockerfile), and [`README.md`](../demo-apps/frontend-angular/README.md)).
 
 ---
 
