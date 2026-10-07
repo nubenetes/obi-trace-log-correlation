@@ -1354,7 +1354,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 9. Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=n-Ha2MPAoi0](https://www.youtube.com/watch?v=n-Ha2MPAoi0)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/n-Ha2MPAoi0/edit](https://studio.youtube.com/video/n-Ha2MPAoi0/edit)
 - ⏱️ **Duration**: 6:56
 - 🏷️ **Domain**: Arquitectura Kernel, Buffers NUL y Despliegue en Producción
 - 📝 **Full Description**:
@@ -1381,7 +1380,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 10. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=PpcLms88DrI](https://www.youtube.com/watch?v=PpcLms88DrI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/PpcLms88DrI/edit](https://studio.youtube.com/video/PpcLms88DrI/edit)
 - ⏱️ **Duration**: 8:20
 - 🏷️ **Domain**: Frontend Browser Sandbox & Linux Kernel Socket Interception
 - 📝 **Full Description**:
@@ -1409,7 +1407,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 11. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eS7OHoRtfC8](https://www.youtube.com/watch?v=eS7OHoRtfC8)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eS7OHoRtfC8/edit](https://studio.youtube.com/video/eS7OHoRtfC8/edit)
 - ⏱️ **Duration**: 7:43
 - 🏷️ **Domain**: Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry
 - 📝 **Full Description**:
@@ -1436,7 +1433,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=aRfPpFjYiFM](https://www.youtube.com/watch?v=aRfPpFjYiFM)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/aRfPpFjYiFM/edit](https://studio.youtube.com/video/aRfPpFjYiFM/edit)
 - ⏱️ **Duration**: 7:55
 - 🏷️ **Domain**: Telemetría Full-Stack, SPAs, SSR y Kernel de Linux
 - 📝 **Full Description**:
@@ -1463,7 +1459,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=ulOScXmXit8](https://www.youtube.com/watch?v=ulOScXmXit8)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/ulOScXmXit8/edit](https://studio.youtube.com/video/ulOScXmXit8/edit)
 - ⏱️ **Duration**: 5:42
 - 🏷️ **Domain**: Conexión Navegador a Kernel en 6 Etapas Arquitectónicas
 - 📝 **Full Description**:
@@ -1491,7 +1486,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 14. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eHCTIUg4GmY](https://www.youtube.com/watch?v=eHCTIUg4GmY)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eHCTIUg4GmY/edit](https://studio.youtube.com/video/eHCTIUg4GmY/edit)
 - ⏱️ **Duration**: 2:52
 - 🏷️ **Domain**: Tres Pilares Full-Stack: Navegador, Puentes de Ingesta y SSR
 - 📝 **Full Description**:
@@ -1821,7 +1815,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/g8YGDj7FrEI](https://www.youtube.com/shorts/g8YGDj7FrEI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/g8YGDj7FrEI/edit](https://studio.youtube.com/video/g8YGDj7FrEI/edit)
 - ⏱️ **Duration**: 0:57
 - 🏷️ **Domain**: Sustitución de APM por Observabilidad Kernel
 - 📝 **Full Description**:
@@ -1842,7 +1835,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 16. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/fPy7vW2vRDQ](https://www.youtube.com/shorts/fPy7vW2vRDQ)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/fPy7vW2vRDQ/edit](https://studio.youtube.com/video/fPy7vW2vRDQ/edit)
 - ⏱️ **Duration**: 1:11
 - 🏷️ **Domain**: Client Browser Interception & W3C Trace Context
 - 📝 **Full Description**:
@@ -1866,7 +1858,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 17. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/QdUdLTSOyZE](https://www.youtube.com/shorts/QdUdLTSOyZE)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/QdUdLTSOyZE/edit](https://studio.youtube.com/video/QdUdLTSOyZE/edit)
 - ⏱️ **Duration**: 1:11
 - 🏷️ **Domain**: Conexión Frontend al Kernel y Trazabilidad W3C
 - 📝 **Full Description**:
@@ -2049,7 +2040,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 6. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=5XYbAeKnSLs](https://www.youtube.com/watch?v=5XYbAeKnSLs)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/5XYbAeKnSLs/edit](https://studio.youtube.com/video/5XYbAeKnSLs/edit)
 - ⏱️ **Duration**: 25:26
 - 🏷️ **Domain**: Triage de Guardia 2 AM, Syscalls y Filtros NUL
 - 📝 **Full Description**:
@@ -2077,7 +2067,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 7. Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=YKPsm3iLVmk](https://www.youtube.com/watch?v=YKPsm3iLVmk)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/YKPsm3iLVmk/edit](https://studio.youtube.com/video/YKPsm3iLVmk/edit)
 - ⏱️ **Duration**: 22:34
 - 🏷️ **Domain**: Conversational Blueprint: From Browser Sandbox to Kernel Stamping
 - 📝 **Full Description**:
@@ -2105,7 +2094,6 @@ Below are the direct links and full descriptions for each session.
 
 #### 8. Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=6Yvs6DSSUdI](https://www.youtube.com/watch?v=6Yvs6DSSUdI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/6Yvs6DSSUdI/edit](https://studio.youtube.com/video/6Yvs6DSSUdI/edit)
 - ⏱️ **Duration**: 24:04
 - 🏷️ **Domain**: Analogía Postal, Frontera del Navegador y Trazabilidad Full-Stack
 - 📝 **Full Description**:

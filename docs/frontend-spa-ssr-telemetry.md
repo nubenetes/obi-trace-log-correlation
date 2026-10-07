@@ -69,7 +69,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 1. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI (8:20)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=PpcLms88DrI](https://www.youtube.com/watch?v=PpcLms88DrI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/PpcLms88DrI/edit](https://studio.youtube.com/video/PpcLms88DrI/edit)
 - ⏱️ **Duration**: 8:20
 - 🏷️ **Domain**: Frontend Browser Sandbox & Linux Kernel Socket Interception
 - 📝 **Full Description**:
@@ -97,7 +96,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 2. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF (7:43)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eS7OHoRtfC8](https://www.youtube.com/watch?v=eS7OHoRtfC8)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eS7OHoRtfC8/edit](https://studio.youtube.com/video/eS7OHoRtfC8/edit)
 - ⏱️ **Duration**: 7:43
 - 🏷️ **Domain**: Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry
 - 📝 **Full Description**:
@@ -124,7 +122,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 3. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux (7:55)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=aRfPpFjYiFM](https://www.youtube.com/watch?v=aRfPpFjYiFM)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/aRfPpFjYiFM/edit](https://studio.youtube.com/video/aRfPpFjYiFM/edit)
 - ⏱️ **Duration**: 7:55
 - 🏷️ **Domain**: Telemetría Full-Stack, SPAs, SSR y Kernel de Linux
 - 📝 **Full Description**:
@@ -151,7 +148,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 4. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel (5:42)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=ulOScXmXit8](https://www.youtube.com/watch?v=ulOScXmXit8)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/ulOScXmXit8/edit](https://studio.youtube.com/video/ulOScXmXit8/edit)
 - ⏱️ **Duration**: 5:42
 - 🏷️ **Domain**: Conexión Navegador a Kernel en 6 Etapas Arquitectónicas
 - 📝 **Full Description**:
@@ -179,7 +175,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 5. Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas: Del Navegador al Kernel (12:50)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=kP_FrCcn_jE](https://www.youtube.com/watch?v=kP_FrCcn_jE)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/kP_FrCcn_jE/edit](https://studio.youtube.com/video/kP_FrCcn_jE/edit)
 - ⏱️ **Duration**: 12:50
 - 🏷️ **Domain**: Frontera del Navegador, Frontend W3C Context (traceparent) & Captura en sys_recvfrom
 - 📝 **Full Description**:
@@ -203,7 +198,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 6. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs (1:11)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/fPy7vW2vRDQ](https://www.youtube.com/shorts/fPy7vW2vRDQ)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/fPy7vW2vRDQ/edit](https://studio.youtube.com/video/fPy7vW2vRDQ/edit)
 - ⏱️ **Duration**: 1:11
 - 🏷️ **Domain**: Client Browser Interception & W3C Trace Context
 - 📝 **Full Description**:
@@ -227,7 +221,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 7. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux (1:11)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/QdUdLTSOyZE](https://www.youtube.com/shorts/QdUdLTSOyZE)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/QdUdLTSOyZE/edit](https://studio.youtube.com/video/QdUdLTSOyZE/edit)
 - ⏱️ **Duration**: 1:11
 - 🏷️ **Domain**: Conexión Frontend al Kernel y Trazabilidad W3C
 - 📝 **Full Description**:
@@ -251,7 +244,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 8. Technical Short: Why eBPF Trace-Log Correlation Loses Context: Async Buffers & SSR Caveats (1:24)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/b9oNWMJlUcc](https://www.youtube.com/shorts/b9oNWMJlUcc)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/b9oNWMJlUcc/edit](https://studio.youtube.com/video/b9oNWMJlUcc/edit)
 - ⏱️ **Duration**: 1:24
 - 🏷️ **Domain**: Node.js SSR Event-Loop Buffering, Async Streams & Context Desynchronization
 - 📝 **Full Description**:
@@ -273,7 +265,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 9. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF (2:52)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eHCTIUg4GmY](https://www.youtube.com/watch?v=eHCTIUg4GmY)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eHCTIUg4GmY/edit](https://studio.youtube.com/video/eHCTIUg4GmY/edit)
 - ⏱️ **Duration**: 2:52
 - 🏷️ **Domain**: Tres Pilares Full-Stack: Navegador, Puentes de Ingesta y SSR
 - 📝 **Full Description**:
@@ -298,7 +289,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 10. Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive (22:34)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=YKPsm3iLVmk](https://www.youtube.com/watch?v=YKPsm3iLVmk)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/YKPsm3iLVmk/edit](https://studio.youtube.com/video/YKPsm3iLVmk/edit)
 - ⏱️ **Duration**: 22:34
 - 🏷️ **Domain**: Conversational Blueprint: From Browser Sandbox to Kernel Stamping
 - 📝 **Full Description**:
@@ -326,7 +316,6 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 #### 11. Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI (24:04)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=6Yvs6DSSUdI](https://www.youtube.com/watch?v=6Yvs6DSSUdI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/6Yvs6DSSUdI/edit](https://studio.youtube.com/video/6Yvs6DSSUdI/edit)
 - ⏱️ **Duration**: 24:04
 - 🏷️ **Domain**: Analogía Postal, Frontera del Navegador y Trazabilidad Full-Stack
 - 📝 **Full Description**:
