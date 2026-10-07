@@ -100,6 +100,11 @@ flowchart TD
     Vector --> Loki
 ```
 
+[![Service Mesh Observability vs. Kernel eBPF: Architectural Deep Dive](images/service-mesh-vs-kernel-ebpf.png)](images/service-mesh-vs-kernel-ebpf.png)
+
+> [!TIP]
+> **Full-Resolution Master Asset**: The architectural diagram above is available in original full-resolution (2752x1536 PNG, lossless) at [`images/service-mesh-vs-kernel-ebpf.png`](images/service-mesh-vs-kernel-ebpf.png) and high-definition JPEG at [`images/service-mesh-vs-kernel-ebpf.jpg`](images/service-mesh-vs-kernel-ebpf.jpg).
+
 ---
 
 ## 3. The 2 AM Triage Dilemma: What Happens During an Outage?

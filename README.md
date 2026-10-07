@@ -50,6 +50,7 @@ When an incident occurs in production, operators often get paged with a failing 
 - **Polyglot & Multi-Format**: Enriches structured **JSON** logs as native attributes and formats **Plain-Text** logs with key-value annotations (`trace_id=... span_id=...`).
 - **Distributed Context Propagation**: Transparently propagates trace contexts across network hops (HTTP/gRPC) across disparate services.
 - **Full-Stack & Frontend Boundary Bridging**: Seamlessly links browser-based Single Page Applications (Angular, React, Vue) to backend kernel tracing via W3C `traceparent` HTTP injection, while intercepting Node.js Server-Side Rendering (SSR) logs at the host kernel level without client-side kernel access.
+- **Service Mesh Coexistence & Boundary Bridging**: Complements modern sidecarless service meshes (Istio Ambient Mesh, Cilium Service Mesh) by enriching container stdout/stderr VFS pipes that network proxies cannot see, while coexisting seamlessly with mesh eBPF programs on isolated BPF map paths.
 
 ### 🎯 Purpose of This Repository & Architectural Scope
 
@@ -85,6 +86,9 @@ Whether operating in on-premises data centers, strictly isolated air-gapped encl
 - **🌐 Modern Frontend SPAs & Server-Side Rendering (Angular, React, Vue, SvelteKit)**:
   - **The Browser-to-Kernel Bridge**: Addresses the fundamental perimeter boundary where client web browsers run outside the Linux host kernel. Demonstrates how frontend SPAs inject W3C `traceparent` headers to prime kernel socket ingress probes (`sys_enter_recvfrom`), correlating user clicks with backend microservice logs.
   - **Zero-Code SSR Interception**: Validates that Server-Side Rendering engines (Node.js Express / Next.js) executing on the Linux host have their page generation logs automatically intercepted and enriched at the kernel level (`sys_enter_write`).
+
+- **🕸️ Service Mesh Environments (Istio Ambient Mesh, Cilium Service Mesh, Linkerd)**:
+  - **Closing the Application Visibility Gap**: Service meshes excel at transport security (mTLS) and network access logs, but are completely blind to container standard output pipes. This blueprint bridges the network wire to the Linux VFS pipe, correlating proxy spans with internal application stack traces without architectural overlap or BPF map collisions.
 
 - **🛡️ De-Risking Production Adoption (The Hidden Gotchas)**:
   - **The Suppressed NUL Byte Filter**: Documents the low-level reality of `bpf_probe_write_user` zeroing out intercepted memory buffers, and provides ready-to-deploy drop filters for Vector, Fluent Bit, Promtail/Loki, and OTel Collector (`^[\x00\s]*$`).
@@ -196,6 +200,106 @@ This repository provides dedicated documentation, code patterns, and runnable im
   - Dockerfile and multi-stage container build configuration.
   - Kubernetes deployment manifests and Kustomize overlays.
 
+### 🕸️ Service Mesh vs. Kernel eBPF Observability Overview (Istio Ambient & OBI)
+
+A frequent architectural question in modern cloud-native architectures is: **"If our cluster already runs a Service Mesh (such as Istio Ambient Mesh or Cilium Service Mesh), do we still need OpenTelemetry eBPF (OBI) for trace-log correlation?"**
+
+The short answer is **yes**. While modern sidecarless service meshes provide robust transport security (mTLS) and L4/L7 network telemetry, they operate strictly on network sockets and are fundamentally blind to container runtime VFS pipes, making them unable to enrich internal application console output.
+
+#### 1. The Architectural Boundary: Network Proxies vs. Linux VFS Console Pipes
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                          APPLICATIONS & CONTAINERS                     │
+│  Container Application Process (Go, Python, Java, Node.js, .NET)       │
+│  - Calls logger.info("Processing order") -> Writes to stdout (fd 1)    │
+└───────────────────┬───────────────────────────────┬────────────────────┘
+                    │                               │
+         [Network Traffic Stream]        [VFS stdout/stderr Pipe]
+         (AF_INET / AF_INET6 Sockets)    (/proc/<pid>/fd/1 CRI FIFO)
+                    │                               │
+                    ▼                               ▼
+┌───────────────────────────────────────┐ ┌──────────────────────────────┐
+│       SERVICE MESH DATA PLANE         │ │   KERNEL eBPF OBSERVABILITY  │
+│  Istio Ambient (ztunnel & Waypoint)   │ │   OpenTelemetry OBI Engine   │
+│  ───────────────────────────────────  │ │  ──────────────────────────  │
+│  ✅ L4 mTLS (HBONE Geneve tunnels)    │ │  ✅ Intercepts sys_enter_write│
+│  ✅ L7 HTTP routing & retries         │ │  ✅ Zero-code log mutation   │
+│  ✅ Network access logs & proxy spans │ │  ✅ In-flight trace stamping │
+│  ❌ CANNOT inspect container pipes    │ │  ✅ Correlates stdout & trace│
+└───────────────────────────────────────┘ └──────────────────────────────┘
+```
+
+- **The Network Socket Domain (Service Mesh)**: Service meshes (such as Istio Ambient Mesh with Rust-based `ztunnel` and Envoy `waypoint` proxies) operate strictly on the network transport layer (`AF_INET`/`AF_INET6` TCP/UDP sockets). They observe traffic traversing the wire between pods, capturing network metrics, HTTP status codes, and network-level access logs.
+- **The Container VFS Pipe Boundary (eBPF OBI)**: Application log statements (`logger.info()`, `fmt.Println()`) do **not** traverse network sockets. Instead, the runtime emits writes to standard output (file descriptor 1) via the Linux Virtual File System (VFS) pipe subsystem (`pipe_write` / `ksys_write`). Because service mesh proxies never sit on container CRI pipes, **service meshes cannot read, correlate, or enrich application logs**.
+- **The Synergy**: Istio Ambient secures and traces the network wire, while OBI extracts incoming W3C trace contexts at kernel socket ingress and enriches in-flight application console logs on the host.
+
+<a id="service-mesh-vs-ebpf-infographic"></a>
+#### 2. 📊 Architecture Infographic: Service Mesh Observability vs. Kernel eBPF Deep Dive
+
+[![Service Mesh Observability vs. Kernel eBPF: Architectural Deep Dive](docs/images/service-mesh-vs-kernel-ebpf.png)](docs/images/service-mesh-vs-kernel-ebpf.png)
+
+> [!TIP]
+> **Lossless High-Resolution Asset**: The architecture diagram above is available in original full-resolution (2752x1536 PNG, lossless) at [`docs/images/service-mesh-vs-kernel-ebpf.png`](docs/images/service-mesh-vs-kernel-ebpf.png) and high-definition JPEG at [`docs/images/service-mesh-vs-kernel-ebpf.jpg`](docs/images/service-mesh-vs-kernel-ebpf.jpg).
+
+##### Detailed Breakdown of Core Architectural Dimensions & The Enterprise Synergy Blueprint:
+
+- **1. 🏗️ System Layer & Operational Scope (The 3D Architectural Stack)**:
+  - **User Space Applications**: Polyglot container microservices (Go, Python, Java, Node.js, .NET, Ruby) executing business transactions inside Linux namespaces.
+  - **Network Proxy Layer (Istio Ambient Mesh)**: Sidecarless node agents (`ztunnel` executing in Rust) and per-namespace or per-service account Envoy `waypoint` proxies intercepting L4/L7 network traffic.
+  - **Linux Kernel Layer (Kernel eBPF OBI)**: Kernel probes (`kprobes`, `uprobes`, tracepoints) attaching directly to `pipe_write`, `tty_write`, `sys_enter_recvfrom`, and `sys_enter_write` system calls at the process VFS boundary.
+  - **Physical / Virtual Hardware**: Physical/virtual network adapters (NICs) and block storage devices underlying the cluster.
+  - **Layer Separation Summary**: *Istio Ambient operates at network proxies; Kernel eBPF operates inside VFS pipes.*
+
+- **2. 🌐 Service Mesh (Istio Ambient): L4/L7 Traffic Interception & Operational Scope**:
+  - **L4/L7 Interception Capabilities**: Intercepts TCP streams and HTTP requests passing between pods via mutual TLS (HBONE encapsulation on port 15008) and Envoy waypoint proxies.
+  - **Network-Level Observability**: Generates L4 TCP connection bytes/duration metrics, L7 HTTP access logs (`client_ip`, `status_code`, `path`, `latency`), and proxy trace spans.
+  - **The Telemetry & Log Enrichment Blind Spot**: Service meshes **cannot** enrich application console output pipes. Istio Ambient captures external HTTP/gRPC boundaries, but has zero visibility into internal process memory, thread pools, or container stdout/stderr CRI FIFO pipes.
+
+- **3. ⚡ Kernel eBPF Observability (OBI): VFS Pipe & Syscall Hooking**:
+  - **VFS Pipe Hooking**: Attaches `kprobes` to `pipe_write` and `sys_enter_write` system calls to monitor and intercept all data written to file descriptor 1 (`/proc/<pid>/fd/1`).
+  - **Zero-Code In-Flight Log Enrichment**: Queries the active Linux thread ID (`tgid_pid`) against the kernel LRU hash map (`traces_ctx_v1`), extracting the current `trace_id` and `span_id`, and injecting them into structured JSON or plain-text lines in-flight without SDKs or application rebuilds.
+  - **The OBI NUL-Byte Buffer Substitution Mechanism**:
+    - **The Problem**: Once an application thread executes `write()`, the kernel cannot stop the syscall return without terminating the process or causing errors.
+    - **The In-Flight Mutation**: To prevent duplicate un-enriched log lines from reaching the container log file, OBI invokes the helper `bpf_probe_write_user` to overwrite the original user memory buffer with NUL bytes (`\x00`).
+    - **Enriched Re-Emission**: OBI copies the raw log payload and trace context to a high-speed BPF ring buffer (`log_events`), where the user daemon formats and re-emits the enriched line directly to container stdout.
+
+- **4. 📊 Architectural Dimension Comparison Matrix**:
+
+  | Architectural Dimension | Service Mesh (Istio Ambient) | Kernel eBPF Observability (OBI) |
+  | :--- | :--- | :--- |
+  | **Primary Layer** | Network Layer 4 (ztunnel) & Layer 7 (Waypoint Envoy) | Linux Kernel VFS & System Call Layer |
+  | **Interception Targets** | Network Sockets (`AF_INET`/`AF_INET6`), HTTP/gRPC Headers | stdout / stderr Container CRI Pipes (`write` / `writev`) |
+  | **Log Enrichment** | None (Proxy access logs only) | In-flight `trace_id` & `span_id` injection into app logs |
+  | **Context Propagation** | Injects/propagates W3C `traceparent` network headers | Maps socket ingress headers to OS thread IDs (`tgid_pid`) |
+  | **Kernel Prerequisites** | Standard Linux kernel support | Linux Kernel 6.0+ (or 5.5+ writev), BTF enabled |
+  | **Security Privileges** | Standard Kubernetes CNI network permissions | Requires `CAP_SYS_ADMIN` / `CAP_BPF` & `hostPID` access |
+  | **Pipeline Requirements** | Standard proxy metric collectors | Log shipper drop filters for suppressed NUL (`\x00`) lines |
+
+- **5. 🔄 The Enterprise Synergy Blueprint: A Unified 3-Step Lifecycle**:
+  Rather than competing, Istio Ambient and OBI serve complementary, unified roles:
+  - **Step 1: Network Ingress Propagation**:
+    - The client or upstream service initiates an HTTP request.
+    - Istio Ambient ztunnel or waypoint proxies handle secure mTLS, manage routing/retries, and propagate standard W3C `traceparent` headers across the wire between microservices.
+  - **Step 2: Kernel Ingress & Thread Mapping**:
+    - As the packet reaches the target pod's network interface, OBI's `sys_enter_recvfrom` socket probe intercepts the payload before application user space reads it.
+    - OBI extracts the incoming `trace_id` and records the association in the kernel hash map (`traces_ctx_v1`) keyed by the active OS thread ID (`tgid_pid`).
+  - **Step 3: VFS Pipe Enrichment**:
+    - The application thread handles business logic and writes a log statement to stdout (`write(1, ...)`).
+    - OBI's VFS hook intercepts the write, looks up the thread's active `trace_id`, zeroes out the raw buffer with `bpf_probe_write_user`, and re-emits the fully enriched log line (`{"trace_id":"...","msg":"..."}`).
+    - Downstream log forwarders (Vector, Fluent Bit, Promtail) drop NUL lines and forward perfectly correlated logs to Loki/Elasticsearch for instant SRE triage.
+
+- **6. ⚙️ Technical Prerequisites & Operational Constraints (for eBPF OBI)**:
+  - **Kernel & Privilege Requirements**: Requires Linux Kernel 6.0+ (for full single-buffer write support without truncation), `CAP_SYS_ADMIN` capabilities, and non-lockdown kernel (`/sys/kernel/security/lockdown` set to `none`).
+  - **Downstream Log Shipper NUL Filter**: Because `bpf_probe_write_user` zeroes out suppressed writes, downstream log forwarders (Collector, Vector, Fluent Bit, Promtail) must include a drop filter rule matching `^[\x00\s]*$`.
+  - **8 KiB Syscall Boundary Limit**: Linux eBPF verifier loop boundaries limit string capture to 8,192 bytes per write syscall. Log payloads exceeding 8 KiB are split across syscall chunks, enriching the prefix while the tail leaks un-enriched.
+
+#### 4. Service Mesh Architecture Documentation & Enterprise Synergy Blueprint
+
+For the exhaustive engineering deep dive, low-level eBPF hook mechanics comparison (`sockops` vs `sys_enter_recvfrom`), and production coexistence blueprints, refer to:
+
+- 🕸️ **[Service Mesh vs. Kernel eBPF Observability Guide (`docs/service-mesh-vs-ebpf-observability.md`)](docs/service-mesh-vs-ebpf-observability.md)**: Standalone 11-section architectural guide covering Istio Ambient ztunnel, Envoy waypoints, VFS pipe isolation, and the unified observability blueprint.
+
 ---
 
 ## 📑 Table of Contents
@@ -208,6 +312,11 @@ This repository provides dedicated documentation, code patterns, and runnable im
     - [2. 📊 Full-Stack Architecture Infographic: Client Browser to eBPF Kernel Tracing](#full-stack-telemetry-infographic)
     - [3. Server-Side Rendering (SSR) vs. Client-Side SPAs](#3-server-side-rendering-ssr-vs-client-side-spas)
     - [4. Frontend Architecture Documentation & Runnable Demos](#4-frontend-architecture-documentation--runnable-demos)
+  - [🕸️ Service Mesh vs. Kernel eBPF Observability Overview (Istio Ambient & OBI)](#-service-mesh-vs-kernel-ebpf-observability-overview-istio-ambient--obi)
+    - [1. The Architectural Boundary: Network Proxies vs. Linux VFS Console Pipes](#1-the-architectural-boundary-network-proxies-vs-linux-vfs-console-pipes)
+    - [2. 📊 Architecture Infographic: Service Mesh Observability vs. Kernel eBPF Deep Dive](#service-mesh-vs-ebpf-infographic)
+    - [3. Deep Dive Breakdown: Core Architectural Dimensions & The 3-Step Synergy Blueprint](#3-deep-dive-breakdown-core-architectural-dimensions--the-3-step-synergy-blueprint)
+    - [4. Service Mesh Architecture Documentation & Enterprise Synergy Blueprint](#4-service-mesh-architecture-documentation--enterprise-synergy-blueprint)
 - [📖 Official Reference & Theoretical Motivation](#-official-reference--theoretical-motivation)
   - [1. The Core Motivation: The 2 AM Incident Response Dilemma](#1-the-core-motivation-the-2-am-incident-response-dilemma)
   - [2. Dual-Perspective Technical Guidance](#2-dual-perspective-technical-guidance)
@@ -573,7 +682,9 @@ obi-trace-log-correlation/
     │   ├── zero-code-trace-log-correlation-infographic.png # Full-resolution (2752x1536) master PNG
     │   ├── zero-code-trace-log-correlation-infographic.jpg # High-definition (2752x1536) JPEG
     │   ├── full-stack-telemetry-via-ebpf.png # Full-resolution (2752x1536) full-stack & SSR master PNG
-    │   └── full-stack-telemetry-via-ebpf.jpg # High-definition (2752x1536) full-stack & SSR JPEG
+    │   ├── full-stack-telemetry-via-ebpf.jpg # High-definition (2752x1536) full-stack & SSR JPEG
+    │   ├── service-mesh-vs-kernel-ebpf.png # Full-resolution (2752x1536) Service Mesh vs eBPF master PNG
+    │   └── service-mesh-vs-kernel-ebpf.jpg # High-definition (2752x1536) Service Mesh vs eBPF JPEG
     ├── reference-blog-announcement.md # Verbatim blog text, junior primers & specialist deep dives
     ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
     ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
@@ -694,6 +805,8 @@ obi-trace-log-correlation/
       - 🖼️ [`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg) — *High-definition architectural infographic (2752x1536 JPG)*
       - 🖼️ [`full-stack-telemetry-via-ebpf.png`](docs/images/full-stack-telemetry-via-ebpf.png) — *Full-stack frontend SPA to kernel eBPF architectural infographic (2752x1536 PNG, lossless)*
       - 🖼️ [`full-stack-telemetry-via-ebpf.jpg`](docs/images/full-stack-telemetry-via-ebpf.jpg) — *High-definition full-stack frontend telemetry infographic (2752x1536 JPG)*
+      - 🖼️ [`service-mesh-vs-kernel-ebpf.png`](docs/images/service-mesh-vs-kernel-ebpf.png) — *Service Mesh (Istio Ambient) vs Kernel eBPF architectural infographic (2752x1536 PNG, lossless)*
+      - 🖼️ [`service-mesh-vs-kernel-ebpf.jpg`](docs/images/service-mesh-vs-kernel-ebpf.jpg) — *High-definition Service Mesh vs Kernel eBPF infographic (2752x1536 JPG)*
     - 📜 [`reference-blog-announcement.md`](docs/reference-blog-announcement.md) — *Verbatim OpenTelemetry announcement, junior primer, and kernel deep dive*
     - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
     - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
@@ -762,6 +875,7 @@ obi-trace-log-correlation/
 #### 📁 `docs/` — Technical Architecture & Operational Guides
 - **[`docs/images/zero-code-trace-log-correlation-infographic.png`](docs/images/zero-code-trace-log-correlation-infographic.png)**: Full-resolution master architectural infographic (2752x1536 lossless PNG) illustrating the 5 core pillars: the inefficient manual log search problem, kernel-level eBPF context injection, before/after log transformation, compatibility checklist, and production rollout strategy. Also available in high-definition format as **[`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg)**.
 - **[`docs/images/full-stack-telemetry-via-ebpf.png`](docs/images/full-stack-telemetry-via-ebpf.png)**: Full-resolution architectural infographic (2752x1536 lossless PNG) mapping the complete full-stack telemetry journey from client browser SPAs (Angular, React, Vue) across the network perimeter to Linux host ingress socket interception (`sys_enter_recvfrom`) and in-flight kernel stdout log enrichment (`sys_enter_write`). Also available in high-definition format as **[`full-stack-telemetry-via-ebpf.jpg`](docs/images/full-stack-telemetry-via-ebpf.jpg)**.
+- **[`docs/images/service-mesh-vs-kernel-ebpf.png`](docs/images/service-mesh-vs-kernel-ebpf.png)**: Full-resolution architectural infographic (2752x1536 lossless PNG) mapping the architectural distinction between Service Mesh L4/L7 traffic interception (Istio Ambient ztunnel and waypoint proxies) and Linux Kernel eBPF VFS stdout pipe interception (OBI `bpf_probe_write_user` substitution). Also available in high-definition format as **[`service-mesh-vs-kernel-ebpf.jpg`](docs/images/service-mesh-vs-kernel-ebpf.jpg)**.
 - **[`docs/reference-blog-announcement.md`](docs/reference-blog-announcement.md)**: Verbatim text of the official OpenTelemetry announcement (*Zero-code trace-log correlation with OBI*), accompanied by multi-tiered explanatory breakdowns for juniors (ELI5) and advanced kernel specialists (VFS mechanics, BPF memory mutation, and context staleness).
 - **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
 - **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.
