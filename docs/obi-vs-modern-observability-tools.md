@@ -20,15 +20,22 @@
   - [Dynatrace (OneAgent + Grail + Davis AI)](#dynatrace-oneagent--grail--davis-ai)
   - [New Relic (Pixie eBPF + OTel Translation)](#new-relic-pixie-ebpf--otel-translation)
 - [3. Comprehensive Architecture Topology & Data Planes](#3-comprehensive-architecture-topology--data-planes)
-- [4. The Critical Technical Differentiator: In-Flight VFS Mutation vs. Post-Hoc Regex Correlation](#4-the-critical-technical-differentiator-in-flight-vfs-mutation-vs-post-hoc-regex-correlation)
-- [5. Technical Feature Comparison Matrix (15 Dimensions)](#5-technical-feature-comparison-matrix-15-dimensions)
-- [6. Financial Economics & Total Cost of Ownership (TCO)](#6-financial-economics--total-cost-of-ownership-tco)
-- [7. Performance, Overhead & Memory Safety Benchmarks](#7-performance-overhead--memory-safety-benchmarks)
-- [8. The 2 AM Outage Triage Showdown (End-to-End Walkthrough)](#8-the-2-am-outage-triage-showdown-end-to-end-walkthrough)
-- [9. Enterprise Coexistence & Hybrid Synergy Patterns](#9-enterprise-coexistence--hybrid-synergy-patterns)
-- [10. Enterprise Migration Roadmap (From Legacy APM to Open eBPF)](#10-enterprise-migration-roadmap-from-legacy-apm-to-open-ebpf)
-- [11. Strategic Architectural Conclusions & Decision Framework](#11-strategic-architectural-conclusions--decision-framework)
-- [12. Categorized Public References & Standards Catalog](#12-categorized-public-references--standards-catalog)
+- [4. Master Infographic: Observability Architecture & Cost Comparison](#4-master-infographic-observability-architecture--cost-comparison)
+  - [Visual Architecture & Economics Map](#visual-architecture--economics-map)
+  - [Junior Engineer & Developer Breakdown (Plain English)](#junior-engineer--developer-breakdown-plain-english)
+  - [Staff Platform & Systems Engineer Breakdown (Kernel & Architecture)](#staff-platform--systems-engineer-breakdown-kernel--architecture)
+  - [Financial Economics & TCO Analysis (>95% Cost Reduction)](#financial-economics--tco-analysis-95-cost-reduction)
+  - [Comparative Analysis: The 3 Models vs. OBI 4th Paradigm](#comparative-analysis-the-3-models-vs-obi-4th-paradigm)
+  - [Strategic Conclusions & Executive Recommendations](#strategic-conclusions--executive-recommendations)
+- [5. The Critical Technical Differentiator: In-Flight VFS Mutation vs. Post-Hoc Regex Correlation](#5-the-critical-technical-differentiator-in-flight-vfs-mutation-vs-post-hoc-regex-correlation)
+- [6. Technical Feature Comparison Matrix (15 Dimensions)](#6-technical-feature-comparison-matrix-15-dimensions)
+- [7. Financial Economics & Total Cost of Ownership (TCO)](#7-financial-economics--total-cost-of-ownership-tco)
+- [8. Performance, Overhead & Memory Safety Benchmarks](#8-performance-overhead--memory-safety-benchmarks)
+- [9. The 2 AM Outage Triage Showdown (End-to-End Walkthrough)](#9-the-2-am-outage-triage-showdown-end-to-end-walkthrough)
+- [10. Enterprise Coexistence & Hybrid Synergy Patterns](#10-enterprise-coexistence--hybrid-synergy-patterns)
+- [11. Enterprise Migration Roadmap (From Legacy APM to Open eBPF)](#11-enterprise-migration-roadmap-from-legacy-apm-to-open-ebpf)
+- [12. Strategic Architectural Conclusions & Decision Framework](#12-strategic-architectural-conclusions--decision-framework)
+- [13. Categorized Public References & Standards Catalog](#13-categorized-public-references--standards-catalog)
 - [Complete Guide Catalog](#-complete-guide-catalog)
 
 ---
@@ -158,7 +165,146 @@ flowchart TD
 
 ---
 
-## 4. The Critical Technical Differentiator: In-Flight VFS Mutation vs. Post-Hoc Regex Correlation
+## 4. Master Infographic: Observability Architecture & Cost Comparison
+
+To provide an executive and architectural synthesis of the comparative analysis, the infographic below illustrates the three observability architectural models, financial economics across a 500-node cluster, system overhead benchmarks, and the 2 AM outage triage showdown:
+
+[![OpenTelemetry eBPF (OBI) vs. Modern Observability Platforms: Architectural & Cost Comparison](images/observability-architecture-and-cost-comparison.png)](images/observability-architecture-and-cost-comparison.png)
+> 📥 **Full-Resolution Master Infographic**: [Download Lossless PNG (2752×1536, 5.0 MB)](images/observability-architecture-and-cost-comparison.png) &nbsp;|&nbsp; [Download High-Definition JPEG (1.1 MB)](images/observability-architecture-and-cost-comparison.jpg)
+
+---
+
+### Visual Architecture & Economics Map
+
+The master infographic synthesizes five fundamental pillars of modern cloud-native observability:
+1. **The Evolution of Observability (Three Models)**: From invasive in-process bytecode mutation (Model A) to network-only socket eBPF (Model B), culminating in kernel-level VFS in-flight log enrichment (Model C — The 4th Paradigm).
+2. **Financial Economics & Total Cost of Ownership (TCO)**: Highlighting the dramatic transition from commercial SaaS licensing ($540,000–$900,000/year for 500 nodes) to open-source OBI paired with object storage (~$18,000/year), delivering **over 95% annual cost reduction**.
+3. **Feature & Capability Matrix**: Side-by-side benchmark across OBI, Datadog (APM + USM), Grafana OSS (LGTM + Beyla), Dynatrace OneAgent, and New Relic (APM + Pixie).
+4. **System Resource Overhead & Execution Latency**: Real-world benchmarks measuring <0.05% P99 latency overhead, 0.8%–1.4% CPU consumption at 10,000 RPS, and ~80 MB RAM node footprint.
+5. **Incident Triage Showdown (2 AM Outage Walkthrough)**: Contrasting the 35+ minute blind grep ordeal under network-only tools against OBI's 45-second Mean Time to Resolution (MTTR).
+
+---
+
+### Junior Engineer & Developer Breakdown (Plain English)
+
+For application developers, junior SREs, and software engineers, navigating observability choices often feels overwhelming. Here is what this infographic means for day-to-day development and incident response:
+
+- **The Problem You Face Every Day**: 
+  - You write code in Go, Python, Node.js, or Java. When a user experiences an error, your service logs an error message using `logger.error("Database connection timeout")`.
+  - Meanwhile, distributed tracing tools track the HTTP request journey across multiple services.
+  - In traditional setups, **these two worlds never talk to each other**. Your traces know an error happened on `/checkout`, but your logs are just raw text on the console. You have to copy the timestamp, open the logging tool, and search through thousands of logs hoping to find the matching failure.
+
+- **Model A: In-Process Bytecode Agents (Why Your App Slows Down or Crashes)**:
+  - Commercial tools like Datadog APM and Dynatrace inject heavy libraries directly into your application process memory (e.g. JVM JavaAgents or CLR profilers).
+  - They rewrite your code in memory as it runs. This adds CPU overhead, triggers unexpected Garbage Collection (GC) pauses, and in worst-case scenarios, can cause application memory leaks or crashes during runtime upgrades.
+  - Furthermore, compiled binaries like native Go cannot easily be rewritten at runtime without recompiling with special debugging symbols.
+
+- **Model B: Network-Only eBPF (The Log Blind Spot)**:
+  - Newer tools like Grafana Beyla or Datadog USM use Linux kernel eBPF to monitor network traffic without touching your code.
+  - While this gives you instant HTTP request duration and error rate charts, **it has a massive blind spot: it cannot read your application logs**.
+  - Logs are written to standard output (`stdout`/`stderr`), which goes to Linux pipes, not network cards. Network eBPF tools are completely deaf to console logging.
+
+- **Model C: OpenTelemetry OBI (The Zero-Code 4th Paradigm)**:
+  - OBI hooks into the Linux kernel and watches **both** the network socket (where the incoming W3C `traceparent` header arrives) and the console pipe (where your `fmt.Println` or `logger.info` writes).
+  - When your code writes to standard output, OBI automatically injects `trace_id` and `span_id` directly into the log line in the kernel before it ever reaches disk or your terminal.
+  - **Zero code changes, zero SDK dependencies, zero rebuilds, zero deployments.**
+
+- **The 2 AM Outage Walkthrough (Why Your Weekend Is Saved)**:
+  - **Without OBI (Path A)**: You get paged at 2:04 AM for a payment outage. The tracing tool shows a red 500 error box. You search logs for `checkout-service` around 02:04:12 UTC and receive **15,000 un-correlated log lines across 12 pods**. You spend 35 minutes grepping timestamps, adjusting for clock drift, and guessing.
+  - **With OBI (Path B)**: You open the failing trace in Grafana or Jaeger and click the button **"Logs for this Trace"**. Because OBI stamped `trace_id=4bf92f3577b3...` directly onto the log stream, the log store instantly returns the **exact single log line**: `"Database connection timeout pool exhausted"`. You find the root cause in **45 seconds** and go back to sleep.
+
+---
+
+### Staff Platform & Systems Engineer Breakdown (Kernel & Architecture)
+
+For Staff SREs, Systems Architects, and Linux Kernel Specialists, the infographic illustrates critical architectural boundaries between kernel subsystems, memory safety guarantees, and resource allocation:
+
+- **The Linux Kernel Execution Boundary (Sockets vs. VFS Pipes)**:
+  - Network-only eBPF engines attach to socket layer hooks (`AF_INET`/`AF_INET6`, `sys_enter_recvfrom`, `tcp_recvmsg`, `sock_ops`, and Traffic Control `tc`). They operate exclusively on socket buffer structures (`struct sk_buff`).
+  - Application console logs are written via file descriptor 1 (`stdout`) or file descriptor 2 (`stderr`), dispatching through Virtual File System (VFS) syscalls (`sys_enter_write`, `sys_enter_writev`, `pipe_write`, `fs/pipe.c`).
+  - Linux pipe buffers (`struct pipe_inode_info`) exist in an entirely separate memory subsystem that never touches `sk_buff`.
+  - **Architectural Fact**: An eBPF program attached exclusively to socket descriptors is mathematically incapable of intercepting or enriching VFS console pipe buffers. OBI uniquely attaches to both `sys_enter_recvfrom` and `pipe_write` / `sys_enter_write`.
+
+- **Context Bridging via BPF Hash Maps (`traces_ctx_v1`)**:
+  - OBI captures incoming W3C `traceparent` headers at socket ingress, serializes the 128-bit `trace_id` and 64-bit `span_id` into an `obi_ctx_info_t` struct, and stores it in a high-performance BPF LRU hash map (`traces_ctx_v1`) keyed by thread identifier `tgid_pid` (`bpf_get_current_pid_tgid()`).
+  - When the thread issues a `write()` syscall on an fd matching a container console pipe (`S_ISFIFO`), OBI looks up the thread ID in `traces_ctx_v1` in ~20 nanoseconds.
+
+- **In-Flight Buffer Mutation Safety (`bpf_probe_write_user`)**:
+  - To prevent duplicated log emissions, OBI invokes the kernel helper `bpf_probe_write_user` to zero out the raw user buffer with NUL bytes (`\x00`).
+  - Concurrently, the enriched JSON or plain-text record (with trace context appended) is enqueued into a lockless BPF ringbuffer (`BPF_MAP_TYPE_RINGBUF`).
+  - The user-space OBI reader daemon drains the ringbuffer and writes the enriched record directly to the container FIFO pipe.
+  - Downstream log shippers (Vector, Fluent Bit, Promtail, OTel Collector `filelog` receiver) discard the suppressed NUL placeholder lines via a high-speed drop filter regex (`^[\x00\s]*$`).
+
+- **Mathematical Memory Safety vs. Bytecode Crash Risks**:
+  - **Linux BPF Verifier Safety**: OBI eBPF bytecode is validated at load time by the kernel verifier. The verifier proves program termination, bounds memory accesses, rejects unaligned pointers, and enforces strict register constraints. It is mathematically impossible for an OBI eBPF probe to crash the Linux kernel or corrupt process heap memory.
+  - **Bytecode APM Fragility**: In-process runtime agents (Dynatrace OneAgent, Datadog APM ByteBuddy) manipulate JVM/CLR class definitions dynamically in user-space process memory. They risk ClassLoader leaks, permanent heap fragmentation, non-deterministic GC pause spikes, and segmentation faults during glibc or runtime minor version upgrades.
+
+- **Microsecond Latency & System Overhead Profiling**:
+  - **P99 Latency Impact (< 0.05%)**:
+    - Kernel socket header inspection: $\sim 55\text{--}80\,\text{ns}$
+    - BPF map lookup (`bpf_map_lookup_elem`): $\sim 20\,\text{ns}$
+    - Buffer zeroing (`bpf_probe_write_user`): $\sim 45\text{--}110\,\text{ns}$
+    - Total per-request overhead is measured in hundreds of nanoseconds, resulting in an imperceptible $< 0.05\%$ P99 latency impact on high-throughput microservices.
+  - **CPU Utilization (0.8%–1.4% at 10,000 RPS)**:
+    - OBI executes within the existing syscall context of the application thread, avoiding context switches.
+    - At 10,000 requests per second, OBI consumes only $0.8\%\text{--}1.4\%$ CPU, compared to $4.5\%\text{--}8.0\%$ for Datadog Agent + APM and $3.5\%\text{--}6.5\%$ for Dynatrace OneAgent.
+  - **Node Memory Footprint (~80 MB RAM)**:
+    - OBI operates as a single lightweight DaemonSet consuming $\sim 60\text{--}120\,\text{MB}$ RAM per node, drastically lower than traditional enterprise monitoring agents requiring $350\,\text{MB}$ to $1.2\,\text{GB}$ RAM per host.
+
+---
+
+### Financial Economics & TCO Analysis (>95% Cost Reduction)
+
+The financial model featured in the infographic breaks down the real-world operational expenditure for a standard enterprise Kubernetes footprint of **500 nodes** running approximately 10,000 microservice pods:
+
+- **The Commercial SaaS Licensing Breakdown (Datadog / Dynatrace)**:
+  - **Host / Node Agent Licenses**: $500\text{ nodes} \times \$30\text{--}\$40/\text{host}/\text{month} = \mathbf{\$180,000\text{--}\$240,000/\text{year}}$
+  - **APM Tracing & Continuous Profiling**: $500\text{ nodes} \times \$35\text{--}\$50/\text{host}/\text{month} = \mathbf{\$210,000\text{--}\$300,000/\text{year}}$
+  - **Log Ingestion & Indexing Penalties**: Charging $\$0.10/\text{GB}$ ingestion plus $\$1.06\text{--}\$2.50$ per million indexed log events (with 15-day or 30-day retention multipliers) on 1.5 TB/day = $\mathbf{\$150,000\text{--}\$350,000/\text{year}}$
+  - **Total Annual Commercial SaaS Bill**: $\mathbf{\$540,000\text{--}\$900,000/\text{year}}$ (frequently exceeding $1,000,000/year with custom metrics and egress surcharges).
+
+- **The OpenTelemetry OBI + Open Storage Model**:
+  - **Software & Agent Licenses**: $\mathbf{\$0}$ (Open-Source Apache 2.0).
+  - **Storage & Compute Infrastructure**: 1.5 TB/day compressed into low-cost object storage (Amazon S3 Standard / Glacier Instant Retrieval, Google Cloud Storage, or Azure Blob) at $\$0.023/\text{GB}/\text{month}$ + compute for Grafana Loki/Tempo query nodes = $\mathbf{\sim\$18,000/\text{year}}$.
+  - **Total Annual OBI + Open Stack Cost**: $\mathbf{\sim\$18,000/\text{year}}$.
+
+- **Financial Conclusion**:
+  - Transitioning from commercial SaaS APM to OBI yields **over 95% annual cost reduction** ($\sim\$522,000\text{--}\$882,000$ in direct annual cash savings for a 500-node cluster).
+  - Eliminates the artificial "log indexing penalty", freeing developers to log extensive debug telemetry without fear of monthly invoice penalties.
+
+---
+
+### Comparative Analysis: The 3 Models vs. OBI 4th Paradigm
+
+| Evaluation Criterion | Model A: In-Process Bytecode (Datadog APM, Dynatrace) | Model B: Network-Only eBPF (Grafana Beyla, Datadog USM) | Model C: OpenTelemetry OBI (Kernel VFS Engine) |
+| :--- | :--- | :--- | :--- |
+| **Interception Point** | In-process application heap / ClassLoader | Linux kernel network sockets (`AF_INET`) | Linux kernel sockets **AND** VFS stdout pipes (`fs/pipe.c`) |
+| **Stdout/Stderr Console Pipe Visibility** | Dependent on runtime logging framework hooks | **Zero Visibility** (Blind to application stdout/stderr) | **100% Native VFS Interception** (`pipe_write` on fd 1/2) |
+| **Code Changes & Rebuilds** | Requires APM dependencies or runtime injection flags | **Zero Code Changes** (Network metrics only) | **Zero Code Changes** (Full metrics, traces & logs) |
+| **Uninstrumented Go Binaries** | Fails or requires compilation with symbol tables | Extracts HTTP metrics & network spans | **Full Trace-Log Correlation** (Interprets stdout writes) |
+| **Runtime Crash & Memory Leak Risk** | High (Bytecode manipulation, JVM segfaults, GC spikes) | Zero (Kernel Verifier Protected) | **Zero (Kernel Verifier Protected)** |
+| **Node Resource Overhead** | $4.5\%\text{--}8.0\%$ CPU, $350\,\text{MB}\text{--}1.2\,\text{GB}$ RAM | $< 2.0\%$ CPU, $\sim 80\,\text{MB}$ RAM | **$0.8\%\text{--}1.4\%$ CPU, $\sim 80\,\text{MB}$ RAM** |
+| **Annual TCO (500 Nodes)** | $\$540,000\text{--}\$900,000/\text{year}$ | SaaS ingestion dependent | **$\sim\$18,000/\text{year}$ (>95% savings)** |
+| **Vendor Lock-in** | Severe proprietary lock-in | Open standards (OTel) or vendor lock-in | **Zero Lock-in (100% CNCF OTLP Native)** |
+
+---
+
+### Strategic Conclusions & Executive Recommendations
+
+1. **VFS Pipe Interception Is the Decisive Differentiator**:
+   - The primary limitation of contemporary eBPF observability tools (Grafana Beyla, Datadog USM, Cilium) is their exclusive focus on network socket descriptors.
+   - OBI's ability to bridge socket ingress with VFS console writes is the **only architecture that unlocks 100% zero-code trace-log correlation** without touching application runtimes.
+2. **Eliminating the APM Cost Surcharge**:
+   - Proprietary APM licensing models that charge $15–$75 per host/month while marking up log ingestion by orders of magnitude are no longer economically defensible in cloud-native environments.
+   - Operating an open-source OBI DaemonSet transmitting standardized OTLP data to low-cost cloud object storage reclaims enterprise data sovereignty and delivers >95% savings.
+3. **The Recommended Enterprise Observability Stack**:
+   - **Data Plane (Kernel & Nodes)**: OpenTelemetry OBI DaemonSet for zero-code kernel tracing and log enrichment, paired with lightweight node log shippers (Vector or Grafana Alloy) filtering NUL placeholders (`^[\x00\s]*$`).
+   - **Collection Tier**: OpenTelemetry Collector Contrib deploying cluster-wide routing, tail-based sampling, and OTLP pipelines.
+   - **Storage & Analytics**: Grafana LGTM Stack (Loki for logs, Tempo for traces, Mimir for metrics, Grafana for visualization) or ClickHouse-backed storage engines.
+
+---
+
+## 5. The Critical Technical Differentiator: In-Flight VFS Mutation vs. Post-Hoc Regex Correlation
 
 A common misconception among platform architects is assuming that **Datadog USM**, **Grafana Beyla**, or **Cilium** provide the same trace-log correlation capabilities as OBI because they all use eBPF. 
 
@@ -200,7 +346,7 @@ OBI bridges the socket domain and the VFS domain within the Linux kernel:
 
 ---
 
-## 5. Technical Feature Comparison Matrix (15 Dimensions)
+## 6. Technical Feature Comparison Matrix (15 Dimensions)
 
 | Architectural Dimension | OpenTelemetry eBPF (OBI) | Datadog (APM + USM) | Grafana OSS (LGTM + Beyla) | Grafana Cloud | Dynatrace OneAgent | New Relic (APM + Pixie) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -222,7 +368,7 @@ OBI bridges the socket domain and the VFS domain within the Linux kernel:
 
 ---
 
-## 6. Financial Economics & Total Cost of Ownership (TCO)
+## 7. Financial Economics & Total Cost of Ownership (TCO)
 
 One of the primary drivers for evaluating OpenTelemetry eBPF (OBI) is the runaway financial cost of commercial enterprise APM solutions.
 
@@ -257,7 +403,7 @@ Commercial observability vendors monetize infrastructure through multi-vector li
 
 ---
 
-## 7. Performance, Overhead & Memory Safety Benchmarks
+## 8. Performance, Overhead & Memory Safety Benchmarks
 
 ### 1. In-Kernel Execution Safety (eBPF vs. Bytecode Injection)
 - **The Bytecode Risk**: Traditional agents (Dynatrace OneAgent, Datadog APM) inject libraries into the application runtime. If a bytecode agent suffers a thread deadlock, unhandled exception, or memory leak, **it brings down the host application process**.
@@ -284,7 +430,7 @@ Interception via eBPF `kprobes` adds a negligible execution cost:
 
 ---
 
-## 8. The 2 AM Outage Triage Showdown (End-to-End Walkthrough)
+## 9. The 2 AM Outage Triage Showdown (End-to-End Walkthrough)
 
 To evaluate how these architectures perform under high-stress operational conditions, consider a real-world incident: an uninstrumented polyglot microservice (Go + Python) experiences an intermittent payment processing failure generating HTTP 500 errors.
 
@@ -325,7 +471,7 @@ sequenceDiagram
 
 ---
 
-## 9. Enterprise Coexistence & Hybrid Synergy Patterns
+## 10. Enterprise Coexistence & Hybrid Synergy Patterns
 
 Adopting OBI does not require a disruptive rip-and-replace of existing enterprise observability investments. OBI operates as a complementary data plane that enhances commercial and open-source platforms alike.
 
@@ -350,7 +496,7 @@ Adopting OBI does not require a disruptive rip-and-replace of existing enterpris
 
 ---
 
-## 10. Enterprise Migration Roadmap (From Legacy APM to Open eBPF)
+## 11. Enterprise Migration Roadmap (From Legacy APM to Open eBPF)
 
 Enterprises migrating from high-cost proprietary APM vendors (Datadog, Dynatrace, New Relic) should follow a structured, low-risk 4-phase rollout:
 
@@ -372,7 +518,7 @@ Enterprises migrating from high-cost proprietary APM vendors (Datadog, Dynatrace
 
 ---
 
-## 11. Strategic Architectural Conclusions & Decision Framework
+## 12. Strategic Architectural Conclusions & Decision Framework
 
 ### Architectural Decision Tree
 
@@ -401,7 +547,7 @@ flowchart TD
 
 ---
 
-## 12. Categorized Public References & Standards Catalog
+## 13. Categorized Public References & Standards Catalog
 
 ### 1. OpenTelemetry & eBPF Standards
 - [OpenTelemetry eBPF Instrumentation (OBI) Repository](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation) — Official upstream repository under the OpenTelemetry project.
