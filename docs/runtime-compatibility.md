@@ -520,6 +520,58 @@ A Single Page Application (SPA) built with frameworks like Angular, React, Vue, 
    - When the HTTP packet arrives at a Linux backend container, **OBI intercepts socket ingress**, registers the incoming Trace ID in `traces_ctx_v1`, and attaches it to all subsequent `write()` syscalls emitted by backend microservices.
 
 ```mermaid
+flowchart TD
+    subgraph ClientDevice ["Client Device (Browser / Mobile / Desktop OS)"]
+        subgraph AngularSPA ["Angular 17+ SPA / React / Vue (Client-Side)"]
+            UI["User Click: 'Submit Order'"]
+            OTelWeb["OpenTelemetry Web SDK / HTTP Interceptor"]
+            ConsoleLog["console.log('Order submitted')\n(Browser DevTools Memory)"]
+            Fetch["fetch('/api/orders')\n+ W3C traceparent header"]
+            
+            UI --> ConsoleLog
+            UI --> OTelWeb
+            OTelWeb --> Fetch
+        end
+    end
+
+    subgraph Network ["HTTP / TLS Wire"]
+        Fetch -->|HTTP Request with traceparent: 00-4bf92...| Gateway
+    end
+
+    subgraph LinuxHost ["Kubernetes Node / Linux Host (eBPF Kernel Layer)"]
+        Gateway["API Gateway / Backend Service (Go, Node, Java, .NET)"]
+        
+        subgraph KernelSpace ["Linux Kernel (Ring 0)"]
+            SockProbe["kprobe:sys_enter_recvfrom\n(Extracts W3C traceparent)"]
+            BPFMap[("BPF Map: traces_ctx_v1\n(Key: PID/TID -> TraceID)")]
+            SysWrite["kprobe:sys_enter_write(fd=1)\n(Intercepts stdout log buffer)"]
+            PayloadEnrich["Mid-Flight Log Enrichment\n(Injects trace_id & span_id)"]
+        end
+        
+        Gateway -->|Socket Read| SockProbe
+        SockProbe -->|Store TraceID| BPFMap
+        Gateway -->|log.info('Processing order')| SysWrite
+        SysWrite -->|Lookup TraceID| BPFMap
+        SysWrite --> PayloadEnrich
+        PayloadEnrich --> DaemonLog["Containerd / stdout log stream"]
+    end
+
+    classDef client fill:#f8f9fa,stroke:#dc3545,stroke-width:2px;
+    classDef kernel fill:#1a1a2e,stroke:#00adb5,stroke-width:2px,color:#fff;
+    classDef kobj fill:#162447,stroke:#e43f5a,stroke-width:1px,color:#fff;
+    classDef bpfmap fill:#1f4068,stroke:#e43f5a,stroke-width:2px,color:#fff;
+    classDef net fill:#eef2f7,stroke:#6c757d,stroke-width:1px;
+
+    class ClientDevice,AngularSPA,UI,ConsoleLog client;
+    class KernelSpace kernel;
+    class SockProbe,SysWrite,PayloadEnrich kobj;
+    class BPFMap bpfmap;
+    class Network net;
+```
+
+#### End-to-End Distributed Trace Sequence (Browser Click to Kernel Log Enrichment)
+
+```mermaid
 sequenceDiagram
     autonumber
     actor User as User Browser (Angular SPA)
@@ -542,8 +594,19 @@ sequenceDiagram
     Kernel->>Collector: Correlated Log Stream & Distributed Trace
 ```
 
+#### Frontend Solutions Comparison Matrix
+
+| Frontend Solution | Client Execution Location | Server SSR Engine & Runtime | eBPF Kernel Syscall Visibility | Recommended Client Trace Injection | SSR Server-Side Log Interception |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Angular 17+ (SPA)** | Browser (V8 / JSC) | None (Static Nginx / S3) | ❌ None (Client OS) | `HttpInterceptorFn` ([`telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts)) | N/A |
+| **Angular 17+ (SSR)** | Browser (V8 / JSC) | Node.js 20 (`@angular/ssr` / Express) | ✅ Full on Server SSR | `HttpInterceptorFn` on client; direct stdout on server | ✅ OBI intercepts Node.js `process.stdout.write()` |
+| **React / Next.js 14+** | Browser (Client Components) | Node.js 20 (Server Components / RSC) | ✅ Full on Server SSR | `tracedFetch` wrapper ([`nextjs-instrumentation.ts`](../demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts)) | ✅ OBI intercepts Node.js `console.log()` |
+| **Vue 3 / Nuxt 3** | Browser (Vue Engine) | Node.js (Nitro Engine) | ✅ Full on Server SSR | Nuxt plugin overriding `$fetch` ([`nuxt-fetch-plugin.ts`](../demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts)) | ✅ OBI intercepts Nitro server stdout |
+| **Svelte 5 / SvelteKit** | Browser (Svelte DOM) | Node.js (`adapter-node`) | ✅ Full on Server SSR | `handleFetch` client hook in `hooks.client.ts` | ✅ OBI intercepts SvelteKit server stdout |
+| **Vanilla JS / HTMX** | Browser (DOM Script) | None (Static) | ❌ None (Client OS) | Custom `fetch` interceptor / `hx-headers` | N/A |
+
 #### ✅ Client SPA Sample: Angular 17+ HTTP Interceptor
-As implemented in [`demo-apps/frontend-angular/src/app/telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts), Angular applications can inject W3C Trace Context into all outgoing `HttpClient` requests:
+As implemented in [`demo-apps/frontend-angular/src/app/telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts), Angular applications inject W3C Trace Context into all outgoing `HttpClient` requests:
 
 ```typescript
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
@@ -559,12 +622,51 @@ export const openTelemetryInterceptor: HttpInterceptorFn = (req: HttpRequest<unk
   const traceparent = `00-${traceId}-${spanId}-01`;
 
   const tracedReq = req.clone({
-    setHeaders: { traceparent }
+    setHeaders: { 
+      traceparent,
+      baggage: 'frontend.framework=angular17,client.type=spa'
+    }
   });
 
   return next(tracedReq);
 };
 ```
+
+#### ✅ Alternative Frontend Solutions
+
+##### React / Next.js 14+ App Router Traced Fetch
+As provided in [`demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts`](../demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts):
+```typescript
+// Traced Fetch wrapper for Next.js Client Components
+export async function tracedFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  const headers = new Headers(init?.headers);
+  if (!headers.has('traceparent')) {
+    headers.set('traceparent', `00-${generateHex(16)}-${generateHex(8)}-01`);
+    headers.set('baggage', 'client.framework=nextjs-app-router');
+  }
+  return fetch(input, { ...init, headers });
+}
+```
+
+##### Vue 3 / Nuxt 3 `$fetch` Interceptor Plugin
+As provided in [`demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts`](../demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts):
+```typescript
+// Nuxt 3 plugin auto-injecting traceparent on all outgoing $fetch calls
+export default defineNuxtPlugin(() => {
+  globalThis.$fetch = $fetch.create({
+    onRequest({ options }) {
+      const headers = new Headers(options.headers || {});
+      if (!headers.has('traceparent')) {
+        headers.set('traceparent', `00-${generateHex(16)}-${generateHex(8)}-01`);
+        options.headers = headers;
+      }
+    }
+  });
+});
+```
+
+##### Production OpenTelemetry Official Web SDK
+As provided in [`demo-apps/frontend-angular/other-solutions/otel-web-sdk.ts`](../demo-apps/frontend-angular/other-solutions/otel-web-sdk.ts), enterprise SPAs can use `@opentelemetry/sdk-trace-web` and `@opentelemetry/instrumentation-fetch` to propagate W3C Trace Context automatically to all API endpoints.
 
 #### Server-Side Rendering (SSR) & Server Component Pre-Rendering
 When Angular 17+ SSR (`@angular/ssr`) or Next.js runs in full-stack mode:
