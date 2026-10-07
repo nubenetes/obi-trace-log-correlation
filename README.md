@@ -1128,7 +1128,7 @@ Below are the direct links and full descriptions for each session.
 
 ### 🎬 Full-Length Technical Deep Dives (15 Videos)
 
-<details open>
+<details>
 <summary>📂 <strong>Detailed Breakdown: Full-Length Sessions</strong></summary>
 
 <br/>
@@ -1932,7 +1932,7 @@ Below are the direct links and full descriptions for each session.
 
 ### 🎙️ Architectural Masterclass Podcasts (8 Episodes)
 
-<details open>
+<details>
 <summary>📂 <strong>Detailed Breakdown: Architectural Podcasts</strong></summary>
 
 <br/>
