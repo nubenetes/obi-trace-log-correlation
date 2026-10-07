@@ -24,7 +24,7 @@ flowchart TD
     end
 
     subgraph Network ["HTTP / TLS Wire"]
-        Fetch -->|HTTP Request with traceparent: 00-4bf92...| Gateway
+        Fetch -->|"HTTP request with traceparent"| Gateway
     end
 
     subgraph LinuxHost ["Kubernetes Node / Linux Host (eBPF Kernel Layer)"]
@@ -39,7 +39,7 @@ flowchart TD
         
         Gateway -->|Socket Read| SockProbe
         SockProbe -->|Store TraceID| BPFMap
-        Gateway -->|log.info('Processing order')| SysWrite
+        Gateway -->|"log.info write syscall"| SysWrite
         SysWrite -->|Lookup TraceID| BPFMap
         SysWrite --> PayloadEnrich
         PayloadEnrich --> DaemonLog["Containerd / stdout log stream"]
