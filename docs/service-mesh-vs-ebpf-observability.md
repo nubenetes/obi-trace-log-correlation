@@ -22,6 +22,16 @@
 
 ---
 
+### 🎥 Multimedia Deep Dives & Podcasts on Service Mesh vs. eBPF
+
+Explore this architectural comparison in audio and video on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel:
+- 🎙️ **Architecture Podcast (58m)**: [**Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=qJUrpdWvHTs) — Complete 58-minute masterclass podcast on socket boundaries, ztunnel/waypoint, and VFS pipe enrichment.
+- 🎬 **Video Deep Dive (8m)**: [**Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It**](https://www.youtube.com/watch?v=weRUz_7BC_A) — Visual breakdown of network proxies vs Linux VFS syscalls.
+- ⚡ **Technical Short (EN)**: [**Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF**](https://www.youtube.com/shorts/g-mkqDaklMQ) — Quick 77-second explanation of network perimeter limits.
+- ⚡ **Technical Short (ES)**: [**Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos**](https://www.youtube.com/shorts/3SfLjZ0hHno) — Resumen de 62 segundos sobre la sinergia de red y kernel en resolución de incidentes.
+
+---
+
 ## 1. Executive Summary & Paradigm Overview
 
 Enterprise platform teams modernizing Kubernetes observability frequently ask:  
