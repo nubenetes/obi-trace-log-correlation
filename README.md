@@ -126,14 +126,13 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [13. How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents](#13-how-obi-mutates-logs-in-flight-kernel-syscalls-vs-intrusive-apm-agents)
     - [14. Cómo OBI Inyecta Trazas en los Logs sin Modificar Código](#14-cómo-obi-inyecta-trazas-en-los-logs-sin-modificar-código)
     - [15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF](#15-el-fin-de-los-agentes-de-monitorización-observabilidad-con-ebpf)
-  - [🎙️ Architectural Masterclass Podcasts (7 Episodes)](#-architectural-masterclass-podcasts-7-episodes)
+  - [🎙️ Architectural Masterclass Podcasts (6 Episodes)](#-architectural-masterclass-podcasts-6-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
     - [3. Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)](#3-podcast-zero-code-trace-log-correlation-service-mesh-vs-kernel-ebpf-obi)
     - [4. Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)](#4-podcast-correlación-zero-code-de-logs-y-trazas-service-mesh-vs-kernel-ebpf-obi)
-    - [5. Podcast: Zero-Code Trace-Log Correlation with eBPF Architecture & Internals](#5-podcast-zero-code-trace-log-correlation-with-ebpf-architecture--internals)
-    - [6. Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive](#6-podcast-how-ebpf-correlates-traces-and-logs-kernel-mechanics-deep-dive)
-    - [7. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código](#7-podcast-correlación-de-trazas-y-logs-con-ebpf-de-la-alerta-al-código)
+    - [5. Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive](#5-podcast-how-ebpf-correlates-traces-and-logs-kernel-mechanics-deep-dive)
+    - [6. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código](#6-podcast-correlación-de-trazas-y-logs-con-ebpf-de-la-alerta-al-código)
 - [References & Official Links](#references--official-links)
 - [License](#license)
 
@@ -454,9 +453,8 @@ This repository includes a comprehensive multi-format educational series synthes
 | 2 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=mpSVsUIpaMc) | Arquitectura Kernel, Filtrado NUL y Producción | 🇪🇸 Spanish *(CC 20+)* | `21:37` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=mpSVsUIpaMc) |
 | 3 | 🎙️ Audio Podcast | [**Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=qJUrpdWvHTs) | Service Mesh vs Kernel eBPF & Full-Stack Synergy | 🇺🇸 English *(CC 20+)* | `58:23` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=qJUrpdWvHTs) |
 | 4 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | Service Mesh vs eBPF, Frontend W3C y Sinergia | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
-| 5 | 🎙️ Audio Podcast | [**Podcast: Zero-Code Trace-Log Correlation with eBPF Architecture & Internals**](https://www.youtube.com/watch?v=ZRfsgGOVuqI) | In-Flight Stamping, Ring Buffers & Production | 🇺🇸 English *(CC 20+)* | `58:20` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=ZRfsgGOVuqI) |
-| 6 | 🎙️ Audio Podcast | [**Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive**](https://www.youtube.com/watch?v=D5gHANofzQQ) | Socket Ingress, VFS Pipes & Real-Time Triage | 🇺🇸 English *(CC 20+)* | `55:20` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=D5gHANofzQQ) |
-| 7 | 🎙️ Audio Podcast | [**Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código**](https://www.youtube.com/watch?v=5XYbAeKnSLs) | Triage de Guardia 2 AM, Syscalls y Filtros NUL | 🇪🇸 Spanish *(CC 20+)* | `25:26` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=5XYbAeKnSLs) |
+| 5 | 🎙️ Audio Podcast | [**Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive**](https://www.youtube.com/watch?v=D5gHANofzQQ) | Socket Ingress, VFS Pipes & Real-Time Triage | 🇺🇸 English *(CC 20+)* | `55:20` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=D5gHANofzQQ) |
+| 6 | 🎙️ Audio Podcast | [**Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código**](https://www.youtube.com/watch?v=5XYbAeKnSLs) | Triage de Guardia 2 AM, Syscalls y Filtros NUL | 🇪🇸 Spanish *(CC 20+)* | `25:26` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=5XYbAeKnSLs) |
 
 ### 🎬 Full-Length Technical Deep Dives (Videos)
 
@@ -1690,7 +1688,7 @@ Below are the direct links and full descriptions for each session.
 
 <br/>
 
-### 🎙️ Architectural Masterclass Podcasts (7 Episodes)
+### 🎙️ Architectural Masterclass Podcasts (6 Episodes)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Architectural Podcasts</strong></summary>
@@ -1812,35 +1810,7 @@ Below are the direct links and full descriptions for each session.
 > ⏱️ Duración: 12:50
 > #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observabilidad #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
 
-#### 5. Podcast: Zero-Code Trace-Log Correlation with eBPF Architecture & Internals
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=ZRfsgGOVuqI](https://www.youtube.com/watch?v=ZRfsgGOVuqI)
-- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/ZRfsgGOVuqI/edit](https://studio.youtube.com/video/ZRfsgGOVuqI/edit)
-- ⏱️ **Duration**: 58:20
-- 🏷️ **Domain**: In-Flight Stamping, Ring Buffers & Production Rollout
-- 📝 **Full Description**:
-> 🎙️ Architecture Podcast: Zero-Code Trace-Log Correlation with eBPF Architecture & Internals
->
-> Full 58-minute technical masterclass podcast examining how OpenTelemetry eBPF Instrumentation (OBI) transforms enterprise observability by bridging distributed traces and local application logs directly from the Linux kernel.
->
-> A comprehensive conversation for platform engineers, SREs, and cloud architects on ending midnight incident triage guesswork without intrusive bytecode manipulation or proprietary agents.
->
-> 📌 Key Architectural Discussion Points:
-> • The Midnight Triage Crisis: Why grepping application logs by timestamp during production outages fails in distributed architectures.
-> • Zero-Code Kernel Stamping: How eBPF intercepts stdout/stderr writes in Ring 0 without modifying container binaries or adding SDK dependencies.
-> • Kernel Syscall Interception: Diving into write() and writev() system calls, execution thread tracking, and BPF LRU map lookups.
-> • The NUL Byte Suppression Trick: How bpf_probe_write_user suppresses the original buffer and how downstream log shippers discard placeholders.
-> • 8KB Memory Limits & Chunking: Handling large multi-kilobyte log lines and configuring multi-line assembly rules in log collectors.
-> • Production Security & Safe Rollout: Kernel prerequisites (Linux 6.0+), CAP_BPF / CAP_SYS_ADMIN capabilities, and canary deployment patterns.
->
-> 🔗 Official Blueprint Repository & Reference Documentation:
-> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
-> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> • Production Manifests & Architecture: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
->
-> ⏱️ Duration: 58:20
-> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservices
-
-#### 6. Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive
+#### 5. Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=D5gHANofzQQ](https://www.youtube.com/watch?v=D5gHANofzQQ)
 - 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/D5gHANofzQQ/edit](https://studio.youtube.com/video/D5gHANofzQQ/edit)
 - ⏱️ **Duration**: 55:20
@@ -1868,7 +1838,7 @@ Below are the direct links and full descriptions for each session.
 > ⏱️ Duration: 55:20
 > #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #SystemsEngineering
 
-#### 7. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código
+#### 6. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=5XYbAeKnSLs](https://www.youtube.com/watch?v=5XYbAeKnSLs)
 - 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/5XYbAeKnSLs/edit](https://studio.youtube.com/video/5XYbAeKnSLs/edit)
 - ⏱️ **Duration**: 25:26
