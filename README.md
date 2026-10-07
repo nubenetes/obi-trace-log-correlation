@@ -445,8 +445,6 @@ For the exhaustive engineering deep dive, low-level eBPF hook mechanics comparis
 
 ---
 
----
-
 ## 🤖 AI-Generated Multimedia & Video Series (NotebookLM & YouTube)
 
 This repository includes a comprehensive multi-format educational series synthesized with **Gemini NotebookLM** based directly on this repository's architectural analyses, manifests, eBPF kernel mechanics, and the official [OpenTelemetry Announcement](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/). All videos and shorts are published and freely accessible on YouTube on the [**@nubenetes**](https://youtube.com/@nubenetes) channel.
@@ -1122,8 +1120,6 @@ To prevent ingestion of blank placeholder lines, add this drop filter to your lo
 
 ---
 
----
-
 ## Video Walkthroughs & Architecture References (YouTube)
 
 End-to-end architectural walkthroughs and technical shorts for `obi-trace-log-correlation` are hosted on the **[Nubenetes YouTube Channel (@nubenetes)](https://www.youtube.com/@nubenetes)**.
@@ -1318,9 +1314,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Service Mesh vs. eBPF Guide**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Service Mesh vs. eBPF Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > ⏱️ **Duration**: 8:14
 > #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observability #Kubernetes #SRE #DevOps #DistributedTracing
@@ -1347,9 +1343,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Architecture Documentation**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Architecture Documentation**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md)
 >
 > ⏱️ **Duration**: 8:38
 > #OpenTelemetry #eBPF #Observability #APM #DevOps #SRE #Kubernetes #CloudNative #DistributedTracing #Microservices
@@ -1365,21 +1361,21 @@ Below are the direct links and full descriptions for each session.
 >
 > Aprende cómo funciona la intercepción de llamadas al sistema en el kernel de Linux y cómo implementar esta solución sin modificar el código de tus microservicios.
 >
-> 📌 Puntos Clave del Análisis:
+> 📌 **Puntos Clave del Análisis:**
 >
-> - El Cambio de Paradigma: Por qué los agentes de telemetría tradicionales añaden sobrecarga y fragilidad a los despliegues.
-> - Intercepción en el Kernel: Cómo las sondas eBPF capturan las escrituras en stdout y stderr en tiempo real.
-> - Inyección Dinámica de Contexto: Estampado automático de trace_id y span_id en logs estructurados (JSON) y texto plano.
-> - Filtrado de Bytes NUL: Configuración necesaria en recolectores de logs para descartar los buffers originales sustituidos por OBI.
-> - Estrategias de Rollout: Prácticas recomendadas para despliegues canary progresivos en clusters de Kubernetes.
+> - **El Cambio de Paradigma**: Por qué los agentes de telemetría tradicionales añaden sobrecarga y fragilidad a los despliegues.
+> - **Intercepción en el Kernel**: Cómo las sondas eBPF capturan las escrituras en stdout y stderr en tiempo real.
+> - **Inyección Dinámica de Contexto**: Estampado automático de trace_id y span_id en logs estructurados (JSON) y texto plano.
+> - **Filtrado de Bytes NUL**: Configuración necesaria en recolectores de logs para descartar los buffers originales sustituidos por OBI.
+> - **Estrategias de Rollout**: Prácticas recomendadas para despliegues canary progresivos en clusters de Kubernetes.
 >
-> 🔗 Repositorio Oficial y Documentación:
+> 🔗 **Repositorio Oficial y Documentación:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - Guía de Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Guía de Arquitectura**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md)
 >
-> ⏱️ Duración: 6:56
+> ⏱️ **Duración**: 6:56
 > #OpenTelemetry #eBPF #Observabilidad #Kubernetes #DevOps #SRE #CloudNative #Microservicios #DistributedTracing
 
 #### 10. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI
@@ -1393,22 +1389,22 @@ Below are the direct links and full descriptions for each session.
 >
 > Learn how to trace a user request chronologically from a frontend button click, across the network wire, through kernel socket ingress, down to mid-flight log enrichment in Ring 0 without changing a single line of application source code.
 >
-> 📌 Key Architectural Milestones Explored:
+> 📌 **Key Architectural Milestones Explored:**
 >
-> - The Midnight Triage Crisis: Receiving a failing trace alert at 2:00 AM and encountering completely orphaned backend logs.
-> - The Browser Sandbox Boundary: Why client JavaScript (React, Angular, Vue) runs in isolated user devices and cannot execute Linux eBPF probes.
-> - W3C Trace Context Propagation: How frontend HTTP interceptors generate and inject traceparent headers (00-trace_id-span_id-01) across outgoing network boundaries.
-> - Kernel Socket Interception: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
-> - Mid-Flight Syscall Enrichment: How sys_enter_write intercepts backend stdout/stderr streams and stamps active trace identifiers.
-> - Unified Incident Resolution: Bridging user clicks to root-cause backend log lines in seconds.
+> - **The Midnight Triage Crisis**: Receiving a failing trace alert at 2:00 AM and encountering completely orphaned backend logs.
+> - **The Browser Sandbox Boundary**: Why client JavaScript (React, Angular, Vue) runs in isolated user devices and cannot execute Linux eBPF probes.
+> - **W3C Trace Context Propagation**: How frontend HTTP interceptors generate and inject traceparent headers (`00-trace_id-span_id-01`) across outgoing network boundaries.
+> - **Kernel Socket Interception**: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the `traces_ctx_v1` BPF map.
+> - **Mid-Flight Syscall Enrichment**: How sys_enter_write intercepts backend stdout/stderr streams and stamps active trace identifiers.
+> - **Unified Incident Resolution**: Bridging user clicks to root-cause backend log lines in seconds.
 >
-> 🔗 Official Blueprint Repository & Documentation:
+> 🔗 **Official Blueprint Repository & Documentation:**
 >
-> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
-> - Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Frontend SPAs & SSR Telemetry Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duration: 8:20
+> ⏱️ **Duration**: 8:20
 > #OpenTelemetry #eBPF #Frontend #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Angular #React
 
 #### 11. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF
@@ -1422,21 +1418,21 @@ Below are the direct links and full descriptions for each session.
 >
 > Explore why asynchronous runtime buffering causes trace desynchronization and discover production architectural patterns to maintain flawless trace-log correlation across modern full-stack web frameworks.
 >
-> 📌 Key Technical Modules Explored:
+> 📌 **Key Technical Modules Explored:**
 >
-> - The SSR Runtime Dilemma: How Node.js single-threaded event loops decouple asynchronous request handling from operating system write syscalls.
-> - The Async Buffering Gotcha: Why asynchronous log transports (e.g. Pino async logging, buffered streams) cause eBPF to stamp outdated trace context.
-> - Thread-Context Alignment: Ensuring synchronous stream flushes so eBPF hooks capture matching thread IDs (tgid_pid) during active requests.
-> - The Client Telemetry Ingestion Bridge: Designing dedicated HTTP ingestion endpoints to forward browser console errors into backend log pipelines.
-> - Production Best Practices: Performance baselines, memory consumption, and configuring multi-line log assemblers in Fluent Bit and Vector.
+> - **The SSR Runtime Dilemma**: How Node.js single-threaded event loops decouple asynchronous request handling from operating system write syscalls.
+> - **The Async Buffering Gotcha**: Why asynchronous log transports (e.g. Pino async logging, buffered streams) cause eBPF to stamp outdated trace context.
+> - **Thread-Context Alignment**: Ensuring synchronous stream flushes so eBPF hooks capture matching thread IDs (`tgid_pid`) during active requests.
+> - **The Client Telemetry Ingestion Bridge**: Designing dedicated HTTP ingestion endpoints to forward browser console errors into backend log pipelines.
+> - **Production Best Practices**: Performance baselines, memory consumption, and configuring multi-line log assemblers in Fluent Bit and Vector.
 >
-> 🔗 Official Blueprint Repository & Documentation:
+> 🔗 **Official Blueprint Repository & Documentation:**
 >
-> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
-> - Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Frontend SPAs & SSR Telemetry Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duration: 7:43
+> ⏱️ **Duration**: 7:43
 > #OpenTelemetry #eBPF #SSR #NextJS #NodeJS #Kubernetes #Observability #SRE #DevOps #Microservices
 
 #### 12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux
@@ -1450,21 +1446,21 @@ Below are the direct links and full descriptions for each session.
 >
 > Descubre cómo resolver el mayor dolor de cabeza de los equipos SRE: conectar clics de usuario y renderizado en servidor con registros de contenedores sin modificar una sola línea de código fuente.
 >
-> 📌 Puntos Clave de la Sesión:
+> 📌 **Puntos Clave de la Sesión:**
 >
-> - El Dilema de la Guardia a las 2:00 AM: Trazas distribuidas impecables en los paneles pero logs de backend totalmente desconectados del contexto de usuario.
-> - La Frontera del Navegador: Por qué los clientes frontend (Angular, React, Vue) no pueden ejecutar sondas eBPF y cómo la cabecera W3C traceparent resuelve la conexión.
-> - Intercepción en el Kernel: Captura de paquetes en sockets de red (sys_enter_recvfrom) y almacenamiento del trace_id en mapas BPF del kernel.
-> - Retos en Server-Side Rendering (SSR): El impacto del bucle de eventos de Node.js y cómo el buffer asíncrono desincroniza el contexto de ejecución.
-> - Soluciones de Producción: Modos de escritura síncrona en Pino y Node.js, puentes de ingesta de telemetría y ensamblaje de registros multilínea.
+> - **El Dilema de la Guardia a las 2:00 AM**: Trazas distribuidas impecables en los paneles pero logs de backend totalmente desconectados del contexto de usuario.
+> - **La Frontera del Navegador**: Por qué los clientes frontend (Angular, React, Vue) no pueden ejecutar sondas eBPF y cómo la cabecera W3C traceparent resuelve la conexión.
+> - **Intercepción en el Kernel**: Captura de paquetes en sockets de red (`sys_enter_recvfrom`) y almacenamiento del trace_id en mapas BPF del kernel.
+> - **Retos en Server-Side Rendering (SSR)**: El impacto del bucle de eventos de Node.js y cómo el buffer asíncrono desincroniza el contexto de ejecución.
+> - **Soluciones de Producción**: Modos de escritura síncrona en Pino y Node.js, puentes de ingesta de telemetría y ensamblaje de registros multilínea.
 >
-> 🔗 Repositorio Blueprint y Documentación Oficial:
+> 🔗 **Repositorio Blueprint y Documentación Oficial:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Telemetría Frontend SPAs y SSR**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duración: 7:55
+> ⏱️ **Duración**: 7:55
 > #OpenTelemetry #eBPF #Frontend #SSR #NodeJS #React #Angular #Kubernetes #Observabilidad #SRE #DevOps
 
 #### 13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel
@@ -1478,22 +1474,22 @@ Below are the direct links and full descriptions for each session.
 >
 > Aprende la ingeniería de sistemas detrás de OpenTelemetry eBPF (OBI) para unificar la observabilidad full-stack sin tocar código de las aplicaciones.
 >
-> 📌 Las 6 Etapas Arquitectónicas Analizadas:
+> 📌 **Las 6 Etapas Arquitectónicas Analizadas:**
 >
-> - Etapa 1 - El Dilema de la Observabilidad: La barrera física entre el dispositivo del usuario y el servidor en incidentes de producción.
-> - Etapa 2 - Trazas desde el Navegador: Generación de identificadores de traza en librerías cliente e interceptores HTTP.
-> - Etapa 3 - La Pasarela y Reenvío W3C: Propagación de cabeceras traceparent estándar a través de proxies y balanceadores.
-> - Etapa 4 - Intercepción en el Kernel: Detección a nivel de socket por OBI y vinculación con el ID de hilo del sistema operativo.
-> - Etapa 5 - Reconciliación Zero-Code: Inyección del Trace ID en llamadas al sistema write() sobre stdout y stderr.
-> - Etapa 6 - Triaje y Visibilidad Total: De la alerta en pantalla a la línea de código exacta del microservicio en segundos.
+> - **Etapa 1 - El Dilema de la Observabilidad**: La barrera física entre el dispositivo del usuario y el servidor en incidentes de producción.
+> - **Etapa 2 - Trazas desde el Navegador**: Generación de identificadores de traza en librerías cliente e interceptores HTTP.
+> - **Etapa 3 - La Pasarela y Reenvío W3C**: Propagación de cabeceras traceparent estándar a través de proxies y balanceadores.
+> - **Etapa 4 - Intercepción en el Kernel**: Detección a nivel de socket por OBI y vinculación con el ID de hilo del sistema operativo.
+> - **Etapa 5 - Reconciliación Zero-Code**: Inyección del Trace ID en llamadas al sistema write() sobre stdout y stderr.
+> - **Etapa 6 - Triaje y Visibilidad Total**: De la alerta en pantalla a la línea de código exacta del microservicio en segundos.
 >
-> 🔗 Repositorio Blueprint y Documentación Oficial:
+> 🔗 **Repositorio Blueprint y Documentación Oficial:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Telemetría Frontend SPAs y SSR**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duración: 5:42
+> ⏱️ **Duración**: 5:42
 > #OpenTelemetry #eBPF #Frontend #FullStack #W3C #Kubernetes #Observabilidad #SRE #DevOps #Microservicios
 
 #### 14. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF
@@ -1507,19 +1503,19 @@ Below are the direct links and full descriptions for each session.
 >
 > Descubre los 3 pilares clave de la arquitectura full-stack para resolver incidencias de producción sin perder el rastro de los errores de usuario.
 >
-> 📌 Los 3 Pilares Arquitectónicos Explicados:
+> 📌 **Los 3 Pilares Arquitectónicos Explicados:**
 >
-> - El Dilema del Navegador: La analogía del guardia de seguridad del edificio y por qué eBPF en Linux necesita la cabecera W3C traceparent generada por el frontend.
-> - Captura de Errores Aislados: El patrón del puente de ingesta de telemetría para enviar errores de JavaScript sin coste adicional en herramientas propietarias.
-> - La Excepción de SSR: Por qué Server-Side Rendering (Next.js, Node.js) ejecuta código directamente en el servidor y cómo eBPF captura sus registros automáticamente.
+> - **El Dilema del Navegador**: La analogía del guardia de seguridad del edificio y por qué eBPF en Linux necesita la cabecera W3C traceparent generada por el frontend.
+> - **Captura de Errores Aislados**: El patrón del puente de ingesta de telemetría para enviar errores de JavaScript sin coste adicional en herramientas propietarias.
+> - **La Excepción de SSR**: Por qué Server-Side Rendering (Next.js, Node.js) ejecuta código directamente en el servidor y cómo eBPF captura sus registros automáticamente.
 >
-> 🔗 Repositorio Blueprint y Documentación Oficial:
+> 🔗 **Repositorio Blueprint y Documentación Oficial:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Telemetría Frontend SPAs y SSR**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duración: 2:52
+> ⏱️ **Duración**: 2:52
 > #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #Observabilidad #SRE #DevOps #Microservicios #NodeJS
 
 #### 15. Connecting Browser Clicks to eBPF Logs: Full-Stack Architecture Guide
@@ -1533,19 +1529,19 @@ Below are the direct links and full descriptions for each session.
 >
 > Learn how OpenTelemetry eBPF Instrumentation (OBI) connects browser interactions with backend execution without code modification.
 >
-> 📌 The 3 Architectural Pillars Explained:
+> 📌 **The 3 Architectural Pillars Explained:**
 >
-> - The Browser Sandbox Dilemma: Why Linux eBPF cannot inspect user devices directly and how W3C traceparent headers bridge the network boundary.
-> - Isolated Client Error Capture: How telemetry ingestion bridges capture unhandled frontend exceptions and route them into the backend trace tree.
-> - Server-Side Rendering (SSR) Direct Hooking: Why Node.js and Next.js server components execute locally and are automatically captured by host kernel probes.
+> - **The Browser Sandbox Dilemma**: Why Linux eBPF cannot inspect user devices directly and how W3C traceparent headers bridge the network boundary.
+> - **Isolated Client Error Capture**: How telemetry ingestion bridges capture unhandled frontend exceptions and route them into the backend trace tree.
+> - **Server-Side Rendering (SSR) Direct Hooking**: Why Node.js and Next.js server components execute locally and are automatically captured by host kernel probes.
 >
-> 🔗 Official Blueprint Repository & Reference Documentation:
+> 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
-> - Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Frontend SPAs & SSR Telemetry Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duration: 2:29
+> ⏱️ **Duration**: 2:29
 > #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Microservices
 
 </details>
@@ -1555,7 +1551,7 @@ Below are the direct links and full descriptions for each session.
 ### ⚡ Topic-Focused Technical Shorts (17 Shorts)
 
 <details>
-<summary>📂 <strong>Technical Video Shorts Breakdown (15 Shorts)</strong></summary>
+<summary>📂 <strong>Technical Video Shorts Breakdown (17 Shorts)</strong></summary>
 
 <br/>
 
@@ -1721,8 +1717,9 @@ Below are the direct links and full descriptions for each session.
 > - **The Fix**: Force synchronous writes (e.g. PYTHONUNBUFFERED=1), avoid Java virtual threads with OBI, or configure OBI to drop span IDs in hybrid SDK setups.
 >
 > 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Python #NodeJS #Observability #Debugging #SRE #Kubernetes #DevOps
 
@@ -1741,9 +1738,10 @@ Below are the direct links and full descriptions for each session.
 > - **The Perfect Pair**: Service meshes secure network traffic while eBPF silently links application logs to traces without code changes.
 >
 > 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Architecture Deep Dive: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
-> Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Service Mesh vs. eBPF Architectural Deep Dive**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #ServiceMesh #Istio #Kubernetes #DevOps #SRE #Observability #CloudNative
 
@@ -1762,9 +1760,10 @@ Below are the direct links and full descriptions for each session.
 > - **Sinergia Total**: La malla gestiona la seguridad y el tráfico mientras eBPF sincroniza los logs sin tocar una sola línea de código.
 >
 > 🔗 **Repositorio Oficial y Documentación:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía Service Mesh vs eBPF: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía Service Mesh vs. eBPF**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #ServiceMesh #Istio #Kubernetes #DevOps #SRE #Observabilidad #CloudNative
 
@@ -1784,9 +1783,10 @@ Below are the direct links and full descriptions for each session.
 > - **Cluster-Wide Rollout**: Once validated, safely enable zero-code trace-log correlation across your entire Kubernetes cluster.
 >
 > 🔗 **Official Blueprint Repo & Manifests:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Canary Deployment Overlays: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Canary Deployment Overlays**: [https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s](https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observability #CanaryDeployment #CloudNative #Microservices
 
@@ -1805,9 +1805,10 @@ Below are the direct links and full descriptions for each session.
 > - **Instant Triage**: Jump from your trace span directly to the exact line of code that triggered the failure in seconds.
 >
 > 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Architecture Deep Dive: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Architecture Deep Dive**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observability #DistributedTracing #CloudNative
 
@@ -1826,9 +1827,10 @@ Below are the direct links and full descriptions for each session.
 > - **Downstream Discard**: Log forwarders drop the blank placeholder, leaving only perfectly correlated logs without code edits.
 >
 > 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Log Filtering Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Log Filtering Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Linux #Kernel #Kubernetes #DevOps #SRE #Observability #CloudNative
 
@@ -1847,9 +1849,10 @@ Below are the direct links and full descriptions for each session.
 > - **Sincronización Total**: Correlación perfecta entre peticiones de red y logs internos sin tocar una sola línea de código fuente.
 >
 > 🔗 **Repositorio Oficial y Documentación:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía de Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Arquitectura**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observabilidad #CloudNative #Microservicios
 
@@ -1862,15 +1865,16 @@ Below are the direct links and full descriptions for each session.
 >
 > Son las 2:00 AM, una aplicación crítica falla y salta la alarma. El reto no es saber que falló, sino encontrar el log exacto entre millones de líneas:
 >
-> - La Falsa Promesa de los Agentes: Los agentes APM tradicionales consumen memoria, complican los despliegues y a menudo carecen del contexto de red adecuado.
-> - La Revolución de eBPF: En lugar de invadir el contenedor, la observabilidad se traslada al kernel de Linux de forma no intrusiva y ultraligera.
-> - Correlación Instantánea: OBI une el trace ID de la petición de red con la línea exacta de log que describe el error en milisegundos.
-> - Diagnóstico Inmediato: Reduce el tiempo medio de resolución (MTTR) de horas a segundos en sistemas distribuidos.
+> - **La Falsa Promesa de los Agentes**: Los agentes APM tradicionales consumen memoria, complican los despliegues y a menudo carecen del contexto de red adecuado.
+> - **La Revolución de eBPF**: En lugar de invadir el contenedor, la observabilidad se traslada al kernel de Linux de forma no intrusiva y ultraligera.
+> - **Correlación Instantánea**: OBI une el trace ID de la petición de red con la línea exacta de log que describe el error en milisegundos.
+> - **Diagnóstico Inmediato**: Reduce el tiempo medio de resolución (MTTR) de horas a segundos en sistemas distribuidos.
 >
-> 🔗 Repositorio Oficial y Documentación:
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía de Filtrado y Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> 🔗 **Repositorio Oficial y Documentación:**
+>
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Filtrado y Arquitectura**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observabilidad #CloudNative #MTTR
 
@@ -1890,10 +1894,11 @@ Below are the direct links and full descriptions for each session.
 > 3. Mid-Flight Log Enrichment: When the backend writes to stdout, eBPF intercepts the write syscall mid-flight and stamps the trace ID.
 > 4. Instant Outage Resolution: Operators can jump directly from a user click to the exact backend failure log.
 >
-> 🔗 Blueprint Repository & Full-Stack Telemetry Architecture:
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Full Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> 🔗 **Blueprint Repository & Full-Stack Telemetry Architecture:**
+>
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Full Frontend Telemetry Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observability #Kubernetes #SRE #DevOps
 
@@ -1913,10 +1918,11 @@ Below are the direct links and full descriptions for each session.
 > 3. Inyección en Registros: Si ocurre un fallo en backend, el kernel inyecta el Trace ID en el registro de salida en tiempo real.
 > 4. Diagnóstico Inmediato: Pasas del clic frustrado del cliente a la línea de código exacta que falló en segundos.
 >
-> 🔗 Repositorio Blueprint y Guía de Arquitectura Frontend:
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía Completa: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> 🔗 **Repositorio Blueprint y Guía de Arquitectura Frontend:**
+>
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía Completa de Telemetría Frontend**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observabilidad #Kubernetes #SRE #DevOps
 
@@ -1954,9 +1960,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Production Manifests & Architecture**: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Production Manifests & Architecture**: [https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s](https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s)
 >
 > ⏱️ **Duration**: 47:47
 > #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservices
@@ -1984,9 +1990,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Repositorio Oficial y Documentación:**
 >
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Guía de Filtrado de Logs**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Guía de Filtrado de Logs**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md)
 >
 > ⏱️ **Duración**: 21:37
 > #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
@@ -2014,9 +2020,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Service Mesh vs. eBPF Architectural Deep Dive**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Service Mesh vs. eBPF Architectural Deep Dive**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > ⏱️ **Duration**: 58:23
 > #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observability #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
@@ -2043,9 +2049,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Repositorio Oficial y Documentación de Referencia:**
 >
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Guía Arquitectónica Service Mesh vs. eBPF**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía Arquitectónica Service Mesh vs. eBPF**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > ⏱️ **Duración**: 12:50
 > #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observabilidad #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
@@ -2072,9 +2078,9 @@ Below are the direct links and full descriptions for each session.
 >
 > 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Documentation & Guides**: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/docs
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Documentation & Guides**: [https://github.com/nubenetes/obi-trace-log-correlation/tree/main/docs](https://github.com/nubenetes/obi-trace-log-correlation/tree/main/docs)
 >
 > ⏱️ **Duration**: 55:20
 > #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #SystemsEngineering
@@ -2090,22 +2096,22 @@ Below are the direct links and full descriptions for each session.
 >
 > Una conversación técnica indispensable para ingenieros de fiabilidad (SRE), líderes de plataforma y arquitectos cloud sobre observabilidad moderna en Kubernetes.
 >
-> 📌 Puntos Clave de la Sesión:
+> 📌 **Puntos Clave de la Sesión:**
 >
-> - El Drama de la Guardia a las 2:00 AM: Por qué buscar logs con grep por timestamp durante una caída de producción es lento, impreciso y frustrante.
-> - Observabilidad Zero-Code: Cómo eBPF inyecta identificadores de traza en tiempo de ejecución sin añadir SDKs a las aplicaciones ni recompilar contenedores.
-> - Intercepción en el Kernel de Linux: Captura de llamadas write() y writev(), mapas LRU de contexto y seguimiento de hilos.
-> - Supresión NUL y Filtros de Pipeline: Por qué OBI reemplaza el buffer original con bytes nulos ( ) y cómo configurarlo en Fluent Bit, Vector y OTel Collector.
-> - Límite de 8 KiB y Runtimes Asíncronos: Ensamblado multilínea y recomendaciones para Python, Node.js y Java.
-> - Despliegue Seguro en Producción: Requisitos de kernel Linux 6.0+, capacidades CAP_SYS_ADMIN y despliegue canary en Kubernetes y OpenShift.
+> - **El Drama de la Guardia a las 2:00 AM**: Por qué buscar logs con grep por timestamp durante una caída de producción es lento, impreciso y frustrante.
+> - **Observabilidad Zero-Code**: Cómo eBPF inyecta identificadores de traza en tiempo de ejecución sin añadir SDKs a las aplicaciones ni recompilar contenedores.
+> - **Intercepción en el Kernel de Linux**: Captura de llamadas write() y writev(), mapas LRU de contexto y seguimiento de hilos.
+> - **Supresión NUL y Filtros de Pipeline**: Por qué OBI reemplaza el buffer original con bytes nulos (\x00) y cómo configurarlo en Fluent Bit, Vector y OTel Collector.
+> - **Límite de 8 KiB y Runtimes Asíncronos**: Ensamblado multilínea y recomendaciones para Python, Node.js y Java.
+> - **Despliegue Seguro en Producción**: Requisitos de kernel Linux 6.0+, capacidades CAP_SYS_ADMIN y despliegue canary en Kubernetes y OpenShift.
 >
-> 🔗 Repositorio Oficial y Documentación:
+> 🔗 **Repositorio Oficial y Documentación:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - Guía de Filtrado de Logs: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
+> - **Guía de Filtrado de Logs**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md)
 >
-> ⏱️ Duración: 25:26
+> ⏱️ **Duración**: 25:26
 > #OpenTelemetry #eBPF #Observabilidad #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
 
 #### 7. Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive
@@ -2119,22 +2125,22 @@ Below are the direct links and full descriptions for each session.
 >
 > Based directly on the frontend-spa-ssr-telemetry.md architectural blueprint, this session guides platform engineers, web architects, and SREs through solving one of the most frustrating observability hurdles in modern microservices.
 >
-> 📌 Key Architectural Discussion Points:
+> 📌 **Key Architectural Discussion Points:**
 >
-> - The Midnight Developer Frustration: The dreaded ticket stating the site is broken and the challenge of correlating anonymous browser actions with server crashes.
-> - The Browser Sandbox Isolation: Why frontend code (Angular, React, Vue) running on user devices cannot execute Linux kernel probes.
-> - W3C Trace Context as the Rosetta Stone: Generating traceparent headers in frontend HTTP interceptors to create an unbroken audit trail.
-> - Ingress Socket Capture in Kernel Space: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
-> - Mid-Flight Syscall Enrichment: How sys_enter_write intercepts stdout/stderr streams and stamps active trace IDs before disk commit.
-> - Server-Side Rendering (SSR) & Node.js Gotchas: Navigating event-loop decoupling, async Pino logging streams, and client ingestion bridges.
+> - **The Midnight Developer Frustration**: The dreaded ticket stating the site is broken and the challenge of correlating anonymous browser actions with server crashes.
+> - **The Browser Sandbox Isolation**: Why frontend code (Angular, React, Vue) running on user devices cannot execute Linux kernel probes.
+> - **W3C Trace Context as the Rosetta Stone**: Generating traceparent headers in frontend HTTP interceptors to create an unbroken audit trail.
+> - **Ingress Socket Capture in Kernel Space**: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
+> - **Mid-Flight Syscall Enrichment**: How sys_enter_write intercepts stdout/stderr streams and stamps active trace IDs before disk commit.
+> - **Server-Side Rendering (SSR) & Node.js Gotchas**: Navigating event-loop decoupling, async Pino logging streams, and client ingestion bridges.
 >
-> 🔗 Official Blueprint Repository & Reference Documentation:
+> 🔗 **Official Blueprint Repository & Reference Documentation:**
 >
-> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
-> - Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **GitHub Blueprint Repository**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Frontend SPAs & SSR Telemetry Guide**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **OpenTelemetry Official Announcement**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duration: 22:34
+> ⏱️ **Duration**: 22:34
 > #OpenTelemetry #eBPF #Frontend #Podcast #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Angular #React
 
 #### 8. Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI
@@ -2148,22 +2154,22 @@ Below are the direct links and full descriptions for each session.
 >
 > Una conversación amena y profunda para arquitectos de software, líderes de plataforma y equipos SRE sobre cómo conectar el clic de compra de un usuario con los registros del sistema backend sin modificar código.
 >
-> 📌 Puntos Clave de la Sesión:
+> 📌 **Puntos Clave de la Sesión:**
 >
-> - La Metáfora de la Instalación Postal: Por qué las herramientas de monitorización en el servidor son como cámaras de seguridad que no ven lo que ocurre dentro de la casa del usuario.
-> - La Frontera del Navegador: El aislamiento de las SPAs (React, Angular) en dispositivos móviles y de escritorio frente al kernel de Linux.
-> - La Cabecera W3C traceparent: La etiqueta de seguimiento estandarizada inyectada por interceptores HTTP cliente antes de salir a la red.
-> - Captura en Sockets por eBPF: Cómo OBI extrae el identificador de traza en sys_enter_recvfrom y lo asocia al mapa BPF de contexto de hilos.
-> - Estampado en Vuelo sin Código: Modificación en memoria del buffer de registros en llamadas al sistema write() y writev().
-> - Casos Extremos en SSR y Node.js: Manejo de flujos asíncronos en Next.js, renderizado en servidor y puentes de ingesta de errores.
+> - **La Metáfora de la Instalación Postal**: Por qué las herramientas de monitorización en el servidor son como cámaras de seguridad que no ven lo que ocurre dentro de la casa del usuario.
+> - **La Frontera del Navegador**: El aislamiento de las SPAs (React, Angular) en dispositivos móviles y de escritorio frente al kernel de Linux.
+> - **La Cabecera W3C traceparent**: La etiqueta de seguimiento estandarizada inyectada por interceptores HTTP cliente antes de salir a la red.
+> - **Captura en Sockets por eBPF**: Cómo OBI extrae el identificador de traza en sys_enter_recvfrom y lo asocia al mapa BPF de contexto de hilos.
+> - **Estampado en Vuelo sin Código**: Modificación en memoria del buffer de registros en llamadas al sistema write() y writev().
+> - **Casos Extremos en SSR y Node.js**: Manejo de flujos asíncronos en Next.js, renderizado en servidor y puentes de ingesta de errores.
 >
-> 🔗 Repositorio Blueprint y Documentación Oficial:
+> 🔗 **Repositorio Blueprint y Documentación Oficial:**
 >
-> - Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
-> - Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> - **Repositorio Blueprint en GitHub**: [https://github.com/nubenetes/obi-trace-log-correlation](https://github.com/nubenetes/obi-trace-log-correlation)
+> - **Guía de Telemetría Frontend SPAs y SSR**: [https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md](https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md)
+> - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
-> ⏱️ Duración: 24:04
+> ⏱️ **Duración**: 24:04
 > #OpenTelemetry #eBPF #Frontend #Podcast #Kubernetes #DistributedTracing #Observabilidad #SRE #DevOps #Microservicios
 
 </details>
