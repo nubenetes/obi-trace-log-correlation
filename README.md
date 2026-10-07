@@ -100,7 +100,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
 - [The Suppressed NUL Byte Filter Requirement](#the-suppressed-nul-byte-filter-requirement)
 - [Lifecycle Operations Summary](#lifecycle-operations-summary)
 - [Video Walkthroughs & Architecture References (YouTube)](#video-walkthroughs--architecture-references-youtube)
-  - [🎬 Full-Length Technical Deep Dives (9 Videos)](#-full-length-technical-deep-dives-9-videos)
+  - [🎬 Full-Length Technical Deep Dives (13 Videos)](#-full-length-technical-deep-dives-13-videos)
     - [1. How OBI Correlation Works: Zero-Code Trace-Log Correlation with eBPF](#1-how-obi-correlation-works-zero-code-trace-log-correlation-with-ebpf)
     - [2. Zero-Code Trace-Log Correlation: OpenTelemetry eBPF (OBI) Deep Dive](#2-zero-code-trace-log-correlation-opentelemetry-ebpf-obi-deep-dive)
     - [3. How to Inject Trace IDs into Logs Without Code Changes Using OBI eBPF](#3-how-to-inject-trace-ids-into-logs-without-code-changes-using-obi-ebpf)
@@ -110,7 +110,11 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [7. Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It](#7-service-mesh-vs-kernel-ebpf-why-meshes-fail-at-log-correlation--how-obi-solves-it)
     - [8. OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution](#8-obi-vs-legacy-observability-tools-the-zero-code-ebpf-revolution)
     - [9. Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción](#9-análisis-de-obi-ebpf-correlación-zero-code-de-logs-y-trazas-en-producción)
-  - [⚡ Topic-Focused Technical Shorts (15 Shorts)](#-topic-focused-technical-shorts-15-shorts)
+    - [10. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI](#10-browser-to-kernel-zero-code-trace-log-correlation-with-ebpf--obi)
+    - [11. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF](#11-server-side-rendering-telemetry-nextjs-nodejs--opentelemetry-ebpf)
+    - [12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux](#12-telemetría-full-stack-con-ebpf-de-spas-y-ssr-al-kernel-en-linux)
+    - [13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel](#13-telemetría-full-stack-obi-conectando-el-navegador-con-el-kernel)
+  - [⚡ Topic-Focused Technical Shorts (17 Shorts)](#-topic-focused-technical-shorts-17-shorts)
     - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
     - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
     - [3. How eBPF Automates Trace-Log Correlation in Go Without SDKs](#3-how-ebpf-automates-trace-log-correlation-in-go-without-sdks)
@@ -126,6 +130,8 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [13. How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents](#13-how-obi-mutates-logs-in-flight-kernel-syscalls-vs-intrusive-apm-agents)
     - [14. Cómo OBI Inyecta Trazas en los Logs sin Modificar Código](#14-cómo-obi-inyecta-trazas-en-los-logs-sin-modificar-código)
     - [15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF](#15-el-fin-de-los-agentes-de-monitorización-observabilidad-con-ebpf)
+    - [16. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs](#16-frontend-spa-telemetry-how-w3c-trace-context-connects-clicks-to-logs)
+    - [17. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux](#17-cómo-conectar-el-frontend-con-ebpf-del-navegador-al-kernel-en-linux)
   - [🎙️ Architectural Masterclass Podcasts (6 Episodes)](#-architectural-masterclass-podcasts-6-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
@@ -469,6 +475,10 @@ This repository includes a comprehensive multi-format educational series synthes
 | 7 | 📽️ Video Guide | [**Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It**](https://www.youtube.com/watch?v=weRUz_7BC_A) | Service Mesh vs Kernel eBPF Observability | 🇺🇸 English *(CC 20+)* | `8:14` | [▶️ Watch Video](https://www.youtube.com/watch?v=weRUz_7BC_A) |
 | 8 | 📽️ Video Guide | [**OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution**](https://www.youtube.com/watch?v=LhDhokgkiqg) | OBI vs APM Agents, Verifier & Pipeline TCO | 🇺🇸 English *(CC 20+)* | `8:38` | [▶️ Watch Video](https://www.youtube.com/watch?v=LhDhokgkiqg) |
 | 9 | 📽️ Video Guide | [**Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción**](https://www.youtube.com/watch?v=n-Ha2MPAoi0) | Arquitectura Kernel, Buffers NUL y Despliegue | 🇪🇸 Spanish *(CC 20+)* | `6:56` | [▶️ Ver Video](https://www.youtube.com/watch?v=n-Ha2MPAoi0) |
+| 10 | 📽️ Video Guide | [**Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI**](https://www.youtube.com/watch?v=PpcLms88DrI) | Frontend Browser Sandbox & Linux Kernel Socket Interception | 🇺🇸 English *(CC 20+)* | `8:20` | [▶️ Watch Video](https://www.youtube.com/watch?v=PpcLms88DrI) |
+| 11 | 📽️ Video Guide | [**Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF**](https://www.youtube.com/watch?v=eS7OHoRtfC8) | Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry | 🇺🇸 English *(CC 20+)* | `7:43` | [▶️ Watch Video](https://www.youtube.com/watch?v=eS7OHoRtfC8) |
+| 12 | 📽️ Video Guide | [**Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux**](https://www.youtube.com/watch?v=aRfPpFjYiFM) | Telemetría Full-Stack, SPAs, SSR y Kernel de Linux | 🇪🇸 Spanish *(CC 20+)* | `7:55` | [▶️ Ver Video](https://www.youtube.com/watch?v=aRfPpFjYiFM) |
+| 13 | 📽️ Video Guide | [**Telemetría Full Stack OBI: Conectando el Navegador con el Kernel**](https://www.youtube.com/watch?v=ulOScXmXit8) | Conexión Navegador a Kernel en 6 Etapas Arquitectónicas | 🇪🇸 Spanish *(CC 20+)* | `5:42` | [▶️ Ver Video](https://www.youtube.com/watch?v=ulOScXmXit8) |
 
 ### ⚡ Topic-Focused Technical Shorts
 
@@ -489,6 +499,8 @@ This repository includes a comprehensive multi-format educational series synthes
 | 13 | [**How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents**](https://www.youtube.com/shorts/rXKn8waK3lk) | Syscall Interception vs Process Injection | 🇺🇸 English *(CC 20+)* | `1:13` | [▶️ Watch Short](https://www.youtube.com/shorts/rXKn8waK3lk) |
 | 14 | [**Cómo OBI Inyecta Trazas en los Logs sin Modificar Código**](https://www.youtube.com/shorts/NqVcTV7XuuQ) | Inyección Kernel en Tiempo Real sin SDKs | 🇪🇸 Spanish *(CC 20+)* | `1:13` | [▶️ Ver Short](https://www.youtube.com/shorts/NqVcTV7XuuQ) |
 | 15 | [**El Fin de los Agentes de Monitorización: Observabilidad con eBPF**](https://www.youtube.com/shorts/g8YGDj7FrEI) | Sustitución de APM por Observabilidad Kernel | 🇪🇸 Spanish *(CC 20+)* | `0:57` | [▶️ Ver Short](https://www.youtube.com/shorts/g8YGDj7FrEI) |
+| 16 | [**Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs**](https://www.youtube.com/shorts/fPy7vW2vRDQ) | Client Browser Interception & W3C Trace Context | 🇺🇸 English *(CC 20+)* | `1:11` | [▶️ Watch Short](https://www.youtube.com/shorts/fPy7vW2vRDQ) |
+| 17 | [**Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux**](https://www.youtube.com/shorts/QdUdLTSOyZE) | Conexión Frontend al Kernel y Trazabilidad W3C | 🇪🇸 Spanish *(CC 20+)* | `1:11` | [▶️ Ver Short](https://www.youtube.com/shorts/QdUdLTSOyZE) |
 
 *For complete descriptions and technical breakdowns, see [Video Walkthroughs & Architecture References](#video-walkthroughs--architecture-references-youtube).*
 
@@ -1110,7 +1122,7 @@ End-to-end architectural walkthroughs and technical shorts for `obi-trace-log-co
 
 Below are the direct links and full descriptions for each session.
 
-### 🎬 Full-Length Technical Deep Dives (9 Videos)
+### 🎬 Full-Length Technical Deep Dives (13 Videos)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Full-Length Sessions</strong></summary>
@@ -1336,6 +1348,7 @@ Below are the direct links and full descriptions for each session.
 
 #### 9. Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=n-Ha2MPAoi0](https://www.youtube.com/watch?v=n-Ha2MPAoi0)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/n-Ha2MPAoi0/edit](https://studio.youtube.com/video/n-Ha2MPAoi0/edit)
 - ⏱️ **Duration**: 6:56
 - 🏷️ **Domain**: Arquitectura Kernel, Buffers NUL y Despliegue en Producción
 - 📝 **Full Description**:
@@ -1345,28 +1358,136 @@ Below are the direct links and full descriptions for each session.
 >
 > Aprende cómo funciona la intercepción de llamadas al sistema en el kernel de Linux y cómo implementar esta solución sin modificar el código de tus microservicios.
 >
-> 📌 **Puntos Clave del Análisis:**
+> 📌 Puntos Clave del Análisis:
+> • El Cambio de Paradigma: Por qué los agentes de telemetría tradicionales añaden sobrecarga y fragilidad a los despliegues.
+> • Intercepción en el Kernel: Cómo las sondas eBPF capturan las escrituras en stdout y stderr en tiempo real.
+> • Inyección Dinámica de Contexto: Estampado automático de trace_id y span_id en logs estructurados (JSON) y texto plano.
+> • Filtrado de Bytes NUL: Configuración necesaria en recolectores de logs para descartar los buffers originales sustituidos por OBI.
+> • Estrategias de Rollout: Prácticas recomendadas para despliegues canary progresivos en clusters de Kubernetes.
 >
-> - **El Cambio de Paradigma**: Por qué los agentes de telemetría tradicionales añaden sobrecarga y fragilidad a los despliegues.
-> - **Intercepción en el Kernel**: Cómo las sondas eBPF capturan las escrituras en stdout y stderr en tiempo real.
-> - **Inyección Dinámica de Contexto**: Estampado automático de trace_id y span_id en logs estructurados (JSON) y texto plano.
-> - **Filtrado de Bytes NUL**: Configuración necesaria en recolectores de logs para descartar los buffers originales sustituidos por OBI.
-> - **Estrategias de Rollout**: Prácticas recomendadas para despliegues canary progresivos en clusters de Kubernetes.
+> 🔗 Repositorio Oficial y Documentación:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Guía de Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
 >
-> 🔗 **Repositorio Oficial y Documentación:**
->
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Guía de Arquitectura**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
->
-> ⏱️ **Duración**: 6:56
+> ⏱️ Duración: 6:56
 > #OpenTelemetry #eBPF #Observabilidad #Kubernetes #DevOps #SRE #CloudNative #Microservicios #DistributedTracing
+
+#### 10. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=PpcLms88DrI](https://www.youtube.com/watch?v=PpcLms88DrI)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/PpcLms88DrI/edit](https://studio.youtube.com/video/PpcLms88DrI/edit)
+- ⏱️ **Duration**: 8:20
+- 🏷️ **Domain**: Frontend Browser Sandbox & Linux Kernel Socket Interception
+- 📝 **Full Description**:
+> 🌐 Architectural Masterclass: From Browser Sandbox to Linux Kernel with OpenTelemetry eBPF (OBI)
+>
+> Full 8-minute technical walkthrough exploring how OpenTelemetry eBPF Instrumentation (OBI) bridges the gap between client-side browser single page applications (SPAs) and host Linux kernel logging.
+>
+> Learn how to trace a user request chronologically from a frontend button click, across the network wire, through kernel socket ingress, down to mid-flight log enrichment in Ring 0 without changing a single line of application source code.
+>
+> 📌 Key Architectural Milestones Explored:
+> • The Midnight Triage Crisis: Receiving a failing trace alert at 2:00 AM and encountering completely orphaned backend logs.
+> • The Browser Sandbox Boundary: Why client JavaScript (React, Angular, Vue) runs in isolated user devices and cannot execute Linux eBPF probes.
+> • W3C Trace Context Propagation: How frontend HTTP interceptors generate and inject traceparent headers (00-trace_id-span_id-01) across outgoing network boundaries.
+> • Kernel Socket Interception: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
+> • Mid-Flight Syscall Enrichment: How sys_enter_write intercepts backend stdout/stderr streams and stamps active trace identifiers.
+> • Unified Incident Resolution: Bridging user clicks to root-cause backend log lines in seconds.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 8:20
+> #OpenTelemetry #eBPF #Frontend #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Angular #React
+
+#### 11. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eS7OHoRtfC8](https://www.youtube.com/watch?v=eS7OHoRtfC8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eS7OHoRtfC8/edit](https://studio.youtube.com/video/eS7OHoRtfC8/edit)
+- ⏱️ **Duration**: 7:43
+- 🏷️ **Domain**: Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry
+- 📝 **Full Description**:
+> ⚡ Architectural Deep Dive: Server-Side Rendering (SSR) Telemetry with OpenTelemetry eBPF (OBI)
+>
+> Full 7-minute systems analysis covering the unique challenges and operational solutions for instrumenting Server-Side Rendering (SSR) applications (Next.js, Nuxt, Node.js Express) with kernel eBPF probes.
+>
+> Explore why asynchronous runtime buffering causes trace desynchronization and discover production architectural patterns to maintain flawless trace-log correlation across modern full-stack web frameworks.
+>
+> 📌 Key Technical Modules Explored:
+> • The SSR Runtime Dilemma: How Node.js single-threaded event loops decouple asynchronous request handling from operating system write syscalls.
+> • The Async Buffering Gotcha: Why asynchronous log transports (e.g. Pino async logging, buffered streams) cause eBPF to stamp outdated trace context.
+> • Thread-Context Alignment: Ensuring synchronous stream flushes so eBPF hooks capture matching thread IDs (tgid_pid) during active requests.
+> • The Client Telemetry Ingestion Bridge: Designing dedicated HTTP ingestion endpoints to forward browser console errors into backend log pipelines.
+> • Production Best Practices: Performance baselines, memory consumption, and configuring multi-line log assemblers in Fluent Bit and Vector.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 7:43
+> #OpenTelemetry #eBPF #SSR #NextJS #NodeJS #Kubernetes #Observability #SRE #DevOps #Microservices
+
+#### 12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=aRfPpFjYiFM](https://www.youtube.com/watch?v=aRfPpFjYiFM)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/aRfPpFjYiFM/edit](https://studio.youtube.com/video/aRfPpFjYiFM/edit)
+- ⏱️ **Duration**: 7:55
+- 🏷️ **Domain**: Telemetría Full-Stack, SPAs, SSR y Kernel de Linux
+- 📝 **Full Description**:
+> 🌐 Masterclass de Arquitectura: Telemetría Full Stack con eBPF – De SPAs y SSR al Kernel de Linux
+>
+> Recorrido arquitectónico técnico en español de 8 minutos analizando cómo correlacionar telemetría desde aplicaciones frontend cliente y servidores SSR hasta el kernel de Linux utilizando OpenTelemetry eBPF (OBI).
+>
+> Descubre cómo resolver el mayor dolor de cabeza de los equipos SRE: conectar clics de usuario y renderizado en servidor con registros de contenedores sin modificar una sola línea de código fuente.
+>
+> 📌 Puntos Clave de la Sesión:
+> • El Dilema de la Guardia a las 2:00 AM: Trazas distribuidas impecables en los paneles pero logs de backend totalmente desconectados del contexto de usuario.
+> • La Frontera del Navegador: Por qué los clientes frontend (Angular, React, Vue) no pueden ejecutar sondas eBPF y cómo la cabecera W3C traceparent resuelve la conexión.
+> • Intercepción en el Kernel: Captura de paquetes en sockets de red (sys_enter_recvfrom) y almacenamiento del trace_id en mapas BPF del kernel.
+> • Retos en Server-Side Rendering (SSR): El impacto del bucle de eventos de Node.js y cómo el buffer asíncrono desincroniza el contexto de ejecución.
+> • Soluciones de Producción: Modos de escritura síncrona en Pino y Node.js, puentes de ingesta de telemetría y ensamblaje de registros multilínea.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 7:55
+> #OpenTelemetry #eBPF #Frontend #SSR #NodeJS #React #Angular #Kubernetes #Observabilidad #SRE #DevOps
+
+#### 13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=ulOScXmXit8](https://www.youtube.com/watch?v=ulOScXmXit8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/ulOScXmXit8/edit](https://studio.youtube.com/video/ulOScXmXit8/edit)
+- ⏱️ **Duration**: 5:42
+- 🏷️ **Domain**: Conexión Navegador a Kernel en 6 Etapas Arquitectónicas
+- 📝 **Full Description**:
+> 🔍 Guía Técnica: Telemetría Full Stack OBI – Conectando el Navegador con el Kernel de Linux
+>
+> Análisis técnico en español de 6 minutos estructurado en seis etapas fundamentales para mapear el viaje completo de la telemetría: desde un clic en el navegador hasta el kernel del servidor backend.
+>
+> Aprende la ingeniería de sistemas detrás de OpenTelemetry eBPF (OBI) para unificar la observabilidad full-stack sin tocar código de las aplicaciones.
+>
+> 📌 Las 6 Etapas Arquitectónicas Analizadas:
+> • Etapa 1 - El Dilema de la Observabilidad: La barrera física entre el dispositivo del usuario y el servidor en incidentes de producción.
+> • Etapa 2 - Trazas desde el Navegador: Generación de identificadores de traza en librerías cliente e interceptores HTTP.
+> • Etapa 3 - La Pasarela y Reenvío W3C: Propagación de cabeceras traceparent estándar a través de proxies y balanceadores.
+> • Etapa 4 - Intercepción en el Kernel: Detección a nivel de socket por OBI y vinculación con el ID de hilo del sistema operativo.
+> • Etapa 5 - Reconciliación Zero-Code: Inyección del Trace ID en llamadas al sistema write() sobre stdout y stderr.
+> • Etapa 6 - Triaje y Visibilidad Total: De la alerta en pantalla a la línea de código exacta del microservicio en segundos.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 5:42
+> #OpenTelemetry #eBPF #Frontend #FullStack #W3C #Kubernetes #Observabilidad #SRE #DevOps #Microservicios
 
 </details>
 
 <br/>
 
-### ⚡ Topic-Focused Technical Shorts (15 Shorts)
+### ⚡ Topic-Focused Technical Shorts (17 Shorts)
 
 <details>
 <summary>📂 <strong>Technical Video Shorts Breakdown (15 Shorts)</strong></summary>
@@ -1669,24 +1790,72 @@ Below are the direct links and full descriptions for each session.
 
 #### 15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/g8YGDj7FrEI](https://www.youtube.com/shorts/g8YGDj7FrEI)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/g8YGDj7FrEI/edit](https://studio.youtube.com/video/g8YGDj7FrEI/edit)
 - ⏱️ **Duration**: 0:57
 - 🏷️ **Domain**: Sustitución de APM por Observabilidad Kernel
 - 📝 **Full Description**:
 > ⚡ El Fin de los Agentes de Monitorización: Observabilidad con eBPF!
 >
 > Son las 2:00 AM, una aplicación crítica falla y salta la alarma. El reto no es saber que falló, sino encontrar el log exacto entre millones de líneas:
+> • La Falsa Promesa de los Agentes: Los agentes APM tradicionales consumen memoria, complican los despliegues y a menudo carecen del contexto de red adecuado.
+> • La Revolución de eBPF: En lugar de invadir el contenedor, la observabilidad se traslada al kernel de Linux de forma no intrusiva y ultraligera.
+> • Correlación Instantánea: OBI une el trace ID de la petición de red con la línea exacta de log que describe el error en milisegundos.
+> • Diagnóstico Inmediato: Reduce el tiempo medio de resolución (MTTR) de horas a segundos en sistemas distribuidos.
 >
-> - **La Falsa Promesa de los Agentes**: Los agentes APM tradicionales consumen memoria, complican los despliegues y a menudo carecen del contexto de red adecuado.
-> - **La Revolución de eBPF**: En lugar de invadir el contenedor, la observabilidad se traslada al kernel de Linux de forma no intrusiva y ultraligera.
-> - **Correlación Instantánea**: OBI une el trace ID de la petición de red con la línea exacta de log que describe el error en milisegundos.
-> - **Diagnóstico Inmediato**: Reduce el tiempo medio de resolución (MTTR) de horas a segundos en sistemas distribuidos.
->
-> 🔗 **Repositorio Oficial y Documentación:**
+> 🔗 Repositorio Oficial y Documentación:
 > https://github.com/nubenetes/obi-trace-log-correlation
 > Guía de Filtrado y Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
 > Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observabilidad #CloudNative #MTTR
+
+#### 16. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/fPy7vW2vRDQ](https://www.youtube.com/shorts/fPy7vW2vRDQ)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/fPy7vW2vRDQ/edit](https://studio.youtube.com/video/fPy7vW2vRDQ/edit)
+- ⏱️ **Duration**: 1:11
+- 🏷️ **Domain**: Client Browser Interception & W3C Trace Context
+- 📝 **Full Description**:
+> ⚡ Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs!
+>
+> How does a click in an Angular or React app get linked to backend server logs?
+>
+> Frontend web apps run in isolated client browsers where Linux eBPF probes cannot reach. Here is how modern observability connects them without changing backend code:
+>
+> 1. Client Interceptor: When a user clicks an action, an HTTP interceptor injects a W3C traceparent header into the request.
+> 2. Kernel Socket Interception: An eBPF probe captures the incoming socket call, extracts the trace ID, and saves it in a BPF kernel map.
+> 3. Mid-Flight Log Enrichment: When the backend writes to stdout, eBPF intercepts the write syscall mid-flight and stamps the trace ID.
+> 4. Instant Outage Resolution: Operators can jump directly from a user click to the exact backend failure log.
+>
+> 🔗 Blueprint Repository & Full-Stack Telemetry Architecture:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Full Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observability #Kubernetes #SRE #DevOps
+
+#### 17. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/QdUdLTSOyZE](https://www.youtube.com/shorts/QdUdLTSOyZE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/QdUdLTSOyZE/edit](https://studio.youtube.com/video/QdUdLTSOyZE/edit)
+- ⏱️ **Duration**: 1:11
+- 🏷️ **Domain**: Conexión Frontend al Kernel y Trazabilidad W3C
+- 📝 **Full Description**:
+> ⚡ Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux!
+>
+> ¿Cómo rastrear un error desde el navegador del usuario hasta el servidor backend sin librerías pesadas?
+>
+> Las aplicaciones React o Angular se ejecutan en el dispositivo del usuario, totalmente aisladas del kernel de Linux del servidor. Así es como la arquitectura moderna conecta ambos mundos:
+>
+> 1. Interceptor HTTP: El frontend inyecta una cabecera W3C traceparent única antes de enviar la petición de red.
+> 2. Captura en el Kernel: Una sonda eBPF intercepta la conexión de red en el socket, extrae el identificador y lo asocia al hilo de ejecución.
+> 3. Inyección en Registros: Si ocurre un fallo en backend, el kernel inyecta el Trace ID en el registro de salida en tiempo real.
+> 4. Diagnóstico Inmediato: Pasas del clic frustrado del cliente a la línea de código exacta que falló en segundos.
+>
+> 🔗 Repositorio Blueprint y Guía de Arquitectura Frontend:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Guía Completa: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observabilidad #Kubernetes #SRE #DevOps
 
 </details>
 

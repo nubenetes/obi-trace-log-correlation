@@ -46,11 +46,17 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 > **Multilingual Learning Experience**:
 > Features native audio in **Spanish 🇪🇸** and **English 🇺🇸**, with automated closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for full-stack, frontend, and SRE teams.
 
-#### 📊 Curated Frontend SPAs & SSR Telemetry Episodes
+#### 📊 Curated Frontend SPAs & SSR Telemetry Collection (8 Episodes)
 
 | Format | Episode / Title | Domain / Focus | Language | Duration | Direct YouTube Link |
 |:---:|---|---|:---:|:---:|---|
+| 📽️ **Video Guide** | [**Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI**](https://www.youtube.com/watch?v=PpcLms88DrI) | **Browser to Kernel**: sandboxed SPAs, W3C HTTP propagation, socket ingress y correlación mid-flight | 🇺🇸 English *(CC 20+)* | `8:20` | [▶️ Watch Video](https://www.youtube.com/watch?v=PpcLms88DrI) |
+| 📽️ **Video Guide** | [**Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF**](https://www.youtube.com/watch?v=eS7OHoRtfC8) | **SSR & Node.js Runtimes**: event-loop decoupling, streams asíncronos y puentes de ingesta | 🇺🇸 English *(CC 20+)* | `7:43` | [▶️ Watch Video](https://www.youtube.com/watch?v=eS7OHoRtfC8) |
+| 📽️ **Video Guide** | [**Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux**](https://www.youtube.com/watch?v=aRfPpFjYiFM) | **Telemetría Full-Stack**: React, Angular, Node.js SSR, llamadas `write`/`recvfrom` y triaje a las 2 AM | 🇪🇸 Spanish *(CC 20+)* | `7:55` | [▶️ Ver Video](https://www.youtube.com/watch?v=aRfPpFjYiFM) |
+| 📽️ **Video Guide** | [**Telemetría Full Stack OBI: Conectando el Navegador con el Kernel**](https://www.youtube.com/watch?v=ulOScXmXit8) | **6 Etapas Arquitectónicas**: del clic del usuario a la intercepción en socket y enriquecimiento zero-code | 🇪🇸 Spanish *(CC 20+)* | `5:42` | [▶️ Ver Video](https://www.youtube.com/watch?v=ulOScXmXit8) |
 | 🎙️ **Audio Podcast** | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | **Del Navegador al Kernel**: frontend SPAs (React, Angular), cabeceras W3C traceparent y captura en `sys_recvfrom` | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
+| ⚡ **Technical Short** | [**Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs**](https://www.youtube.com/shorts/fPy7vW2vRDQ) | **Click-to-Log Propagation**: interceptor HTTP, W3C traceparent y captura en kernel map | 🇺🇸 English *(CC 20+)* | `1:11` | [▶️ Watch Short](https://www.youtube.com/shorts/fPy7vW2vRDQ) |
+| ⚡ **Technical Short** | [**Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux**](https://www.youtube.com/shorts/QdUdLTSOyZE) | **Del Clic a la Línea de Código**: barrera física del navegador, cabecera W3C y kernel stamping | 🇪🇸 Spanish *(CC 20+)* | `1:11` | [▶️ Ver Short](https://www.youtube.com/shorts/QdUdLTSOyZE) |
 | ⚡ **Technical Short** | [**Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats**](https://www.youtube.com/shorts/b9oNWMJlUcc) | **Node.js SSR Runtime Buffering**: event-loop decoupling, async stdout streams y pérdidas de contexto en Server-Side Rendering | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/b9oNWMJlUcc) |
 
 <details open>
@@ -58,51 +64,207 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 <br/>
 
-#### 1. Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas: Del Navegador al Kernel (12:50)
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=kP_FrCcn_jE](https://www.youtube.com/watch?v=kP_FrCcn_jE)
-- ⏱️ **Duration**: 12:50
-- 🏷️ **Domain**: Frontera del Navegador, Frontend W3C Context (`traceparent`) & Captura en `sys_recvfrom`
+#### 1. Browser to Kernel: Zero-Code Trace-Log Correlation with eBPF & OBI (8:20)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=PpcLms88DrI](https://www.youtube.com/watch?v=PpcLms88DrI)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/PpcLms88DrI/edit](https://studio.youtube.com/video/PpcLms88DrI/edit)
+- ⏱️ **Duration**: 8:20
+- 🏷️ **Domain**: Frontend Browser Sandbox & Linux Kernel Socket Interception
 - 📝 **Full Description**:
-> 🎙️ **Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas – Service Mesh vs. Kernel eBPF (Del Navegador al Kernel)**
+> 🌐 Architectural Masterclass: From Browser Sandbox to Linux Kernel with OpenTelemetry eBPF (OBI)
+>
+> Full 8-minute technical walkthrough exploring how OpenTelemetry eBPF Instrumentation (OBI) bridges the gap between client-side browser single page applications (SPAs) and host Linux kernel logging.
+>
+> Learn how to trace a user request chronologically from a frontend button click, across the network wire, through kernel socket ingress, down to mid-flight log enrichment in Ring 0 without changing a single line of application source code.
+>
+> 📌 Key Architectural Milestones Explored:
+> • The Midnight Triage Crisis: Receiving a failing trace alert at 2:00 AM and encountering completely orphaned backend logs.
+> • The Browser Sandbox Boundary: Why client JavaScript (React, Angular, Vue) runs in isolated user devices and cannot execute Linux eBPF probes.
+> • W3C Trace Context Propagation: How frontend HTTP interceptors generate and inject traceparent headers (00-trace_id-span_id-01) across outgoing network boundaries.
+> • Kernel Socket Interception: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
+> • Mid-Flight Syscall Enrichment: How sys_enter_write intercepts backend stdout/stderr streams and stamps active trace identifiers.
+> • Unified Incident Resolution: Bridging user clicks to root-cause backend log lines in seconds.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 8:20
+> #OpenTelemetry #eBPF #Frontend #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Angular #React
+
+#### 2. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF (7:43)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eS7OHoRtfC8](https://www.youtube.com/watch?v=eS7OHoRtfC8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eS7OHoRtfC8/edit](https://studio.youtube.com/video/eS7OHoRtfC8/edit)
+- ⏱️ **Duration**: 7:43
+- 🏷️ **Domain**: Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry
+- 📝 **Full Description**:
+> ⚡ Architectural Deep Dive: Server-Side Rendering (SSR) Telemetry with OpenTelemetry eBPF (OBI)
+>
+> Full 7-minute systems analysis covering the unique challenges and operational solutions for instrumenting Server-Side Rendering (SSR) applications (Next.js, Nuxt, Node.js Express) with kernel eBPF probes.
+>
+> Explore why asynchronous runtime buffering causes trace desynchronization and discover production architectural patterns to maintain flawless trace-log correlation across modern full-stack web frameworks.
+>
+> 📌 Key Technical Modules Explored:
+> • The SSR Runtime Dilemma: How Node.js single-threaded event loops decouple asynchronous request handling from operating system write syscalls.
+> • The Async Buffering Gotcha: Why asynchronous log transports (e.g. Pino async logging, buffered streams) cause eBPF to stamp outdated trace context.
+> • Thread-Context Alignment: Ensuring synchronous stream flushes so eBPF hooks capture matching thread IDs (tgid_pid) during active requests.
+> • The Client Telemetry Ingestion Bridge: Designing dedicated HTTP ingestion endpoints to forward browser console errors into backend log pipelines.
+> • Production Best Practices: Performance baselines, memory consumption, and configuring multi-line log assemblers in Fluent Bit and Vector.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 7:43
+> #OpenTelemetry #eBPF #SSR #NextJS #NodeJS #Kubernetes #Observability #SRE #DevOps #Microservices
+
+#### 3. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux (7:55)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=aRfPpFjYiFM](https://www.youtube.com/watch?v=aRfPpFjYiFM)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/aRfPpFjYiFM/edit](https://studio.youtube.com/video/aRfPpFjYiFM/edit)
+- ⏱️ **Duration**: 7:55
+- 🏷️ **Domain**: Telemetría Full-Stack, SPAs, SSR y Kernel de Linux
+- 📝 **Full Description**:
+> 🌐 Masterclass de Arquitectura: Telemetría Full Stack con eBPF – De SPAs y SSR al Kernel de Linux
+>
+> Recorrido arquitectónico técnico en español de 8 minutos analizando cómo correlacionar telemetría desde aplicaciones frontend cliente y servidores SSR hasta el kernel de Linux utilizando OpenTelemetry eBPF (OBI).
+>
+> Descubre cómo resolver el mayor dolor de cabeza de los equipos SRE: conectar clics de usuario y renderizado en servidor con registros de contenedores sin modificar una sola línea de código fuente.
+>
+> 📌 Puntos Clave de la Sesión:
+> • El Dilema de la Guardia a las 2:00 AM: Trazas distribuidas impecables en los paneles pero logs de backend totalmente desconectados del contexto de usuario.
+> • La Frontera del Navegador: Por qué los clientes frontend (Angular, React, Vue) no pueden ejecutar sondas eBPF y cómo la cabecera W3C traceparent resuelve la conexión.
+> • Intercepción en el Kernel: Captura de paquetes en sockets de red (sys_enter_recvfrom) y almacenamiento del trace_id en mapas BPF del kernel.
+> • Retos en Server-Side Rendering (SSR): El impacto del bucle de eventos de Node.js y cómo el buffer asíncrono desincroniza el contexto de ejecución.
+> • Soluciones de Producción: Modos de escritura síncrona en Pino y Node.js, puentes de ingesta de telemetría y ensamblaje de registros multilínea.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 7:55
+> #OpenTelemetry #eBPF #Frontend #SSR #NodeJS #React #Angular #Kubernetes #Observabilidad #SRE #DevOps
+
+#### 4. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel (5:42)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=ulOScXmXit8](https://www.youtube.com/watch?v=ulOScXmXit8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/ulOScXmXit8/edit](https://studio.youtube.com/video/ulOScXmXit8/edit)
+- ⏱️ **Duration**: 5:42
+- 🏷️ **Domain**: Conexión Navegador a Kernel en 6 Etapas Arquitectónicas
+- 📝 **Full Description**:
+> 🔍 Guía Técnica: Telemetría Full Stack OBI – Conectando el Navegador con el Kernel de Linux
+>
+> Análisis técnico en español de 6 minutos estructurado en seis etapas fundamentales para mapear el viaje completo de la telemetría: desde un clic en el navegador hasta el kernel del servidor backend.
+>
+> Aprende la ingeniería de sistemas detrás de OpenTelemetry eBPF (OBI) para unificar la observabilidad full-stack sin tocar código de las aplicaciones.
+>
+> 📌 Las 6 Etapas Arquitectónicas Analizadas:
+> • Etapa 1 - El Dilema de la Observabilidad: La barrera física entre el dispositivo del usuario y el servidor en incidentes de producción.
+> • Etapa 2 - Trazas desde el Navegador: Generación de identificadores de traza en librerías cliente e interceptores HTTP.
+> • Etapa 3 - La Pasarela y Reenvío W3C: Propagación de cabeceras traceparent estándar a través de proxies y balanceadores.
+> • Etapa 4 - Intercepción en el Kernel: Detección a nivel de socket por OBI y vinculación con el ID de hilo del sistema operativo.
+> • Etapa 5 - Reconciliación Zero-Code: Inyección del Trace ID en llamadas al sistema write() sobre stdout y stderr.
+> • Etapa 6 - Triaje y Visibilidad Total: De la alerta en pantalla a la línea de código exacta del microservicio en segundos.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 5:42
+> #OpenTelemetry #eBPF #Frontend #FullStack #W3C #Kubernetes #Observabilidad #SRE #DevOps #Microservicios
+
+#### 5. Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas: Del Navegador al Kernel (12:50)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=kP_FrCcn_jE](https://www.youtube.com/watch?v=kP_FrCcn_jE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/kP_FrCcn_jE/edit](https://studio.youtube.com/video/kP_FrCcn_jE/edit)
+- ⏱️ **Duration**: 12:50
+- 🏷️ **Domain**: Frontera del Navegador, Frontend W3C Context (traceparent) & Captura en sys_recvfrom
+- 📝 **Full Description**:
+> 🎙️ Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas – Service Mesh vs. Kernel eBPF (Del Navegador al Kernel)
 >
 > Episodio en formato podcast técnico en español analizando la interacción entre el navegador web del usuario y las sondas eBPF en el kernel de Linux (OpenTelemetry OBI).
 >
-> 📌 **Relevancia Específica para Frontend SPAs & Arquitectura Full-Stack:**
+> 📌 Relevancia Específica para Frontend SPAs & Arquitectura Full-Stack:
+> • La Frontera del Sandbox del Navegador: Por qué las aplicaciones cliente (React, Angular, Vue) que se ejecutan en navegadores en dispositivos de usuario no pueden ejecutar sondas eBPF de Linux.
+> • Del Navegador al Kernel: Cómo el frontend genera y propaga cabeceras W3C traceparent (00-trace_id-span_id-01) a través de la red hacia el clúster.
+> • Captura en Ingress por el Kernel: Cómo la sonda de socket del kernel (sys_enter_recvfrom) intercepta la cabecera HTTP inyectada por el frontend y almacena el trace_id en el mapa BPF traces_ctx_v1.
+> • Correlación Extremo a Extremo: Cómo las llamadas stdout/stderr de los microservicios backend quedan automáticamente enriquecidas con el trace_id originado en el clic del usuario en el navegador.
 >
-> - **La Frontera del Sandbox del Navegador**: Por qué las aplicaciones cliente (React, Angular, Vue) que se ejecutan en navegadores (Chrome, Safari, Firefox) en dispositivos de usuario no pueden ejecutar sondas eBPF de Linux.
-> - **Del Navegador al Kernel**: Cómo el frontend genera y propaga cabeceras W3C `traceparent` (`00-{trace_id}-{span_id}-01`) a través de la red hacia el clúster.
-> - **Captura en Ingress por el Kernel**: Cómo la sonda de socket del kernel (`sys_enter_recvfrom`) intercepta la cabecera HTTP inyectada por el frontend y almacena el `trace_id` en el mapa BPF `traces_ctx_v1`.
-> - **Correlación Extremo a Extremo**: Cómo las llamadas `stdout`/`stderr` de los microservicios backend quedan automáticamente enriquecidas con el `trace_id` originado en el clic del usuario en el navegador.
+> 🔗 Repositorio Blueprint y Documentación:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Frontend SPAs & SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
-> 🔗 **Repositorio Blueprint y Documentación**:
->
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Guía de Frontend SPAs & SSR**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
->
-> ⏱️ **Duración**: 12:50
+> ⏱️ Duración: 12:50
 > #OpenTelemetry #eBPF #Frontend #Angular #React #Observabilidad #Kubernetes #SRE #DistributedTracing #Podcast
 
-#### 2. Technical Short: Why eBPF Trace-Log Correlation Loses Context: Async Buffers & SSR Caveats (1:24)
+#### 6. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs (1:11)
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/fPy7vW2vRDQ](https://www.youtube.com/shorts/fPy7vW2vRDQ)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/fPy7vW2vRDQ/edit](https://studio.youtube.com/video/fPy7vW2vRDQ/edit)
+- ⏱️ **Duration**: 1:11
+- 🏷️ **Domain**: Client Browser Interception & W3C Trace Context
+- 📝 **Full Description**:
+> ⚡ Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs!
+>
+> How does a click in an Angular or React app get linked to backend server logs?
+>
+> Frontend web apps run in isolated client browsers where Linux eBPF probes cannot reach. Here is how modern observability connects them without changing backend code:
+>
+> 1. Client Interceptor: When a user clicks an action, an HTTP interceptor injects a W3C traceparent header into the request.
+> 2. Kernel Socket Interception: An eBPF probe captures the incoming socket call, extracts the trace ID, and saves it in a BPF kernel map.
+> 3. Mid-Flight Log Enrichment: When the backend writes to stdout, eBPF intercepts the write syscall mid-flight and stamps the trace ID.
+> 4. Instant Outage Resolution: Operators can jump directly from a user click to the exact backend failure log.
+>
+> 🔗 Blueprint Repository & Full-Stack Telemetry Architecture:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Full Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observability #Kubernetes #SRE #DevOps
+
+#### 7. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux (1:11)
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/QdUdLTSOyZE](https://www.youtube.com/shorts/QdUdLTSOyZE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/QdUdLTSOyZE/edit](https://studio.youtube.com/video/QdUdLTSOyZE/edit)
+- ⏱️ **Duration**: 1:11
+- 🏷️ **Domain**: Conexión Frontend al Kernel y Trazabilidad W3C
+- 📝 **Full Description**:
+> ⚡ Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux!
+>
+> ¿Cómo rastrear un error desde el navegador del usuario hasta el servidor backend sin librerías pesadas?
+>
+> Las aplicaciones React o Angular se ejecutan en el dispositivo del usuario, totalmente aisladas del kernel de Linux del servidor. Así es como la arquitectura moderna conecta ambos mundos:
+>
+> 1. Interceptor HTTP: El frontend inyecta una cabecera W3C traceparent única antes de enviar la petición de red.
+> 2. Captura en el Kernel: Una sonda eBPF intercepta la conexión de red en el socket, extrae el identificador y lo asocia al hilo de ejecución.
+> 3. Inyección en Registros: Si ocurre un fallo en backend, el kernel inyecta el Trace ID en el registro de salida en tiempo real.
+> 4. Diagnóstico Inmediato: Pasas del clic frustrado del cliente a la línea de código exacta que falló en segundos.
+>
+> 🔗 Repositorio Blueprint y Guía de Arquitectura Frontend:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Guía Completa: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observabilidad #Kubernetes #SRE #DevOps
+
+#### 8. Technical Short: Why eBPF Trace-Log Correlation Loses Context: Async Buffers & SSR Caveats (1:24)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/b9oNWMJlUcc](https://www.youtube.com/shorts/b9oNWMJlUcc)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/b9oNWMJlUcc/edit](https://studio.youtube.com/video/b9oNWMJlUcc/edit)
 - ⏱️ **Duration**: 1:24
 - 🏷️ **Domain**: Node.js SSR Event-Loop Buffering, Async Streams & Context Desynchronization
 - 📝 **Full Description**:
-> ⚡ **Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats!**
+> ⚡ Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats!
 >
 > A focused 84-second technical short explaining the primary operational hurdle when instrumenting Server-Side Rendering (SSR) engines (Next.js, Nuxt, Node.js Express) with eBPF:
 >
-> 📌 **SSR & Node.js Runtime Mechanics:**
+> 📌 SSR & Node.js Runtime Mechanics:
+> • The Async Buffering Dilemma: eBPF stamps trace IDs at the exact moment of the OS write() system call. In Node.js SSR engines using asynchronous pipes (e.g. Pino async transport, stream buffering), writes are deferred to future event-loop ticks.
+> • Mismatched Thread Context: By the time Node.js flushes the buffered log to stdout, the worker thread is already processing a different incoming SSR render request, causing eBPF to stamp the wrong trace context.
+> • The Architectural Fix: Configuring synchronous stream writers (destination({ sync: true })), using process.stdout.write synchronously during request lifecycles, or bridging client telemetry via synchronous ingestion bridges.
 >
-> - **The Async Buffering Dilemma**: eBPF stamps trace IDs at the exact moment of the OS `write()` system call. In Node.js SSR engines using asynchronous pipes (e.g. Pino async transport, stream buffering), writes are deferred to future event-loop ticks.
-> - **Mismatched Thread Context**: By the time Node.js flushes the buffered log to stdout, the worker thread is already processing a different incoming SSR render request, causing eBPF to stamp the wrong trace context.
-> - **The Architectural Fix**: Configuring synchronous stream writers (`destination({ sync: true })`), using `process.stdout.write` synchronously during request lifecycles, or bridging client telemetry via synchronous ingestion bridges.
->
-> 🔗 **Official Blueprint Repo & Docs:**
->
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **SSR Deep Dive Guide**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md#8-server-side-rendering-ssr--server-components-deep-dive
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> 🔗 Official Blueprint Repo & Docs:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • SSR Deep Dive Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md#8-server-side-rendering-ssr--server-components-deep-dive
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #NodeJS #SSR #NextJS #Observability #Debugging #SRE #Kubernetes
 
