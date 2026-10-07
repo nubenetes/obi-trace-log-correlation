@@ -100,7 +100,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
 - [The Suppressed NUL Byte Filter Requirement](#the-suppressed-nul-byte-filter-requirement)
 - [Lifecycle Operations Summary](#lifecycle-operations-summary)
 - [Video Walkthroughs & Architecture References (YouTube)](#video-walkthroughs--architecture-references-youtube)
-  - [🎬 Full-Length Technical Deep Dives (14 Videos)](#-full-length-technical-deep-dives-14-videos)
+  - [🎬 Full-Length Technical Deep Dives (15 Videos)](#-full-length-technical-deep-dives-15-videos)
     - [1. How OBI Correlation Works: Zero-Code Trace-Log Correlation with eBPF](#1-how-obi-correlation-works-zero-code-trace-log-correlation-with-ebpf)
     - [2. Zero-Code Trace-Log Correlation: OpenTelemetry eBPF (OBI) Deep Dive](#2-zero-code-trace-log-correlation-opentelemetry-ebpf-obi-deep-dive)
     - [3. How to Inject Trace IDs into Logs Without Code Changes Using OBI eBPF](#3-how-to-inject-trace-ids-into-logs-without-code-changes-using-obi-ebpf)
@@ -115,6 +115,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux](#12-telemetría-full-stack-con-ebpf-de-spas-y-ssr-al-kernel-en-linux)
     - [13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel](#13-telemetría-full-stack-obi-conectando-el-navegador-con-el-kernel)
     - [14. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF](#14-conecta-la-telemetría-frontend-al-backend-con-opentelemetry-y-ebpf)
+    - [15. Connecting Browser Clicks to eBPF Logs: Full-Stack Architecture Guide](#15-connecting-browser-clicks-to-ebpf-logs-full-stack-architecture-guide)
   - [⚡ Topic-Focused Technical Shorts (17 Shorts)](#-topic-focused-technical-shorts-17-shorts)
     - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
     - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
@@ -485,6 +486,7 @@ This repository includes a comprehensive multi-format educational series synthes
 | 12 | 📽️ Video Guide | [**Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux**](https://www.youtube.com/watch?v=aRfPpFjYiFM) | Telemetría Full-Stack, SPAs, SSR y Kernel de Linux | 🇪🇸 Spanish *(CC 20+)* | `7:55` | [▶️ Ver Video](https://www.youtube.com/watch?v=aRfPpFjYiFM) |
 | 13 | 📽️ Video Guide | [**Telemetría Full Stack OBI: Conectando el Navegador con el Kernel**](https://www.youtube.com/watch?v=ulOScXmXit8) | Conexión Navegador a Kernel en 6 Etapas Arquitectónicas | 🇪🇸 Spanish *(CC 20+)* | `5:42` | [▶️ Ver Video](https://www.youtube.com/watch?v=ulOScXmXit8) |
 | 14 | 📽️ Video Guide | [**Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF**](https://www.youtube.com/watch?v=eHCTIUg4GmY) | Tres Pilares Full-Stack: Navegador, Puentes de Ingesta y SSR | 🇪🇸 Spanish *(CC 20+)* | `2:52` | [▶️ Ver Video](https://www.youtube.com/watch?v=eHCTIUg4GmY) |
+| 15 | 📽️ Video Guide | [**Connecting Browser Clicks to eBPF Logs: Full-Stack Architecture Guide**](https://www.youtube.com/watch?v=l2ehRwv8z-g) | Browser Sandbox, Ingestion Bridges & Server-Side Rendering | 🇺🇸 English *(CC 20+)* | `2:29` | [▶️ Watch Video](https://www.youtube.com/watch?v=l2ehRwv8z-g) |
 
 ### ⚡ Topic-Focused Technical Shorts
 
@@ -1128,7 +1130,7 @@ End-to-end architectural walkthroughs and technical shorts for `obi-trace-log-co
 
 Below are the direct links and full descriptions for each session.
 
-### 🎬 Full-Length Technical Deep Dives (14 Videos)
+### 🎬 Full-Length Technical Deep Dives (15 Videos)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Full-Length Sessions</strong></summary>
@@ -1507,6 +1509,30 @@ Below are the direct links and full descriptions for each session.
 >
 > ⏱️ Duración: 2:52
 > #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #Observabilidad #SRE #DevOps #Microservicios #NodeJS
+
+#### 15. Connecting Browser Clicks to eBPF Logs: Full-Stack Architecture Guide
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=l2ehRwv8z-g](https://www.youtube.com/watch?v=l2ehRwv8z-g)
+- ⏱️ **Duration**: 2:29
+- 🏷️ **Domain**: Browser Sandbox, Ingestion Bridges & Server-Side Rendering
+- 📝 **Full Description**:
+> 🌐 Architecture Quick Guide: Connecting Browser Clicks to eBPF Logs
+>
+> High-density 2-minute architectural overview breaking down the three foundational pillars needed to bridge user-facing Single Page Applications (SPAs) with host Linux kernel eBPF log correlation.
+>
+> Learn how OpenTelemetry eBPF Instrumentation (OBI) connects browser interactions with backend execution without code modification.
+>
+> 📌 The 3 Architectural Pillars Explained:
+> • The Browser Sandbox Dilemma: Why Linux eBPF cannot inspect user devices directly and how W3C traceparent headers bridge the network boundary.
+> • Isolated Client Error Capture: How telemetry ingestion bridges capture unhandled frontend exceptions and route them into the backend trace tree.
+> • Server-Side Rendering (SSR) Direct Hooking: Why Node.js and Next.js server components execute locally and are automatically captured by host kernel probes.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 2:29
+> #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Microservices
 
 </details>
 
