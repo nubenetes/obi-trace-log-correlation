@@ -27,6 +27,8 @@
 [![Go](https://img.shields.io/badge/Go-1.23%2B%20(log%2Fslog)-00ADD8.svg?logo=go&logoColor=white)](demo-apps/go/)
 [![Python](https://img.shields.io/badge/Python-3.12%2B%20(unbuffered)-3776AB.svg?logo=python&logoColor=white)](demo-apps/python/)
 [![Node.js](https://img.shields.io/badge/Node.js-20%2B%20(pino)-5FA04E.svg?logo=nodedotjs&logoColor=white)](demo-apps/nodejs/)
+[![Java](https://img.shields.io/badge/Java-21%2B%20(Platform%20vs%20Loom)-ED8B00.svg?logo=openjdk&logoColor=white)](demo-apps/java/)
+[![.NET](https://img.shields.io/badge/.NET-8.0%2B%20(Serilog%20Sync)-512BD4.svg?logo=dotnet&logoColor=white)](demo-apps/dotnet/)
 [![Lifecycle](https://img.shields.io/badge/Lifecycle-Day%200%20%7C%20Day%201%20%7C%20Day%202%20%7C%20Decom-2ea44f.svg?logo=github)](scripts/)
 
 Enterprise reference implementation, multi-cloud Kubernetes architectures, and end-to-end lifecycle automation for **Zero-Code Trace-Log Correlation** powered by [OpenTelemetry eBPF Instrumentation (OBI)](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/).
@@ -418,6 +420,8 @@ obi-trace-log-correlation/
 │   ├── go/backend/            # Uninstrumented Go HTTP service (log/slog JSON)
 │   ├── python/                # Python unbuffered service (PYTHONUNBUFFERED=1)
 │   ├── nodejs/                # Node.js service with Pino JSON logging
+│   ├── java/                  # Java 21 microservice (Platform Threads vs Loom)
+│   ├── dotnet/                # .NET 8.0 microservice (Serilog Sync vs AddConsole)
 │   └── plaintext/             # Legacy plain-text service showing key=value annotations
 ├── docker-compose/            # Self-contained local Linux evaluation stack
 │   ├── compose.yaml           # Frontend, Backend, Jaeger, and OBI DaemonSet
@@ -484,6 +488,16 @@ obi-trace-log-correlation/
       - 🟩 [`server.js`](demo-apps/nodejs/server.js) — *Node.js HTTP service using Pino-compatible structured JSON logging to stdout*
       - 🐳 [`Dockerfile`](demo-apps/nodejs/Dockerfile) — *Node 20 Alpine container build*
       - 📦 [`package.json`](demo-apps/nodejs/package.json) — *Node.js package manifest and entrypoint definition*
+    - 📁 **[`demo-apps/java/`](demo-apps/java/)**
+      - ☕ [`App.java`](demo-apps/java/App.java) — *Java 21 HTTP service comparing Platform Threads with Project Loom Virtual Threads*
+      - 🐳 [`Dockerfile`](demo-apps/java/Dockerfile) — *Multi-stage Alpine container build (`eclipse-temurin:21`)*
+      - 📦 [`pom.xml`](demo-apps/java/pom.xml) — *Maven project descriptor with Logback/SLF4J configuration*
+      - 📖 [`README.md`](demo-apps/java/README.md) — *Platform thread vs virtual thread carrier collision runbook*
+    - 📁 **[`demo-apps/dotnet/`](demo-apps/dotnet/)**
+      - 🟣 [`Program.cs`](demo-apps/dotnet/Program.cs) — *ASP.NET Core 8.0 Minimal API demonstrating synchronous Serilog vs default background channel*
+      - 🐳 [`Dockerfile`](demo-apps/dotnet/Dockerfile) — *Multi-stage Alpine container build (`mcr.microsoft.com/dotnet/aspnet:8.0`)*
+      - 📦 [`DotnetApp.csproj`](demo-apps/dotnet/DotnetApp.csproj) — *.NET 8.0 project manifest with Serilog packages*
+      - 📖 [`README.md`](demo-apps/dotnet/README.md) — *.NET background channel logging analysis and solution guide*
     - 📁 **[`demo-apps/plaintext/`](demo-apps/plaintext/)**
       - 📄 [`main.go`](demo-apps/plaintext/main.go) — *Legacy plain-text service demonstrating OBI's key-value annotations (`trace_id=... span_id=...`)*
       - 🐳 [`Dockerfile`](demo-apps/plaintext/Dockerfile) — *Minimal Alpine container build*
@@ -567,6 +581,8 @@ obi-trace-log-correlation/
 - **Go Backend ([`demo-apps/go/backend/`](demo-apps/go/backend/))**: An uninstrumented HTTP microservice listening on port 8081. It serves the `/hello` endpoint and logs structured JSON with `log/slog`. OBI extracts incoming W3C trace context from the kernel socket buffer and decorates the backend logs with the identical `trace_id`.
 - **Python Service ([`demo-apps/python/`](demo-apps/python/))**: Demonstrates Python compatibility. Configured with `ENV PYTHONUNBUFFERED=1` in its Dockerfile to prevent stdout buffering in container pipes, ensuring write syscalls execute synchronously on the request-handling thread.
 - **Node.js Service ([`demo-apps/nodejs/`](demo-apps/nodejs/))**: An Express service utilizing Pino JSON structured logging, demonstrating how OBI's kernel hooks track asynchronous event-loop callbacks.
+- **Java Service ([`demo-apps/java/`](demo-apps/java/))**: A Java 21 microservice demonstrating standard Platform Thread Pools (supported out of the box via ByteBuddy + `ioctl` hierarchy tracking) alongside an explicit toggle for Project Loom Virtual Threads (`USE_VIRTUAL_THREADS=true`) to demonstrate carrier OS thread collisions in eBPF.
+- **.NET Service ([`demo-apps/dotnet/`](demo-apps/dotnet/))**: An ASP.NET Core 8.0 microservice illustrating why default `AddConsole()` fails (due to its asynchronous `Channel<LogMessageEntry>` background processor thread) and showcasing the production fix using Serilog synchronous console logging (`USE_SYNCHRONOUS_LOGGER=true`).
 - **Plain-Text Service ([`demo-apps/plaintext/`](demo-apps/plaintext/))**: Emits unstructured free-form log lines (`legacy transaction executed user=john_doe...`), showcasing OBI's ability to append key-value annotations (`trace_id=... span_id=...`) to non-JSON output.
 
 #### 📁 `docker-compose/` — Local Evaluation Environment

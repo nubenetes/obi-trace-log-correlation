@@ -337,7 +337,9 @@ const logger = pino({
 #### Platform Threads: Traditional Thread-Pool Servers (Works Out of the Box)
 In standard Java architectures (Tomcat, Spring Boot, Jetty, Netty), incoming HTTP requests are served by dedicated platform threads (`catalina-exec-*`). OBI deploys a ByteBuddy bytecode agent that intercepts task submissions to `ThreadPoolExecutor` and calls a lightweight `ioctl` (`k_ioctl_java_threads`) to link parent and worker thread IDs in kernel space.
 
-#### ✅ Working Sample: Spring Boot with Logback
+#### ✅ Working Sample: Java Microservice & Spring Boot
+A complete runnable microservice is provided in [`demo-apps/java/`](../demo-apps/java/) (featuring [`App.java`](../demo-apps/java/App.java) and [`Dockerfile`](../demo-apps/java/Dockerfile)). Below is how enterprise Spring Boot with Logback or the standalone demo microservice executes on platform threads:
+
 ```java
 @RestController
 public class PaymentController {
@@ -418,6 +420,8 @@ app.Run();
 ```
 
 #### ✅ Working Fix 1 (Recommended: Serilog Synchronous Console)
+A complete runnable microservice demonstrating both the broken out-of-the-box scenario and the synchronous fix is provided in [`demo-apps/dotnet/`](../demo-apps/dotnet/) (featuring [`Program.cs`](../demo-apps/dotnet/Program.cs), [`DotnetApp.csproj`](../demo-apps/dotnet/DotnetApp.csproj), and [`Dockerfile`](../demo-apps/dotnet/Dockerfile)).
+
 Serilog's console sink writes synchronously on the calling thread:
 ```csharp
 // Program.cs - FIXED FOR OBI CORRELATION
