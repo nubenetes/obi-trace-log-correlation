@@ -1,24 +1,32 @@
 # Frontend Single Page Applications (SPA) & Server-Side Rendering (SSR) Telemetry Guide
 
-This guide and runnable microservice demonstrates how modern frontend architectures—including **Angular 17+**, **React / Next.js**, **Vue / Nuxt 3**, and **SvelteKit**—interact with **OpenTelemetry eBPF Zero-Code Trace-Log Correlation (OBI)**.
+> **Reference Documentation**:
+> - [Zero-Code Trace-Log Correlation with OBI (Official Blog Announcement)](reference-blog-announcement.md)
+> - [W3C Trace Context Specification (Recommendation)](https://www.w3.org/TR/trace-context/)
+> - [OpenTelemetry Browser JavaScript SDK](https://opentelemetry.io/docs/languages/js/libraries/)
+
+---
+
+> **Documentation Hub**: [🏠 Overview](../README.md) &nbsp;|&nbsp; [📜 Announcement](reference-blog-announcement.md) &nbsp;|&nbsp; [🏛️ Architecture](architecture.md) &nbsp;|&nbsp; [📋 Day 0: Sizing](day0-planning-sizing.md) &nbsp;|&nbsp; [📦 Day 1: Deploy](day1-installation.md) &nbsp;|&nbsp; [🚨 Day 2: Ops](day2-operations-triage.md) &nbsp;|&nbsp; [💧 Log Filtering](log-filtering-guide.md) &nbsp;|&nbsp; [⚡ Runtimes](runtime-compatibility.md) &nbsp;|&nbsp; [🌐 Frontend](frontend-spa-ssr-telemetry.md) &nbsp;|&nbsp; [🔧 Troubleshooting](troubleshooting.md) &nbsp;|&nbsp; [🧹 Decommission](decommission-guide.md) &nbsp;|&nbsp; [📚 References](references.md)
 
 ---
 
 ## Table of Contents
-- [1. Frontend Languages & Single Page Applications (Angular, React, Vue)](#1-frontend-languages--single-page-applications-angular-react-vue)
-  - [The Architectural Boundary: Client Browser vs Linux Kernel Space](#the-architectural-boundary-client-browser-vs-linux-kernel-space)
-- [2. End-to-End Distributed Trace Sequence (Browser Click to Kernel Log Enrichment)](#2-end-to-end-distributed-trace-sequence-browser-click-to-kernel-log-enrichment)
-- [3. The Core Dilemma: Why eBPF Cannot Probe Client Browsers](#3-the-core-dilemma-why-ebpf-cannot-probe-client-browsers)
-- [4. Frontend Solutions Comparison Matrix](#4-frontend-solutions-comparison-matrix)
-- [5. Implementations Across Frontend Solutions](#5-implementations-across-frontend-solutions)
+- [1. Executive Summary](#1-executive-summary)
+- [2. The Architectural Boundary: Client Browser vs Linux Kernel Space](#2-the-architectural-boundary-client-browser-vs-linux-kernel-space)
+- [3. End-to-End Distributed Trace Sequence](#3-end-to-end-distributed-trace-sequence)
+- [4. The Core Dilemma: Why eBPF Cannot Probe Client Browsers](#4-the-core-dilemma-why-ebpf-cannot-probe-client-browsers)
+- [5. Frontend Solutions Comparison Matrix](#5-frontend-solutions-comparison-matrix)
+- [6. Framework Implementations & Code Patterns](#6-framework-implementations--code-patterns)
   - [A. Angular 17+ Functional HTTP Interceptor](#a-angular-17-functional-http-interceptor)
   - [B. React / Next.js 14+ App Router Traced Fetch](#b-react--nextjs-14-app-router-traced-fetch)
-  - [C. Vue 3 / Nuxt 3 `$fetch` Plugin](#c-vue-3--nuxt-3-fetch-plugin)
+  - [C. Vue 3 / Nuxt 3 `$fetch` Interceptor Plugin](#c-vue-3--nuxt-3-fetch-interceptor-plugin)
   - [D. Production OpenTelemetry Official Browser SDK](#d-production-opentelemetry-official-browser-sdk)
-- [6. The Browser Telemetry Ingestion Bridge Pattern](#6-the-browser-telemetry-ingestion-bridge-pattern)
-- [7. Directory Structure](#7-directory-structure)
-- [8. Working vs Broken Modes](#8-working-vs-broken-modes)
-- [9. Building and Running](#9-building-and-running)
+- [7. The Browser Telemetry Ingestion Bridge Pattern](#7-the-browser-telemetry-ingestion-bridge-pattern)
+- [8. Server-Side Rendering (SSR) & Server Components Deep Dive](#8-server-side-rendering-ssr--server-components-deep-dive)
+  - [Working Synchronous SSR Logging](#working-synchronous-ssr-logging)
+  - [Broken Decoupled SSR Logging](#broken-decoupled-ssr-logging)
+- [9. Runnable Microservice Reference](#9-runnable-microservice-reference)
 - [10. Public References & Standards Catalog](#10-public-references--standards-catalog)
   - [1. W3C Standards & Distributed Tracing Specifications](#1-w3c-standards--distributed-tracing-specifications)
   - [2. OpenTelemetry Documentation & eBPF Kernel Instrumentation](#2-opentelemetry-documentation--ebpf-kernel-instrumentation)
@@ -27,9 +35,17 @@ This guide and runnable microservice demonstrates how modern frontend architectu
 
 ---
 
-## 1. Frontend Languages & Single Page Applications (Angular, React, Vue)
+## 1. Executive Summary
 
-### The Architectural Boundary: Client Browser vs Linux Kernel Space
+OpenTelemetry eBPF Instrumentation (OBI) operates transparently at the Linux kernel boundary (`sys_enter_write`, `sys_enter_recvfrom`), correlating backend container stdout/stderr logs with active distributed traces without application modification.
+
+However, frontend Single Page Applications (SPAs)—such as **Angular**, **React**, **Vue**, and **Svelte**—execute client-side inside end users' web browsers (Chrome, Firefox, Safari) on devices across macOS, Windows, iOS, and Android. Because client-side JavaScript execution occurs outside the host Linux kernel running the backend workloads, browser `console.log()` calls never generate system calls on the Kubernetes host.
+
+This guide provides the authoritative architectural blueprint for bridging frontend clients with OBI backend kernel-level log enrichment via **W3C Trace Context propagation (`traceparent`)**, **Server-Side Rendering (SSR) log interception**, and **client telemetry ingestion bridges**.
+
+---
+
+## 2. The Architectural Boundary: Client Browser vs Linux Kernel Space
 
 ```mermaid
 flowchart TD
@@ -83,7 +99,7 @@ flowchart TD
 
 ---
 
-## 2. End-to-End Distributed Trace Sequence (Browser Click to Kernel Log Enrichment)
+## 3. End-to-End Distributed Trace Sequence
 
 ```mermaid
 sequenceDiagram
@@ -110,14 +126,12 @@ sequenceDiagram
 
 ---
 
-## 3. The Core Dilemma: Why eBPF Cannot Probe Client Browsers
+## 4. The Core Dilemma: Why eBPF Cannot Probe Client Browsers
 
-Engineers evaluating OBI for frontend applications must understand where kernel probes can and cannot reach:
-
-1. **Client-Side Browser Execution (Outside Host Kernel)**:
-   - A standard Single Page Application (compiled HTML, JavaScript, CSS) executes client-side inside the end user's web browser (Google Chrome, Mozilla Firefox, Apple Safari) on their local operating system (macOS, Windows, iOS, Android, or Linux desktop).
-   - When an Angular, React, or Vue component executes `console.log("Processing payment")`, that string is passed directly to the browser engine's internal memory buffer.
-   - **No Linux system calls occur on the backend server.** The server hosting your Kubernetes pods has zero access to the client device's memory or kernel.
+1. **Client-Side Execution (Outside Host Kernel)**:
+   - When an Angular, React, or Vue application runs in a client browser, all JavaScript execution occurs on the end user's device.
+   - Browser calls to `console.log("Processing payment")` write into the browser engine's internal memory buffer.
+   - **No Linux system calls occur on the backend host.** Because eBPF probes (`kprobe:sys_enter_write`, `sys_enter_recvfrom`) reside strictly in the Linux kernel (Ring 0) of the servers hosting backend microservices, they cannot inspect the client device's memory or browser process.
 2. **The Distributed Tracing Solution (W3C HTTP Bridge)**:
    - The frontend application creates a client span and injects the W3C Trace Context standard HTTP header into outgoing network requests:
      ```http
@@ -133,23 +147,23 @@ Engineers evaluating OBI for frontend applications must understand where kernel 
 
 ---
 
-## 4. Frontend Solutions Comparison Matrix
+## 5. Frontend Solutions Comparison Matrix
 
 | Frontend Solution | Client Execution Location | Server SSR Engine & Runtime | eBPF Kernel Syscall Visibility | Recommended Client Trace Injection | SSR Server-Side Log Interception |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Angular 17+ (SPA)** | Browser (V8 / JSC) | None (Static Nginx / S3) | ❌ None (Client OS) | `HttpInterceptorFn` (`telemetry.interceptor.ts`) | N/A |
+| **Angular 17+ (SPA)** | Browser (V8 / JSC) | None (Static Nginx / S3) | ❌ None (Client OS) | `HttpInterceptorFn` ([`telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts)) | N/A |
 | **Angular 17+ (SSR)** | Browser (V8 / JSC) | Node.js 20 (`@angular/ssr` / Express) | ✅ Full on Server SSR | `HttpInterceptorFn` on client; direct stdout on server | ✅ OBI intercepts Node.js `process.stdout.write()` |
-| **React / Next.js 14+** | Browser (Client Components) | Node.js 20 (Server Components / RSC) | ✅ Full on Server SSR | `tracedFetch` wrapper / OpenTelemetry Web SDK | ✅ OBI intercepts Node.js `console.log()` |
-| **Vue 3 / Nuxt 3** | Browser (Vue Engine) | Node.js (Nitro Engine) | ✅ Full on Server SSR | Nuxt plugin overriding `$fetch` `onRequest` | ✅ OBI intercepts Nitro server stdout |
+| **React / Next.js 14+** | Browser (Client Components) | Node.js 20 (Server Components / RSC) | ✅ Full on Server SSR | `tracedFetch` wrapper ([`nextjs-instrumentation.ts`](../demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts)) | ✅ OBI intercepts Node.js `console.log()` |
+| **Vue 3 / Nuxt 3** | Browser (Vue Engine) | Node.js (Nitro Engine) | ✅ Full on Server SSR | Nuxt plugin overriding `$fetch` ([`nuxt-fetch-plugin.ts`](../demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts)) | ✅ OBI intercepts Nitro server stdout |
 | **Svelte 5 / SvelteKit** | Browser (Svelte DOM) | Node.js (`adapter-node`) | ✅ Full on Server SSR | `handleFetch` client hook in `hooks.client.ts` | ✅ OBI intercepts SvelteKit server stdout |
 | **Vanilla JS / HTMX** | Browser (DOM Script) | None (Static) | ❌ None (Client OS) | Custom `fetch` interceptor / `hx-headers` | N/A |
 
 ---
 
-## 5. Implementations Across Frontend Solutions
+## 6. Framework Implementations & Code Patterns
 
 ### A. Angular 17+ Functional HTTP Interceptor
-As implemented in [`src/app/telemetry.interceptor.ts`](src/app/telemetry.interceptor.ts):
+As implemented in [`demo-apps/frontend-angular/src/app/telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts):
 
 ```typescript
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
@@ -176,7 +190,7 @@ export const openTelemetryInterceptor: HttpInterceptorFn = (req: HttpRequest<unk
 ```
 
 ### B. React / Next.js 14+ App Router Traced Fetch
-As implemented in [`other-solutions/nextjs-instrumentation.ts`](other-solutions/nextjs-instrumentation.ts):
+As implemented in [`demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts`](../demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts):
 
 ```typescript
 // Traced Fetch wrapper for Next.js Client Components
@@ -194,8 +208,8 @@ export async function tracedFetch(input: RequestInfo | URL, init?: RequestInit):
 }
 ```
 
-### C. Vue 3 / Nuxt 3 `$fetch` Plugin
-As implemented in [`other-solutions/nuxt-fetch-plugin.ts`](other-solutions/nuxt-fetch-plugin.ts):
+### C. Vue 3 / Nuxt 3 `$fetch` Interceptor Plugin
+As implemented in [`demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts`](../demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts):
 
 ```typescript
 // Nuxt 3 plugin auto-injecting traceparent on all outgoing $fetch calls
@@ -214,7 +228,7 @@ export default defineNuxtPlugin(() => {
 ```
 
 ### D. Production OpenTelemetry Official Browser SDK
-As implemented in [`other-solutions/otel-web-sdk.ts`](other-solutions/otel-web-sdk.ts):
+As implemented in [`demo-apps/frontend-angular/other-solutions/otel-web-sdk.ts`](../demo-apps/frontend-angular/other-solutions/otel-web-sdk.ts):
 
 ```typescript
 import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
@@ -235,7 +249,7 @@ registerInstrumentations({
 
 ---
 
-## 6. The Browser Telemetry Ingestion Bridge Pattern
+## 7. The Browser Telemetry Ingestion Bridge Pattern
 
 To capture frontend client exceptions and UI logs without deploying a separate proprietary RUM service, the frontend forwards telemetry to the backend server:
 
@@ -253,82 +267,55 @@ window.onerror = (message, source, lineno, colno, error) => {
 };
 ```
 
-When `POST /api/telemetry/logs` arrives at the server, **OBI intercepts the socket call**, captures the client's `traceparent`, and decorates the server's stdout log write. This binds client-side JavaScript crashes directly into the distributed trace!
+When `POST /api/telemetry/logs` arrives at the server, **OBI intercepts the socket call**, captures the client's `traceparent`, and decorates the server's stdout log write. This binds client-side JavaScript crashes directly into the distributed trace.
 
 ---
 
-## 7. Directory Structure
+## 8. Server-Side Rendering (SSR) & Server Components Deep Dive
 
-```text
-demo-apps/frontend-angular/
-├── Dockerfile                           # Multi-stage Alpine container (node:20-alpine)
-├── package.json                         # Dependencies and build scripts
-├── server.js                            # Express SSR server & telemetry ingestion bridge
-├── README.md                            # This architectural guide
-├── src/
-│   └── app/
-│       ├── app.component.ts             # Angular root component initiating checkout
-│       └── telemetry.interceptor.ts     # Angular 17+ W3C traceparent HTTP interceptor
-└── other-solutions/
-    ├── nextjs-instrumentation.ts        # React / Next.js 14 App Router traced fetch
-    ├── nuxt-fetch-plugin.ts             # Vue 3 / Nuxt 3 $fetch telemetry plugin
-    └── otel-web-sdk.ts                  # Official OpenTelemetry Web SDK integration
+When Angular 17+ SSR (`@angular/ssr`) or Next.js runs in full-stack mode:
+* Initial component rendering executes **server-side in Node.js on a Linux host**.
+* Server-side `console.log()` statements **DO execute `write(1, ...)` syscalls on the Linux kernel host**.
+* OBI intercepts these SSR logs directly during page pre-rendering, associating them with the incoming page navigation trace.
+
+### Working Synchronous SSR Logging
+```typescript
+// WORKING: Synchronous write on the active SSR request event-loop tick
+process.stdout.write(JSON.stringify({
+  timestamp: new Date().toISOString(),
+  level: "INFO",
+  msg: "Angular SSR: Pre-rendered page /checkout",
+  pid: process.pid
+}) + "\n");
 ```
+
+### Broken Decoupled SSR Logging
+```typescript
+// BROKEN: Logging after the SSR HTTP response has finished
+setTimeout(() => {
+  process.stdout.write(JSON.stringify({ msg: "SSR render completed" }) + "\n");
+}, 100);
+```
+Because the `write()` syscall executes after the request socket has closed, eBPF thread tracking loses the active trace context.
 
 ---
 
-## 8. Working vs Broken Modes
+## 9. Runnable Microservice Reference
 
-| Mode | Environment Variable | Stdout Emission Mechanism | OBI Correlation Behavior |
-| :--- | :--- | :--- | :--- |
-| **Working (Default)** | *(None)* | Synchronous `process.stdout.write()` directly on active event loop tick | ✅ **100% Correlated**: OBI associates stdout logs with the active HTTP request socket trace. |
-| **Broken** | `ASYNC_BACKGROUND_LOGGER=true` | Dispatches logs to asynchronous `setTimeout` queue | ⚠️ **Trace Lost**: Logs are written after the request socket context has closed, causing trace context drop. |
+A full production-grade demonstration featuring the Angular 17+ SPA HTTP interceptor, Node.js SSR Express engine, and multi-framework reference solutions is provided in [`demo-apps/frontend-angular/`](../demo-apps/frontend-angular/):
 
----
-
-## 9. Building and Running
-
-### Build the Container Image
-```bash
-docker build -t obi-demo-angular:latest demo-apps/frontend-angular/
-```
-
-### Run in Working Mode (Synchronous SSR Logging)
-```bash
-docker run --rm -p 8086:8086 obi-demo-angular:latest
-```
-
-### Run in Broken Mode (Asynchronous Queue Decoupling)
-```bash
-docker run --rm -p 8086:8086 -e ASYNC_BACKGROUND_LOGGER=true obi-demo-angular:latest
-```
-
-### Test 1: SSR Page Render (Server-Side Logs Intercepted by OBI)
-```bash
-curl -i http://localhost:8086/ssr
-```
-
-### Test 2: Client SPA Call with Injected W3C Traceparent
-```bash
-curl -i -X POST http://localhost:8086/api/orders \
-  -H "Content-Type: application/json" \
-  -H "traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01" \
-  -d '{"item":"license","qty":1}'
-```
-
-### Test 3: Client Telemetry Ingestion Bridge
-```bash
-curl -i -X POST http://localhost:8086/api/telemetry/logs \
-  -H "Content-Type: application/json" \
-  -H "traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01" \
-  -d '{"event":"checkout_clicked","component":"CartComponent"}'
-```
+* [`server.js`](../demo-apps/frontend-angular/server.js) — Express SSR server & telemetry ingestion bridge.
+* [`src/app/telemetry.interceptor.ts`](../demo-apps/frontend-angular/src/app/telemetry.interceptor.ts) — Angular 17+ functional interceptor.
+* [`src/app/app.component.ts`](../demo-apps/frontend-angular/src/app/app.component.ts) — Angular root component.
+* [`other-solutions/nextjs-instrumentation.ts`](../demo-apps/frontend-angular/other-solutions/nextjs-instrumentation.ts) — React / Next.js 14+ App Router traced fetch.
+* [`other-solutions/nuxt-fetch-plugin.ts`](../demo-apps/frontend-angular/other-solutions/nuxt-fetch-plugin.ts) — Vue 3 / Nuxt 3 `$fetch` telemetry plugin.
+* [`other-solutions/otel-web-sdk.ts`](../demo-apps/frontend-angular/other-solutions/otel-web-sdk.ts) — Official OpenTelemetry Web SDK integration.
+* [`Dockerfile`](../demo-apps/frontend-angular/Dockerfile) — Minimal Alpine non-root container (`node:20-alpine`).
+* [`README.md`](../demo-apps/frontend-angular/README.md) — Microservice runbook and step-by-step verification commands.
 
 ---
 
 ## 10. Public References & Standards Catalog
-
-This catalog indexes official public standards, framework documentation, SDK guides, and repository architecture specifications relevant to frontend telemetry, W3C Trace Context propagation, and eBPF zero-code correlation.
 
 ### 1. W3C Standards & Distributed Tracing Specifications
 * **[W3C Trace Context (Recommendation)](https://www.w3.org/TR/trace-context/)**:
@@ -371,13 +358,32 @@ This catalog indexes official public standards, framework documentation, SDK gui
 ---
 
 ### 4. Local Guides & Architecture Blueprints in this Repository
-* **[`docs/frontend-spa-ssr-telemetry.md`](../../docs/frontend-spa-ssr-telemetry.md)**:
-  * *Summary*: Comprehensive standalone architectural guide for Frontend Single Page Applications (Angular, React/Next.js, Vue/Nuxt 3) and SSR telemetry, detailing the client browser vs kernel boundary, W3C `traceparent` bridge, and SSR stdout kernel correlation.
-* **[`docs/runtime-compatibility.md`](../../docs/runtime-compatibility.md)**:
+* **[`docs/runtime-compatibility.md`](runtime-compatibility.md)**:
   * *Summary*: In-depth analysis of language runtimes (Go, Python, Node.js, Java, .NET, Ruby, and Frontend SPAs/SSR) and how OBI prevents context staleness.
-* **[`docs/architecture.md`](../../docs/architecture.md)**:
+* **[`docs/architecture.md`](architecture.md)**:
   * *Summary*: Exhaustive breakdown of Linux kernel syscall hooks (`sys_enter_write`, `sys_enter_recvfrom`), BPF hash maps (`traces_ctx_v1`), user buffer suppression, and 8 KiB buffer split behavior.
-* **[`docs/references.md`](../../docs/references.md)**:
+* **[`docs/references.md`](references.md)**:
   * *Summary*: Master reference directory indexing all upstream OBI specifications, Kubernetes overlays, and community channels.
-* **[`README.md`](../../README.md)**:
+* **[`README.md`](../README.md)**:
   * *Summary*: Master repository documentation, architecture diagrams, multi-cloud Kubernetes overlays (OpenShift, AKS, EKS, GKE, RKE2), and local Docker Compose quickstart.
+
+---
+
+## 🧭 Navigation & Documentation Directory
+
+| ⬅️ Previous Document | 🏠 Documentation Hub | ➡️ Next Document |
+| :--- | :---: | ---: |
+| [**Runtime Compatibility Guide**](runtime-compatibility.md) | [**Repository Overview**](../README.md) | [**Troubleshooting & Diagnostics**](troubleshooting.md) |
+
+### 📚 Complete Guide Catalog
+- 📜 **[Official Reference Announcement](reference-blog-announcement.md)** — Verbatim OpenTelemetry announcement with junior primers and kernel deep dives
+- 🏛️ **[Architecture Deep Dive](architecture.md)** — Low-level syscall hooks (`pipe_write`, `ksys_write`, `do_writev`), LRU maps, and ringbuffer flow
+- 📋 **[Day 0: Planning & Sizing](day0-planning-sizing.md)** — Linux 6.0+ matrix, kernel lockdown, memory sizing formulas, and security postures
+- 📦 **[Day 1: Multi-Cluster Deployment](day1-installation.md)** — Enterprise overlays for OpenShift 4.20+, AKS, EKS, GKE, RKE2, and Docker Compose
+- 🚨 **[Day 2: Operations & Incident Triage](day2-operations-triage.md)** — SRE incident response playbook, LogQL/Jaeger queries, and canary rollouts
+- 💧 **[Log Shipper Filtering Guide](log-filtering-guide.md)** — Suppressed NUL byte placeholder drop filters and 8 KiB write split handling
+- ⚡ **[Runtime Compatibility Guide](runtime-compatibility.md)** — Go runtime hooks, `PYTHONUNBUFFERED=1`, Node.js async streams, and Java Loom
+- 🌐 **[Frontend SPAs & SSR Telemetry Guide](frontend-spa-ssr-telemetry.md)** — W3C `traceparent` HTTP bridge, Angular/React/Vue patterns, and SSR kernel interception
+- 🔧 **[Troubleshooting & Diagnostics](troubleshooting.md)** — Common pitfalls, eBPF probe errors, missing trace IDs, and verification steps
+- 🧹 **[Decommission & Teardown Guide](decommission-guide.md)** — Safe probe detachment, BPF map unpinning, and resource cleanup
+- 📚 **[References & Official Documentation](references.md)** — Upstream OpenTelemetry specifications, GitHub repositories, and CNCF channels

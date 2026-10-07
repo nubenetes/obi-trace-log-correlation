@@ -463,6 +463,7 @@ obi-trace-log-correlation/
     ├── day2-operations-triage.md  # Incident triage queries (Loki, Jaeger, ES)
     ├── log-filtering-guide.md     # In-depth explanation of NUL bytes & filters
     ├── runtime-compatibility.md   # Language runtime specifics (Go, Python, Java, .NET)
+    ├── frontend-spa-ssr-telemetry.md # Frontend SPAs (Angular, React, Vue) & SSR telemetry guide
     ├── troubleshooting.md         # Diagnostic runbook for common pitfalls
     ├── decommission-guide.md      # Clean teardown procedures
     └── references.md              # Catalog of official links and resources
@@ -579,6 +580,7 @@ obi-trace-log-correlation/
     - 🚨 [`day2-operations-triage.md`](docs/day2-operations-triage.md) — *Incident triage playbook with LogQL/Jaeger queries and Prometheus alerts*
     - 💧 [`log-filtering-guide.md`](docs/log-filtering-guide.md) — *Technical explanation of NUL placeholder lines and the 8 KiB write boundary*
     - 🌐 [`runtime-compatibility.md`](docs/runtime-compatibility.md) — *Language runtime specifics for Go, Python, Java (Loom), Node.js, and .NET*
+    - 🌐 [`frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md) — *Frontend SPAs (Angular, React, Vue), SSR interception, and W3C trace propagation*
     - 🩺 [`troubleshooting.md`](docs/troubleshooting.md) — *Diagnostic runbook for common pitfalls*
     - 🛑 [`decommission-guide.md`](docs/decommission-guide.md) — *Clean teardown procedures ensuring zero orphaned kernel resources*
     - 🔗 [`references.md`](docs/references.md) — *Official OpenTelemetry blog links, developer docs, and community resources*
@@ -644,6 +646,7 @@ obi-trace-log-correlation/
 - **[`docs/day2-operations-triage.md`](docs/day2-operations-triage.md)**: SRE incident triage guide with sample LogQL, Elasticsearch, and CloudWatch queries, alert definitions, and canary rollout strategies.
 - **[`docs/log-filtering-guide.md`](docs/log-filtering-guide.md)**: Deep dive into why suppressed writes contain NUL bytes and how the 8 KiB single-write limit affects large payloads.
 - **[`docs/runtime-compatibility.md`](docs/runtime-compatibility.md)**: Programming language runtime guidance covering Go, Python unbuffered mode, Java platform threads vs virtual threads (Project Loom), Node.js async hooks, and .NET synchronous writers.
+- **[`docs/frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md)**: Comprehensive architectural guide on Frontend Single Page Applications (Angular, React/Next.js, Vue/Nuxt 3) and Server-Side Rendering (SSR) telemetry, detailing why eBPF cannot inspect browser processes, W3C `traceparent` injection, and SSR stdout kernel correlation.
 - **[`docs/troubleshooting.md`](docs/troubleshooting.md)**: Diagnostic runbook for missing trace contexts, kernel lockdown denials, split log lines, and permission errors.
 - **[`docs/decommission-guide.md`](docs/decommission-guide.md)**: Clean de-provisioning instructions ensuring no orphaned kernel memory remains.
 - **[`docs/references.md`](docs/references.md)**: Comprehensive bibliography citing official OpenTelemetry blog posts, specifications, GitHub repositories, and community Slack channels.
@@ -665,6 +668,7 @@ The [`docs/`](docs/) directory contains comprehensive, standalone engineering do
 | 🚨 **[`day2-operations-triage.md`](docs/day2-operations-triage.md)** | Incident triage runbook, queries & canary rollouts | On-Call Engineers, SREs, Incident Commanders | Day 2: Operations | Jaeger-to-Loki navigation, LogQL & Elasticsearch queries, Prometheus alerts, canary CLI | 15 min |
 | 💧 **[`log-filtering-guide.md`](docs/log-filtering-guide.md)** | Suppressed NUL byte filter patterns & 8 KiB write limits | Log Pipeline Engineers, Observability Teams | Day 1 & Day 2 | `bpf_probe_write_user` suppression, NUL drop regex (`^[\x00\s]*$`), 8 KiB chunk split reassembly | 14 min |
 | ⚡ **[`runtime-compatibility.md`](docs/runtime-compatibility.md)** | Language runtime specifics & context staleness fixes | Application Developers, Software Architects | Design & Runtime | Go goroutine scheduler, Python unbuffered mode, Node.js async streams, Java Loom threads | 16 min |
+| 🌐 **[`frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md)** | Frontend SPAs (Angular, React, Vue) & SSR telemetry architecture | Frontend Engineers, Full-Stack Developers, Architects | Frontend & SSR | Client-kernel boundary, W3C `traceparent` HTTP bridge, SSR Node.js writes, OTel Web SDK | 15 min |
 | 🔧 **[`troubleshooting.md`](docs/troubleshooting.md)** | Practical diagnostics, error codes & recovery steps | Platform Engineers, On-Call SREs | Operations & Triage | Missing `trace_id`, kernel lockdown rejection, duplicate logs, BPF map saturation | 12 min |
 | 🧹 **[`decommission-guide.md`](docs/decommission-guide.md)** | Safe decommissioning, probe detachment & cleanup | Platform Engineers, Cluster Operators | Decommission | Probe detachment, unpinning `/sys/fs/bpf/otel`, RBAC/SCC cleanup, pipeline filter retirement | 10 min |
 | 📚 **[`references.md`](docs/references.md)** | Upstream bibliographies, specifications & community links | All Engineers | Reference | Official OTel blog, OpenTelemetry OBI repo, devdocs, upstream demo gist, CNCF Slack | 8 min |
@@ -678,6 +682,7 @@ Depending on your engineering role and immediate objective, follow these recomme
 ```mermaid
 flowchart TD
     Start["Choose Your Role"] --> Junior["🐣 Junior Engineer / App Developer"]
+    Start --> Frontend["🌐 Frontend & Full-Stack Developer"]
     Start --> SRE["🚨 Site Reliability Engineer / On-Call SRE"]
     Start --> Platform["🏛️ Platform Architect / Kernel Specialist"]
     Start --> SecOps["🔒 Security & Compliance Officer"]
@@ -685,6 +690,10 @@ flowchart TD
     Junior --> J1["1. reference-blog-announcement.md (Junior Primer)"]
     J1 --> J2["2. runtime-compatibility.md (Language Nuances)"]
     J2 --> J3["3. day2-operations-triage.md (How to Debug Outages)"]
+
+    Frontend --> F1["1. frontend-spa-ssr-telemetry.md (Browser Boundaries & SSR)"]
+    F1 --> F2["2. demo-apps/frontend-angular/ (Angular 17+ Interceptor & Node SSR)"]
+    F2 --> F3["3. runtime-compatibility.md (Node.js & Backend Engines)"]
 
     SRE --> S1["1. day2-operations-triage.md (Incident Runbooks)"]
     S1 --> S2["2. log-filtering-guide.md (Log Pipeline Drop Filters)"]
@@ -696,8 +705,8 @@ flowchart TD
     P3 --> P4["4. decommission-guide.md (Clean Teardown)"]
 
     SecOps --> SC1["1. day0-planning-sizing.md (Kernel Lockdown & Capabilities)"]
-    SC1 --> SC2["2. k8s/overlays/openshift-4.20/README.md (Security Context Constraints)"]
-    SC2 --> SC3["3. architecture.md (bpf_probe_write_user Memory Safety)"]
+    SecOps --> SC2["2. k8s/overlays/openshift-4.20/README.md (Security Context Constraints)"]
+    SecOps --> SC3["3. architecture.md (bpf_probe_write_user Memory Safety)"]
 ```
 
 ---
@@ -705,7 +714,7 @@ flowchart TD
 ### Inter-Document Navigation Guide
 
 To deliver a frictionless reading experience across GitHub and local clones, every document in the [`docs/`](docs/) directory includes:
-1. **Header Breadcrumb Bar**: Direct access at the top of each page to return to the [Repository Overview (`README.md`)](README.md) or switch instantly to any of the 10 companion guides.
+1. **Header Breadcrumb Bar**: Direct access at the top of each page to return to the [Repository Overview (`README.md`)](README.md) or switch instantly to any of the 11 companion guides.
 2. **Sequential Footer Navigation Matrix**: Direct previous (`← Previous`) and next (`Next →`) links following the logical operational lifecycle (Day 0 ➔ Day 1 ➔ Day 2 ➔ Decommission).
 3. **Complete Guide Directory**: An exhaustive catalog at the bottom of every page ensuring you never hit a navigational dead end.
 
