@@ -100,7 +100,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
 - [The Suppressed NUL Byte Filter Requirement](#the-suppressed-nul-byte-filter-requirement)
 - [Lifecycle Operations Summary](#lifecycle-operations-summary)
 - [Video Walkthroughs & Architecture References (YouTube)](#video-walkthroughs--architecture-references-youtube)
-  - [🎬 Full-Length Technical Deep Dives (13 Videos)](#-full-length-technical-deep-dives-13-videos)
+  - [🎬 Full-Length Technical Deep Dives (14 Videos)](#-full-length-technical-deep-dives-14-videos)
     - [1. How OBI Correlation Works: Zero-Code Trace-Log Correlation with eBPF](#1-how-obi-correlation-works-zero-code-trace-log-correlation-with-ebpf)
     - [2. Zero-Code Trace-Log Correlation: OpenTelemetry eBPF (OBI) Deep Dive](#2-zero-code-trace-log-correlation-opentelemetry-ebpf-obi-deep-dive)
     - [3. How to Inject Trace IDs into Logs Without Code Changes Using OBI eBPF](#3-how-to-inject-trace-ids-into-logs-without-code-changes-using-obi-ebpf)
@@ -114,6 +114,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [11. Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF](#11-server-side-rendering-telemetry-nextjs-nodejs--opentelemetry-ebpf)
     - [12. Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux](#12-telemetría-full-stack-con-ebpf-de-spas-y-ssr-al-kernel-en-linux)
     - [13. Telemetría Full Stack OBI: Conectando el Navegador con el Kernel](#13-telemetría-full-stack-obi-conectando-el-navegador-con-el-kernel)
+    - [14. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF](#14-conecta-la-telemetría-frontend-al-backend-con-opentelemetry-y-ebpf)
   - [⚡ Topic-Focused Technical Shorts (17 Shorts)](#-topic-focused-technical-shorts-17-shorts)
     - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
     - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
@@ -132,13 +133,15 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF](#15-el-fin-de-los-agentes-de-monitorización-observabilidad-con-ebpf)
     - [16. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs](#16-frontend-spa-telemetry-how-w3c-trace-context-connects-clicks-to-logs)
     - [17. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux](#17-cómo-conectar-el-frontend-con-ebpf-del-navegador-al-kernel-en-linux)
-  - [🎙️ Architectural Masterclass Podcasts (6 Episodes)](#-architectural-masterclass-podcasts-6-episodes)
+  - [🎙️ Architectural Masterclass Podcasts (8 Episodes)](#-architectural-masterclass-podcasts-8-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
     - [3. Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)](#3-podcast-zero-code-trace-log-correlation-service-mesh-vs-kernel-ebpf-obi)
     - [4. Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)](#4-podcast-correlación-zero-code-de-logs-y-trazas-service-mesh-vs-kernel-ebpf-obi)
     - [5. Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive](#5-podcast-how-ebpf-correlates-traces-and-logs-kernel-mechanics-deep-dive)
     - [6. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código](#6-podcast-correlación-de-trazas-y-logs-con-ebpf-de-la-alerta-al-código)
+    - [7. Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive](#7-podcast-correlating-browser-clicks-with-kernel-logs-full-stack-obi-deep-dive)
+    - [8. Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI](#8-podcast-observabilidad-del-navegador-al-kernel-con-ebpf-y-opentelemetry-obi)
 - [References & Official Links](#references--official-links)
 - [License](#license)
 
@@ -461,6 +464,8 @@ This repository includes a comprehensive multi-format educational series synthes
 | 4 | 🎙️ Audio Podcast | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | Service Mesh vs eBPF, Frontend W3C y Sinergia | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
 | 5 | 🎙️ Audio Podcast | [**Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive**](https://www.youtube.com/watch?v=D5gHANofzQQ) | Socket Ingress, VFS Pipes & Real-Time Triage | 🇺🇸 English *(CC 20+)* | `55:20` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=D5gHANofzQQ) |
 | 6 | 🎙️ Audio Podcast | [**Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código**](https://www.youtube.com/watch?v=5XYbAeKnSLs) | Triage de Guardia 2 AM, Syscalls y Filtros NUL | 🇪🇸 Spanish *(CC 20+)* | `25:26` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=5XYbAeKnSLs) |
+| 7 | 🎙️ Audio Podcast | [**Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive**](https://www.youtube.com/watch?v=YKPsm3iLVmk) | Conversational Blueprint: From Browser Sandbox to Kernel Stamping | 🇺🇸 English *(CC 20+)* | `22:34` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=YKPsm3iLVmk) |
+| 8 | 🎙️ Audio Podcast | [**Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=6Yvs6DSSUdI) | Analogía Postal, Frontera del Navegador y Trazabilidad Full-Stack | 🇪🇸 Spanish *(CC 20+)* | `24:04` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=6Yvs6DSSUdI) |
 
 ### 🎬 Full-Length Technical Deep Dives (Videos)
 
@@ -479,6 +484,7 @@ This repository includes a comprehensive multi-format educational series synthes
 | 11 | 📽️ Video Guide | [**Server-Side Rendering Telemetry: Next.js, Node.js & OpenTelemetry eBPF**](https://www.youtube.com/watch?v=eS7OHoRtfC8) | Server-Side Rendering (SSR) & Node.js Event-Loop Telemetry | 🇺🇸 English *(CC 20+)* | `7:43` | [▶️ Watch Video](https://www.youtube.com/watch?v=eS7OHoRtfC8) |
 | 12 | 📽️ Video Guide | [**Telemetría Full Stack con eBPF: De SPAs y SSR al Kernel en Linux**](https://www.youtube.com/watch?v=aRfPpFjYiFM) | Telemetría Full-Stack, SPAs, SSR y Kernel de Linux | 🇪🇸 Spanish *(CC 20+)* | `7:55` | [▶️ Ver Video](https://www.youtube.com/watch?v=aRfPpFjYiFM) |
 | 13 | 📽️ Video Guide | [**Telemetría Full Stack OBI: Conectando el Navegador con el Kernel**](https://www.youtube.com/watch?v=ulOScXmXit8) | Conexión Navegador a Kernel en 6 Etapas Arquitectónicas | 🇪🇸 Spanish *(CC 20+)* | `5:42` | [▶️ Ver Video](https://www.youtube.com/watch?v=ulOScXmXit8) |
+| 14 | 📽️ Video Guide | [**Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF**](https://www.youtube.com/watch?v=eHCTIUg4GmY) | Tres Pilares Full-Stack: Navegador, Puentes de Ingesta y SSR | 🇪🇸 Spanish *(CC 20+)* | `2:52` | [▶️ Ver Video](https://www.youtube.com/watch?v=eHCTIUg4GmY) |
 
 ### ⚡ Topic-Focused Technical Shorts
 
@@ -1122,7 +1128,7 @@ End-to-end architectural walkthroughs and technical shorts for `obi-trace-log-co
 
 Below are the direct links and full descriptions for each session.
 
-### 🎬 Full-Length Technical Deep Dives (13 Videos)
+### 🎬 Full-Length Technical Deep Dives (14 Videos)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Full-Length Sessions</strong></summary>
@@ -1482,6 +1488,31 @@ Below are the direct links and full descriptions for each session.
 >
 > ⏱️ Duración: 5:42
 > #OpenTelemetry #eBPF #Frontend #FullStack #W3C #Kubernetes #Observabilidad #SRE #DevOps #Microservicios
+
+#### 14. Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=eHCTIUg4GmY](https://www.youtube.com/watch?v=eHCTIUg4GmY)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/eHCTIUg4GmY/edit](https://studio.youtube.com/video/eHCTIUg4GmY/edit)
+- ⏱️ **Duration**: 2:52
+- 🏷️ **Domain**: Tres Pilares Full-Stack: Navegador, Puentes de Ingesta y SSR
+- 📝 **Full Description**:
+> 🌐 Guía Rápida de Arquitectura: Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF
+>
+> Resumen técnico de 3 minutos en español que sintetiza los conceptos esenciales para conectar Single Page Applications (SPAs) con registros del backend utilizando OpenTelemetry eBPF (OBI).
+>
+> Descubre los 3 pilares clave de la arquitectura full-stack para resolver incidencias de producción sin perder el rastro de los errores de usuario.
+>
+> 📌 Los 3 Pilares Arquitectónicos Explicados:
+> • El Dilema del Navegador: La analogía del guardia de seguridad del edificio y por qué eBPF en Linux necesita la cabecera W3C traceparent generada por el frontend.
+> • Captura de Errores Aislados: El patrón del puente de ingesta de telemetría para enviar errores de JavaScript sin coste adicional en herramientas propietarias.
+> • La Excepción de SSR: Por qué Server-Side Rendering (Next.js, Node.js) ejecuta código directamente en el servidor y cómo eBPF captura sus registros automáticamente.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 2:52
+> #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #Observabilidad #SRE #DevOps #Microservicios #NodeJS
 
 </details>
 
@@ -1861,7 +1892,7 @@ Below are the direct links and full descriptions for each session.
 
 <br/>
 
-### 🎙️ Architectural Masterclass Podcasts (6 Episodes)
+### 🎙️ Architectural Masterclass Podcasts (8 Episodes)
 
 <details open>
 <summary>📂 <strong>Detailed Breakdown: Architectural Podcasts</strong></summary>
@@ -2018,6 +2049,7 @@ Below are the direct links and full descriptions for each session.
 
 #### 6. Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=5XYbAeKnSLs](https://www.youtube.com/watch?v=5XYbAeKnSLs)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/5XYbAeKnSLs/edit](https://studio.youtube.com/video/5XYbAeKnSLs/edit)
 - ⏱️ **Duration**: 25:26
 - 🏷️ **Domain**: Triage de Guardia 2 AM, Syscalls y Filtros NUL
 - 📝 **Full Description**:
@@ -2027,23 +2059,77 @@ Below are the direct links and full descriptions for each session.
 >
 > Una conversación técnica indispensable para ingenieros de fiabilidad (SRE), líderes de plataforma y arquitectos cloud sobre observabilidad moderna en Kubernetes.
 >
-> 📌 **Puntos Clave de la Sesión:**
+> 📌 Puntos Clave de la Sesión:
+> • El Drama de la Guardia a las 2:00 AM: Por qué buscar logs con grep por timestamp durante una caída de producción es lento, impreciso y frustrante.
+> • Observabilidad Zero-Code: Cómo eBPF inyecta identificadores de traza en tiempo de ejecución sin añadir SDKs a las aplicaciones ni recompilar contenedores.
+> • Intercepción en el Kernel de Linux: Captura de llamadas write() y writev(), mapas LRU de contexto y seguimiento de hilos.
+> • Supresión NUL y Filtros de Pipeline: Por qué OBI reemplaza el buffer original con bytes nulos ( ) y cómo configurarlo en Fluent Bit, Vector y OTel Collector.
+> • Límite de 8 KiB y Runtimes Asíncronos: Ensamblado multilínea y recomendaciones para Python, Node.js y Java.
+> • Despliegue Seguro en Producción: Requisitos de kernel Linux 6.0+, capacidades CAP_SYS_ADMIN y despliegue canary en Kubernetes y OpenShift.
 >
-> - **El Drama de la Guardia a las 2:00 AM**: Por qué buscar logs con grep por timestamp durante una caída de producción es lento, impreciso y frustrante.
-> - **Observabilidad Zero-Code**: Cómo eBPF inyecta identificadores de traza en tiempo de ejecución sin añadir SDKs a las aplicaciones ni recompilar contenedores.
-> - **Intercepción en el Kernel de Linux**: Captura de llamadas write() y writev(), mapas LRU de contexto y seguimiento de hilos.
-> - **Supresión NUL y Filtros de Pipeline**: Por qué OBI reemplaza el buffer original con bytes nulos (\x00) y cómo configurarlo en Fluent Bit, Vector y OTel Collector.
-> - **Límite de 8 KiB y Runtimes Asíncronos**: Ensamblado multilínea y recomendaciones para Python, Node.js y Java.
-> - **Despliegue Seguro en Producción**: Requisitos de kernel Linux 6.0+, capacidades CAP_SYS_ADMIN y despliegue canary en Kubernetes y OpenShift.
+> 🔗 Repositorio Oficial y Documentación:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+> • Guía de Filtrado de Logs: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
 >
-> 🔗 **Repositorio Oficial y Documentación:**
->
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Guía de Filtrado de Logs**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
->
-> ⏱️ **Duración**: 25:26
+> ⏱️ Duración: 25:26
 > #OpenTelemetry #eBPF #Observabilidad #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
+
+#### 7. Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=YKPsm3iLVmk](https://www.youtube.com/watch?v=YKPsm3iLVmk)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/YKPsm3iLVmk/edit](https://studio.youtube.com/video/YKPsm3iLVmk/edit)
+- ⏱️ **Duration**: 22:34
+- 🏷️ **Domain**: Conversational Blueprint: From Browser Sandbox to Kernel Stamping
+- 📝 **Full Description**:
+> 🎙️ Architecture Podcast: Correlating Browser Clicks with Kernel Logs – Full-Stack OBI Deep Dive
+>
+> Full 22-minute conversational masterclass podcast deconstructing the invisible bridge between client-side browser user interactions and deep Linux kernel log stamping via OpenTelemetry eBPF (OBI).
+>
+> Based directly on the frontend-spa-ssr-telemetry.md architectural blueprint, this session guides platform engineers, web architects, and SREs through solving one of the most frustrating observability hurdles in modern microservices.
+>
+> 📌 Key Architectural Discussion Points:
+> • The Midnight Developer Frustration: The dreaded ticket stating the site is broken and the challenge of correlating anonymous browser actions with server crashes.
+> • The Browser Sandbox Isolation: Why frontend code (Angular, React, Vue) running on user devices cannot execute Linux kernel probes.
+> • W3C Trace Context as the Rosetta Stone: Generating traceparent headers in frontend HTTP interceptors to create an unbroken audit trail.
+> • Ingress Socket Capture in Kernel Space: How sys_enter_recvfrom intercepts incoming HTTP packets and populates the traces_ctx_v1 BPF map.
+> • Mid-Flight Syscall Enrichment: How sys_enter_write intercepts stdout/stderr streams and stamps active trace IDs before disk commit.
+> • Server-Side Rendering (SSR) & Node.js Gotchas: Navigating event-loop decoupling, async Pino logging streams, and client ingestion bridges.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 22:34
+> #OpenTelemetry #eBPF #Frontend #Podcast #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Angular #React
+
+#### 8. Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=6Yvs6DSSUdI](https://www.youtube.com/watch?v=6Yvs6DSSUdI)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/6Yvs6DSSUdI/edit](https://studio.youtube.com/video/6Yvs6DSSUdI/edit)
+- ⏱️ **Duration**: 24:04
+- 🏷️ **Domain**: Analogía Postal, Frontera del Navegador y Trazabilidad Full-Stack
+- 📝 **Full Description**:
+> 🎙️ Podcast de Arquitectura Técnica: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI
+>
+> Episodio completo de 24 minutos en formato podcast técnico en español analizando la desconexión crítica entre las aplicaciones web en el navegador del usuario y el kernel del servidor Linux.
+>
+> Una conversación amena y profunda para arquitectos de software, líderes de plataforma y equipos SRE sobre cómo conectar el clic de compra de un usuario con los registros del sistema backend sin modificar código.
+>
+> 📌 Puntos Clave de la Sesión:
+> • La Metáfora de la Instalación Postal: Por qué las herramientas de monitorización en el servidor son como cámaras de seguridad que no ven lo que ocurre dentro de la casa del usuario.
+> • La Frontera del Navegador: El aislamiento de las SPAs (React, Angular) en dispositivos móviles y de escritorio frente al kernel de Linux.
+> • La Cabecera W3C traceparent: La etiqueta de seguimiento estandarizada inyectada por interceptores HTTP cliente antes de salir a la red.
+> • Captura en Sockets por eBPF: Cómo OBI extrae el identificador de traza en sys_enter_recvfrom y lo asocia al mapa BPF de contexto de hilos.
+> • Estampado en Vuelo sin Código: Modificación en memoria del buffer de registros en llamadas al sistema write() y writev().
+> • Casos Extremos en SSR y Node.js: Manejo de flujos asíncronos en Next.js, renderizado en servidor y puentes de ingesta de errores.
+>
+> 🔗 Repositorio Blueprint y Documentación Oficial:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía de Telemetría Frontend SPAs y SSR: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 24:04
+> #OpenTelemetry #eBPF #Frontend #Podcast #Kubernetes #DistributedTracing #Observabilidad #SRE #DevOps #Microservicios
 
 </details>
 
