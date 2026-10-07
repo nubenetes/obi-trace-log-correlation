@@ -705,6 +705,7 @@ obi-trace-log-correlation/
     ├── runtime-compatibility.md   # Language runtime specifics (Go, Python, Java, .NET)
     ├── frontend-spa-ssr-telemetry.md # Frontend SPAs (Angular, React, Vue) & SSR telemetry guide
     ├── service-mesh-vs-ebpf-observability.md # Istio Ambient Mesh vs OBI kernel comparison
+    ├── obi-vs-modern-observability-tools.md # OBI vs Datadog, Grafana, Dynatrace & New Relic
     ├── troubleshooting.md         # Diagnostic runbook for common pitfalls
     ├── decommission-guide.md      # Clean teardown procedures
     └── references.md              # Catalog of official links and resources
@@ -827,6 +828,7 @@ obi-trace-log-correlation/
     - 🌐 [`runtime-compatibility.md`](docs/runtime-compatibility.md) — *Language runtime specifics for Go, Python, Java (Loom), Node.js, and .NET*
     - 🌐 [`frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md) — *Frontend SPAs (Angular, React, Vue), SSR interception, and W3C trace propagation*
     - 🕸️ [`service-mesh-vs-ebpf-observability.md`](docs/service-mesh-vs-ebpf-observability.md) — *Detailed architectural comparison between Istio Ambient Mesh and OBI*
+    - 📊 [`obi-vs-modern-observability-tools.md`](docs/obi-vs-modern-observability-tools.md) — *Architectural analysis & strategic conclusions comparing OBI vs Datadog, Grafana, Dynatrace & New Relic*
     - 🩺 [`troubleshooting.md`](docs/troubleshooting.md) — *Diagnostic runbook for common pitfalls*
     - 🛑 [`decommission-guide.md`](docs/decommission-guide.md) — *Clean teardown procedures ensuring zero orphaned kernel resources*
     - 🔗 [`references.md`](docs/references.md) — *Official OpenTelemetry blog links, developer docs, and community resources*
@@ -896,6 +898,7 @@ obi-trace-log-correlation/
 - **[`docs/runtime-compatibility.md`](docs/runtime-compatibility.md)**: Programming language runtime guidance covering Go, Python unbuffered mode, Java platform threads vs virtual threads (Project Loom), Node.js async hooks, and .NET synchronous writers.
 - **[`docs/frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md)**: Comprehensive architectural guide on Frontend Single Page Applications (Angular, React/Next.js, Vue/Nuxt 3) and Server-Side Rendering (SSR) telemetry, detailing why eBPF cannot inspect browser processes, W3C `traceparent` injection, and SSR stdout kernel correlation.
 - **[`docs/service-mesh-vs-ebpf-observability.md`](docs/service-mesh-vs-ebpf-observability.md)**: In-depth architectural comparison between Service Mesh Observability (Istio Ambient Mesh ztunnel and waypoint proxies) and OpenTelemetry eBPF (OBI), analyzing why service meshes cannot enrich application stdout pipes and presenting the ideal enterprise synergy blueprint.
+- **[`docs/obi-vs-modern-observability-tools.md`](docs/obi-vs-modern-observability-tools.md)**: Comprehensive architectural analysis and strategic conclusions comparing OpenTelemetry eBPF (OBI) with leading modern commercial and open-source platforms (Datadog, Grafana Cloud, Grafana OSS, Dynatrace, New Relic), detailing in-flight VFS mutation vs. network-only eBPF, TCO pricing mechanics, and enterprise migration strategies.
 - **[`docs/troubleshooting.md`](docs/troubleshooting.md)**: Diagnostic runbook for missing trace contexts, kernel lockdown denials, split log lines, and permission errors.
 - **[`docs/decommission-guide.md`](docs/decommission-guide.md)**: Clean de-provisioning instructions ensuring no orphaned kernel memory remains.
 - **[`docs/references.md`](docs/references.md)**: Comprehensive bibliography citing official OpenTelemetry blog posts, specifications, GitHub repositories, and community Slack channels.
@@ -919,6 +922,7 @@ The [`docs/`](docs/) directory contains comprehensive, standalone engineering do
 | ⚡ **[`runtime-compatibility.md`](docs/runtime-compatibility.md)** | Language runtime specifics & context staleness fixes | Application Developers, Software Architects | Design & Runtime | Go goroutine scheduler, Python unbuffered mode, Node.js async streams, Java Loom threads | 16 min |
 | 🌐 **[`frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md)** | Frontend SPAs (Angular, React, Vue) & SSR telemetry architecture | Frontend Engineers, Full-Stack Developers, Architects | Frontend & SSR | Client-kernel boundary, W3C `traceparent` HTTP bridge, SSR Node.js writes, OTel Web SDK | 15 min |
 | 🕸️ **[`service-mesh-vs-ebpf-observability.md`](docs/service-mesh-vs-ebpf-observability.md)** | Service Mesh (Istio Ambient) vs. Kernel eBPF (OBI) deep dive | Platform Architects, SREs, Systems Engineers | Architecture & Design | ztunnel L4 mTLS, Waypoint L7 Envoy, VFS pipe isolation, eBPF hook separation | 18 min |
+| 📊 **[`obi-vs-modern-observability-tools.md`](docs/obi-vs-modern-observability-tools.md)** | OBI vs. Datadog, Grafana Cloud/OSS, Dynatrace & New Relic analysis | Platform Architects, CTOs, SRE Leaders | Strategy & Evaluation | In-flight VFS mutation vs network eBPF, TCO economics, APM licensing, migration | 22 min |
 | 🔧 **[`troubleshooting.md`](docs/troubleshooting.md)** | Practical diagnostics, error codes & recovery steps | Platform Engineers, On-Call SREs | Operations & Triage | Missing `trace_id`, kernel lockdown rejection, duplicate logs, BPF map saturation | 12 min |
 | 🧹 **[`decommission-guide.md`](docs/decommission-guide.md)** | Safe decommissioning, probe detachment & cleanup | Platform Engineers, Cluster Operators | Decommission | Probe detachment, unpinning `/sys/fs/bpf/otel`, RBAC/SCC cleanup, pipeline filter retirement | 10 min |
 | 📚 **[`references.md`](docs/references.md)** | Upstream bibliographies, specifications & community links | All Engineers | Reference | Official OTel blog, OpenTelemetry OBI repo, devdocs, upstream demo gist, CNCF Slack | 8 min |
@@ -954,6 +958,7 @@ flowchart TD
     P2 --> P3["3. day1-installation.md (Multi-Cloud Overlays)"]
     P3 --> P4["4. decommission-guide.md (Clean Teardown)"]
     P4 --> P5["5. service-mesh-vs-ebpf-observability.md (Mesh vs eBPF)"]
+    P5 --> P6["6. obi-vs-modern-observability-tools.md (Tool Evaluation)"]
 
     SecOps --> SC1["1. day0-planning-sizing.md (Kernel Lockdown & Capabilities)"]
     SecOps --> SC2["2. k8s/overlays/openshift-4.20/README.md (Security Context Constraints)"]
@@ -965,7 +970,7 @@ flowchart TD
 ### Inter-Document Navigation Guide
 
 To deliver a frictionless reading experience across GitHub and local clones, every document in the [`docs/`](docs/) directory includes:
-1. **Header Breadcrumb Bar**: Direct access at the top of each page to return to the [Repository Overview (`README.md`)](README.md) or switch instantly to any of the 12 companion guides.
+1. **Header Breadcrumb Bar**: Direct access at the top of each page to return to the [Repository Overview (`README.md`)](README.md) or switch instantly to any of the 13 companion guides.
 2. **Sequential Footer Navigation Matrix**: Direct previous (`← Previous`) and next (`Next →`) links following the logical operational lifecycle (Day 0 ➔ Day 1 ➔ Day 2 ➔ Decommission).
 3. **Complete Guide Directory**: An exhaustive catalog at the bottom of every page ensuring you never hit a navigational dead end.
 
