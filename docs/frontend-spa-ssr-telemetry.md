@@ -249,6 +249,7 @@ registerInstrumentations({
 
 ---
 
+<a id="7-browser-telemetry-ingestion-bridge-pattern"></a>
 ## 7. The Browser Telemetry Ingestion Bridge Pattern
 
 To capture frontend client exceptions and UI logs without deploying a separate proprietary RUM service, the frontend forwards telemetry to the backend server:

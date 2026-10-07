@@ -49,6 +49,7 @@ When an incident occurs in production, operators often get paged with a failing 
 - **Bi-Directional Correlation**: Automatically injects matching `trace_id` and `span_id` directly into `stdout` and `stderr` writes.
 - **Polyglot & Multi-Format**: Enriches structured **JSON** logs as native attributes and formats **Plain-Text** logs with key-value annotations (`trace_id=... span_id=...`).
 - **Distributed Context Propagation**: Transparently propagates trace contexts across network hops (HTTP/gRPC) across disparate services.
+- **Full-Stack & Frontend Boundary Bridging**: Seamlessly links browser-based Single Page Applications (Angular, React, Vue) to backend kernel tracing via W3C `traceparent` HTTP injection, while intercepting Node.js Server-Side Rendering (SSR) logs at the host kernel level without client-side kernel access.
 
 ### 🎯 Purpose of This Repository & Architectural Scope
 
@@ -81,10 +82,77 @@ Whether operating in on-premises data centers, strictly isolated air-gapped encl
   - **Uninstrumentable Binaries**: Organizations commonly maintain legacy monolithic services, third-party Commercial Off-The-Shelf (COTS) software, or closed-source vendor binaries where source code access is impossible. OBI injects W3C trace context into their output streams transparently.
   - **Polyglot Consistency**: Demonstrates how Go (`log/slog`), Python (`PYTHONUNBUFFERED=1`), Node.js (Pino), and unstructured plain-text applications achieve identical trace correlation with zero SDK overhead.
 
+- **🌐 Modern Frontend SPAs & Server-Side Rendering (Angular, React, Vue, SvelteKit)**:
+  - **The Browser-to-Kernel Bridge**: Addresses the fundamental perimeter boundary where client web browsers run outside the Linux host kernel. Demonstrates how frontend SPAs inject W3C `traceparent` headers to prime kernel socket ingress probes (`sys_enter_recvfrom`), correlating user clicks with backend microservice logs.
+  - **Zero-Code SSR Interception**: Validates that Server-Side Rendering engines (Node.js Express / Next.js) executing on the Linux host have their page generation logs automatically intercepted and enriched at the kernel level (`sys_enter_write`).
+
 - **🛡️ De-Risking Production Adoption (The Hidden Gotchas)**:
   - **The Suppressed NUL Byte Filter**: Documents the low-level reality of `bpf_probe_write_user` zeroing out intercepted memory buffers, and provides ready-to-deploy drop filters for Vector, Fluent Bit, Promtail/Loki, and OTel Collector (`^[\x00\s]*$`).
   - **8 KiB Buffer Splitting & Multi-Line Logs**: Details kernel vector I/O splitting mechanics and mitigation strategies for large JSON payloads.
   - **Clean Decommissioning Runbooks**: Prevents orphaned pinned BPF maps in `/sys/fs/bpf/otel/` from exhausting kernel memory after DaemonSet removal.
+
+<a id="frontend-spas--full-stack-telemetry-overview"></a>
+<a id="-frontend-spas--full-stack-telemetry-overview-angular-react-vue--ssr"></a>
+### 🌐 Frontend SPAs & Full-Stack Telemetry Overview (Angular, React, Vue & SSR)
+
+A recurring architectural question when adopting eBPF observability is: **"Can eBPF capture logs and traces directly inside the end-user's web browser?"**
+
+The short answer is **no, but full-stack correlation is achieved by bridging client-side W3C context into Linux kernel ingress probes.**
+
+#### 1. The Architectural Boundary: Client Browser vs. Host Linux Kernel
+
+```text
+┌──────────────────────────────────────────────┐
+│  End-User Client Device (Browser Sandbox)    │
+│  Angular 17+ / React / Vue / SvelteKit SPA   │
+│  ❌ Linux eBPF CANNOT run inside browser     │
+└──────────────────────┬───────────────────────┘
+                       │ Outbound HTTP Request + W3C traceparent Header
+                       ▼
+════════════════════════════════════════════════ Network Boundary
+                       │
+┌──────────────────────▼───────────────────────┐
+│  Kubernetes Ingress / Linux Host Kernel      │
+│  ✅ OBI sys_enter_recvfrom intercepts socket │
+│  ✅ Stores trace_id in traces_ctx_v1 BPF map │
+│  ✅ sys_enter_write enriches stdout logs     │
+└──────────────────────────────────────────────┘
+```
+
+- **The Browser Sandbox**: Client Single Page Applications (SPAs) execute inside browser runtimes (V8 in Chrome/Edge, JavaScriptCore in Safari, SpiderMonkey in Firefox) on end-user devices (macOS, Windows, iOS, Android). Linux eBPF probes cannot inspect or attach to these client-side execution contexts.
+- **The Context Bridge**: Modern frontend HTTP clients configure a lightweight interceptor (e.g. Angular 17+ `HttpInterceptorFn`, Axios/Fetch interceptors, or `@opentelemetry/sdk-trace-web`) that attaches the standard W3C `traceparent` header (`00-{trace_id}-{span_id}-01`) to outgoing requests.
+- **Kernel Socket Ingress**: When the HTTP packet reaches the Linux host where the API Gateway, Ingress Controller, or Backend Service resides, OBI's socket probe (`sys_enter_recvfrom`) intercepts the header, extracts the `trace_id`, and caches it in the kernel's `traces_ctx_v1` BPF hash map keyed by the active thread (`tgid_pid`).
+- **Unbroken Backend Correlation**: As backend microservices (Go, Python, Java, Node.js, .NET, Ruby) process the request and write logs to `stdout`, OBI enriches every log line with that exact client-originated `trace_id`.
+
+#### 2. Server-Side Rendering (SSR) vs. Client-Side SPAs
+
+| Observability Tier | Execution Environment | eBPF Kernel Probe Coverage | Correlation & Ingestion Mechanism | Reference Architecture & Runnable Samples |
+| :--- | :--- | :---: | :--- | :--- |
+| **Client Browser SPA** | End-User Device Browser (Angular, React, Vue) | ❌ Inaccessible (Remote Sandbox) | Injects standard W3C `traceparent` headers via HTTP interceptors or OTel Web SDK | 📄 [Frontend Telemetry Guide](docs/frontend-spa-ssr-telemetry.md)<br>💻 [`demo-apps/frontend-angular/`](demo-apps/frontend-angular/) |
+| **Server-Side Rendering (SSR)** | Host Linux Container (Node.js Express / Next.js) | ✅ 100% Kernel Coverage | Zero-code stdout write interception (`pipe_write` / `ksys_write`) during page rendering | ⚡ [Runtime Compatibility Guide](docs/runtime-compatibility.md#1-frontend-languages--single-page-applications-angular-react-vue)<br>💻 [Angular SSR Service](demo-apps/frontend-angular/) |
+| **Client Error Ingestion Bridge** | Edge API Gateway / Pod (`POST /api/telemetry/logs`) | ✅ 100% Kernel Coverage | Captured browser exceptions (`window.onerror`) forwarded to backend bridge, enriched with trace context | 📄 [Browser Bridge Pattern](docs/frontend-spa-ssr-telemetry.md#7-browser-telemetry-ingestion-bridge-pattern) |
+| **Downstream Microservices** | Host Linux Containers (Go, Python, Java, .NET, Ruby) | ✅ 100% Kernel Coverage | Automatic socket ingress context extraction and stdout enrichment | 🏛️ [Architecture Deep Dive](docs/architecture.md)<br>💻 [Polyglot Demo Apps](demo-apps/) |
+
+#### 3. Frontend Architecture Documentation & Runnable Demos
+
+This repository provides dedicated documentation, code patterns, and runnable implementations for frontend and SSR observability:
+
+- 🌐 **[Frontend SPAs & SSR Telemetry Guide (`docs/frontend-spa-ssr-telemetry.md`)](docs/frontend-spa-ssr-telemetry.md)**:
+  Comprehensive 10-section architecture guide featuring:
+  - System topology diagrams and end-to-end distributed sequence diagrams.
+  - Framework implementation snippets: **Angular 17+** (`HttpInterceptorFn`), **React / Next.js** (`instrumentation.ts` + traced `fetch`), **Vue 3 / Nuxt 3** (`$fetch` plugin), and **SvelteKit**.
+  - OpenTelemetry Web SDK integration guide (`@opentelemetry/sdk-trace-web`).
+  - Browser Ingestion Bridge pattern for shipping client-side exceptions (`window.onerror`) to Loki/Elasticsearch with trace correlation.
+  - Server-Side Rendering (SSR) synchronous stdout vs async decoupled queue mechanics.
+  - Categorized Public References and Standards Catalog (W3C Trace Context, W3C Baggage, OTel JS).
+- ⚡ **[Runtime Compatibility Guide (`docs/runtime-compatibility.md`)](docs/runtime-compatibility.md#1-frontend-languages--single-page-applications-angular-react-vue)**:
+  Detailed analysis of frontend runtime behaviors, synchronous Node.js SSR rendering vs asynchronous worker queues, and context staleness prevention.
+- 💻 **[Angular 17+ & SSR Runnable Demo Application (`demo-apps/frontend-angular/`)](demo-apps/frontend-angular/)**:
+  Production-ready demo service containing:
+  - Standalone Angular 17+ HTTP interceptor automatically injecting W3C `traceparent` headers.
+  - Node.js Express Server-Side Rendering engine writing structured JSON logs to stdout.
+  - Dockerfile and multi-stage container build configuration.
+  - Kubernetes deployment manifests and Kustomize overlays.
 
 ---
 
@@ -93,6 +161,7 @@ Whether operating in on-premises data centers, strictly isolated air-gapped encl
 - [Executive Overview](#executive-overview)
   - [🎯 Purpose of This Repository & Architectural Scope](#-purpose-of-this-repository--architectural-scope)
   - [🌍 Why This Blueprint Is Valuable Across Diverse Operational Platforms](#-why-this-blueprint-is-valuable-across-diverse-operational-platforms)
+  - [🌐 Frontend SPAs & Full-Stack Telemetry Overview (Angular, React, Vue & SSR)](#-frontend-spas--full-stack-telemetry-overview-angular-react-vue--ssr)
 - [📖 Official Reference & Theoretical Motivation](#-official-reference--theoretical-motivation)
   - [1. The Core Motivation: The 2 AM Incident Response Dilemma](#1-the-core-motivation-the-2-am-incident-response-dilemma)
   - [2. Dual-Perspective Technical Guidance](#2-dual-perspective-technical-guidance)
@@ -408,6 +477,7 @@ For Platform Architects, Linux Kernel Engineers, and Staff SREs, here is the tec
 3. **Polyglot Log Harmonization**: Correlate mixed formats—injecting JSON keys into structured logs while decorating unstructured text lines with `trace_id=... span_id=...`.
 4. **Hybrid OTel SDK Coexistence**: When services already use an OTel SDK for traces but lack log correlation, OBI automatically injects `trace_id` while suppressing conflicting `span_id` fields.
 5. **Incident Debugging Acceleration**: Jump directly from a failing trace span in Jaeger/Tempo to exact log lines in Grafana Loki, OpenSearch, or CloudWatch.
+6. **Frontend SPAs & SSR Correlation**: Bridge client-side user interactions in browsers (Angular 17+, React/Next.js, Vue/Nuxt 3) into backend eBPF kernel traces via W3C `traceparent` HTTP headers, while capturing Node.js Server-Side Rendering (SSR) logs at the host kernel level without application-level tracing SDKs.
 
 ---
 
@@ -595,7 +665,7 @@ obi-trace-log-correlation/
 ### Detailed Component & Directory Breakdown
 
 #### 📁 `demo-apps/` — Polyglot Application Microservices
-- **Angular Frontend & SSR ([`demo-apps/frontend-angular/`](demo-apps/frontend-angular/))**: An Angular 17+ service demonstrating client-side W3C `traceparent` HTTP header injection via an Angular interceptor, paired with a Node.js SSR engine executing server-side rendering logs intercepted by OBI eBPF.
+- **Angular Frontend & SSR ([`demo-apps/frontend-angular/`](demo-apps/frontend-angular/))**: An Angular 17+ service demonstrating client-side W3C `traceparent` HTTP header injection via an Angular interceptor, paired with a Node.js SSR engine executing server-side rendering logs intercepted by OBI eBPF. *(Full technical guide: [`docs/frontend-spa-ssr-telemetry.md`](docs/frontend-spa-ssr-telemetry.md); runtime compatibility: [`docs/runtime-compatibility.md`](docs/runtime-compatibility.md#1-frontend-languages--single-page-applications-angular-react-vue))*.
 - **Go Frontend ([`demo-apps/go/frontend/`](demo-apps/go/frontend/))**: An uninstrumented HTTP microservice listening on port 8080. It utilizes Go 1.23 standard library `log/slog` to write JSON records to stdout. When `/checkout` is invoked, it logs an order event and dispatches an HTTP GET request to the downstream backend. OBI automatically intercepts the outbound HTTP client call, generates a W3C `traceparent` header, joins the spans, and enriches stdout writes with `trace_id` and `span_id`.
 - **Go Backend ([`demo-apps/go/backend/`](demo-apps/go/backend/))**: An uninstrumented HTTP microservice listening on port 8081. It serves the `/hello` endpoint and logs structured JSON with `log/slog`. OBI extracts incoming W3C trace context from the kernel socket buffer and decorates the backend logs with the identical `trace_id`.
 - **Python Service ([`demo-apps/python/`](demo-apps/python/))**: Demonstrates Python compatibility. Configured with `ENV PYTHONUNBUFFERED=1` in its Dockerfile to prevent stdout buffering in container pipes, ensuring write syscalls execute synchronously on the request-handling thread.

@@ -505,6 +505,8 @@ Asynchronous queue workers (Sidekiq, GoodJob, Resque) running in separate worker
 
 ---
 
+<a id="frontend-spas--full-stack-ssr-angular-react--nextjs"></a>
+<a id="1-frontend-languages--single-page-applications-angular-react-vue"></a>
 ### Frontend SPAs & Full-Stack SSR: Angular, React & Next.js
 
 #### The Architectural Boundary: Client Browser vs Linux Kernel Space
