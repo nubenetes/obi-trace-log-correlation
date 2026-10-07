@@ -4,6 +4,29 @@ This guide and runnable microservice demonstrates how modern frontend architectu
 
 ---
 
+## Table of Contents
+- [1. Frontend Languages & Single Page Applications (Angular, React, Vue)](#1-frontend-languages--single-page-applications-angular-react-vue)
+  - [The Architectural Boundary: Client Browser vs Linux Kernel Space](#the-architectural-boundary-client-browser-vs-linux-kernel-space)
+- [2. End-to-End Distributed Trace Sequence (Browser Click to Kernel Log Enrichment)](#2-end-to-end-distributed-trace-sequence-browser-click-to-kernel-log-enrichment)
+- [3. The Core Dilemma: Why eBPF Cannot Probe Client Browsers](#3-the-core-dilemma-why-ebpf-cannot-probe-client-browsers)
+- [4. Frontend Solutions Comparison Matrix](#4-frontend-solutions-comparison-matrix)
+- [5. Implementations Across Frontend Solutions](#5-implementations-across-frontend-solutions)
+  - [A. Angular 17+ Functional HTTP Interceptor](#a-angular-17-functional-http-interceptor)
+  - [B. React / Next.js 14+ App Router Traced Fetch](#b-react--nextjs-14-app-router-traced-fetch)
+  - [C. Vue 3 / Nuxt 3 `$fetch` Plugin](#c-vue-3--nuxt-3-fetch-plugin)
+  - [D. Production OpenTelemetry Official Browser SDK](#d-production-opentelemetry-official-browser-sdk)
+- [6. The Browser Telemetry Ingestion Bridge Pattern](#6-the-browser-telemetry-ingestion-bridge-pattern)
+- [7. Directory Structure](#7-directory-structure)
+- [8. Working vs Broken Modes](#8-working-vs-broken-modes)
+- [9. Building and Running](#9-building-and-running)
+- [10. Public References & Standards Catalog](#10-public-references--standards-catalog)
+  - [1. W3C Standards & Distributed Tracing Specifications](#1-w3c-standards--distributed-tracing-specifications)
+  - [2. OpenTelemetry Documentation & eBPF Kernel Instrumentation](#2-opentelemetry-documentation--ebpf-kernel-instrumentation)
+  - [3. Frontend Framework Documentation & HTTP Interception](#3-frontend-framework-documentation--http-interception)
+  - [4. Local Guides & Architecture Blueprints in this Repository](#4-local-guides--architecture-blueprints-in-this-repository)
+
+---
+
 ## 1. Frontend Languages & Single Page Applications (Angular, React, Vue)
 
 ### The Architectural Boundary: Client Browser vs Linux Kernel Space
@@ -300,3 +323,59 @@ curl -i -X POST http://localhost:8086/api/telemetry/logs \
   -H "traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01" \
   -d '{"event":"checkout_clicked","component":"CartComponent"}'
 ```
+
+---
+
+## 10. Public References & Standards Catalog
+
+This catalog indexes official public standards, framework documentation, SDK guides, and repository architecture specifications relevant to frontend telemetry, W3C Trace Context propagation, and eBPF zero-code correlation.
+
+### 1. W3C Standards & Distributed Tracing Specifications
+* **[W3C Trace Context (Recommendation)](https://www.w3.org/TR/trace-context/)**:
+  * *Summary*: Defines the standard HTTP headers `traceparent` (`00-{trace_id}-{span_id}-{flags}`) and `tracestate` across vendor boundaries.
+  * *Relevance*: This standard is the wire protocol that enables frontend browser actions (Angular, React, Vue) to bridge into the host Linux kernel socket ingress probes monitored by OBI.
+* **[W3C Baggage Specification](https://www.w3.org/TR/baggage/)**:
+  * *Summary*: Defines user-defined key-value metadata pairs propagated across distributed request boundaries without altering span identifiers.
+  * *Relevance*: Allows frontend applications to propagate user context (`client.framework=angular17`, `app.version=2.4.0`) that travels untouched through backend microservice hops.
+
+---
+
+### 2. OpenTelemetry Documentation & eBPF Kernel Instrumentation
+* **[OpenTelemetry Web & Browser JavaScript SDK Documentation](https://opentelemetry.io/docs/languages/js/libraries/)**:
+  * *Summary*: Official guide on instrumenting client-side JavaScript applications running inside web browsers.
+  * *Relevance*: Outlines how `@opentelemetry/sdk-trace-web` initializes browser tracer providers and creates user-interaction spans.
+* **[OpenTelemetry eBPF Instrumentation (OBI) Documentation](https://opentelemetry.io/docs/zero-code/obi/)**:
+  * *Summary*: Official documentation for deploying and configuring OBI DaemonSets and eBPF kernel instrumentation.
+  * *Relevance*: Details kernel privilege requirements (`CAP_SYS_ADMIN`), Linux 6.0+ `write()` syscall interception, and DaemonSet configurations.
+* **[Zero-Code Trace-Log Correlation with OBI (Announcement)](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)**:
+  * *Summary*: Primary upstream announcement detailing in-flight `write()`/`writev()` syscall interception, mid-flight payload enrichment, and NUL byte placeholder suppression.
+* **[OpenTelemetry eBPF Instrumentation Repository](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation)**:
+  * *Summary*: Upstream GitHub repository containing OBI's eBPF C programs, Go userspace daemon, and socket ingress probe logic.
+* **[OpenTelemetry JS Contrib Repository](https://github.com/open-telemetry/opentelemetry-js-contrib)**:
+  * *Summary*: Houses official browser auto-instrumentation packages: `@opentelemetry/instrumentation-fetch`, `@opentelemetry/instrumentation-xml-http-request`, and `@opentelemetry/context-zone`.
+* **[OpenTelemetry JS Core Repository](https://github.com/open-telemetry/opentelemetry-js)**:
+  * *Summary*: Core OpenTelemetry API and SDK repository for JavaScript and TypeScript across browser and Node.js runtimes.
+
+---
+
+### 3. Frontend Framework Documentation & HTTP Interception
+* **[Angular Documentation: HttpClient Interceptors](https://angular.dev/guide/http/interceptors)**:
+  * *Summary*: Official guide for creating functional interceptors (`HttpInterceptorFn`) in Angular 17+ to inspect, mutate, and attach headers to outgoing HTTP requests.
+* **[Angular Documentation: Server-Side Rendering (SSR) & Prerendering](https://angular.dev/guide/ssr)**:
+  * *Summary*: Production deployment guide for `@angular/ssr`, configuring Node.js Express servers for initial page rendering and hydration.
+* **[Next.js Documentation: OpenTelemetry Instrumentation](https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry)**:
+  * *Summary*: Official guide for configuring distributed tracing in Next.js App Router using the root `instrumentation.ts` file and `@vercel/otel`.
+* **[Nuxt 3 Documentation: Plugins & Lifecycle Hooks](https://nuxt.com/docs/guide/directory-structure/plugins)**:
+  * *Summary*: Official guide for creating Nuxt 3 client and server plugins, extending the `$fetch` (ofetch) HTTP client, and handling SSR lifecycle hooks.
+
+---
+
+### 4. Local Guides & Architecture Blueprints in this Repository
+* **[`docs/runtime-compatibility.md`](../../docs/runtime-compatibility.md)**:
+  * *Summary*: In-depth analysis of language runtimes (Go, Python, Node.js, Java, .NET, Ruby, and Frontend SPAs/SSR) and how OBI prevents context staleness.
+* **[`docs/architecture.md`](../../docs/architecture.md)**:
+  * *Summary*: Exhaustive breakdown of Linux kernel syscall hooks (`sys_enter_write`, `sys_enter_recvfrom`), BPF hash maps (`traces_ctx_v1`), user buffer suppression, and 8 KiB buffer split behavior.
+* **[`docs/references.md`](../../docs/references.md)**:
+  * *Summary*: Master reference directory indexing all upstream OBI specifications, Kubernetes overlays, and community channels.
+* **[`README.md`](../../README.md)**:
+  * *Summary*: Master repository documentation, architecture diagrams, multi-cloud Kubernetes overlays (OpenShift, AKS, EKS, GKE, RKE2), and local Docker Compose quickstart.
