@@ -8,6 +8,7 @@
 
 ## 📑 Table of Contents
 
+- [🎥 Multimedia Deep Dives & Podcasts on Service Mesh vs. eBPF](#-multimedia-deep-dives--podcasts-on-service-mesh-vs-ebpf)
 - [1. Executive Summary & Paradigm Overview](#1-executive-summary--paradigm-overview)
 - [2. Architectural Topology: Network Datapath vs. Kernel VFS](#2-architectural-topology-network-datapath-vs-kernel-vfs)
 - [3. The 2 AM Triage Dilemma: What Happens During an Outage?](#3-the-2-am-triage-dilemma-what-happens-during-an-outage)
@@ -24,12 +25,157 @@
 
 ### 🎥 Multimedia Deep Dives & Podcasts on Service Mesh vs. eBPF
 
-Explore this architectural comparison in audio and video on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel:
-- 🎙️ **Architecture Podcast (58m, EN)**: [**Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=qJUrpdWvHTs) — Complete 58-minute masterclass podcast on socket boundaries, ztunnel/waypoint, and VFS pipe enrichment.
-- 🎙️ **Podcast de Arquitectura (13m, ES)**: [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) — Episodio completo de 13 minutos en español sobre la frontera del Service Mesh, kernel VFS, W3C traceparent y frontend.
-- 🎬 **Video Deep Dive (8m)**: [**Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It**](https://www.youtube.com/watch?v=weRUz_7BC_A) — Visual breakdown of network proxies vs Linux VFS syscalls.
-- ⚡ **Technical Short (EN)**: [**Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF**](https://www.youtube.com/shorts/g-mkqDaklMQ) — Quick 77-second explanation of network perimeter limits.
-- ⚡ **Technical Short (ES)**: [**Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos**](https://www.youtube.com/shorts/3SfLjZ0hHno) — Resumen de 62 segundos sobre la sinergia de red y kernel en resolución de incidentes.
+This architectural comparison is supported by a comprehensive educational multimedia series synthesized with **Gemini NotebookLM** based directly on this document, kernel syscall mechanics, and real-world SRE triage scenarios. All episodes and technical shorts are hosted on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel.
+
+> [!NOTE]
+> **Multilingual Learning Experience**:
+> Episodes feature native spoken audio in **English 🇺🇸** and **Spanish 🇪🇸**, with automated closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for global SRE and platform engineering teams.
+
+#### 📊 Video Guides, Masterclass Podcasts & Technical Shorts Summary
+
+| Format | Episode / Title | Domain / Focus | Language | Duration | Direct YouTube Link |
+|:---:|---|---|:---:|:---:|---|
+| 📽️ **Video Guide** | [**Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It**](https://www.youtube.com/watch?v=weRUz_7BC_A) | Visual breakdown of network proxies vs Linux VFS syscalls | 🇺🇸 English *(CC 20+)* | `8:14` | [▶️ Watch Video](https://www.youtube.com/watch?v=weRUz_7BC_A) |
+| 🎙️ **Audio Podcast** | [**Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=qJUrpdWvHTs) | Complete 58m masterclass on socket boundaries, ztunnel/waypoint & VFS pipes | 🇺🇸 English *(CC 20+)* | `58:23` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=qJUrpdWvHTs) |
+| 🎙️ **Audio Podcast** | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | Frontera del Service Mesh, kernel VFS, W3C traceparent y frontend | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
+| ⚡ **Technical Short** | [**Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF**](https://www.youtube.com/shorts/g-mkqDaklMQ) | 77-second breakdown of network perimeter limits vs kernel VFS interception | 🇺🇸 English *(CC 20+)* | `1:17` | [▶️ Watch Short](https://www.youtube.com/shorts/g-mkqDaklMQ) |
+| ⚡ **Technical Short** | [**Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos**](https://www.youtube.com/shorts/3SfLjZ0hHno) | Sinergia de red y kernel en resolución instantánea de incidentes | 🇪🇸 Spanish *(CC 20+)* | `1:02` | [▶️ Ver Short](https://www.youtube.com/shorts/3SfLjZ0hHno) |
+
+<details open>
+<summary>📂 <strong>Detailed Agendas, Technical Breakdowns & Studio Links</strong></summary>
+
+<br/>
+
+#### 1. Video Guide: Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=weRUz_7BC_A](https://www.youtube.com/watch?v=weRUz_7BC_A)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/weRUz_7BC_A/edit](https://studio.youtube.com/video/weRUz_7BC_A/edit)
+- ⏱️ **Duration**: 8:14
+- 🏷️ **Domain**: Service Mesh vs Kernel eBPF Observability & VFS Syscall Interception
+- 📝 **Full Description**:
+> 🔍 Service Mesh vs. Kernel eBPF: Why Service Meshes Fail at Log Correlation & How OBI Solves It
+>
+> A comprehensive architectural deep dive comparing Service Mesh Observability (Istio Ambient Mesh) with Kernel-level eBPF Instrumentation (OpenTelemetry OBI).
+>
+> Discover why network proxies cannot bridge the gap between distributed traces and local application logs, and how operating at the Linux kernel layer enables zero-code log enrichment.
+>
+> 📌 Core Architectural Concepts & Highlights:
+> • The SRE Midnight Nightmare: Paged for an HTTP 500 error where the trace is known, but application logs have zero trace context.
+> • Service Mesh Perimeter Limits: Why Envoy, ztunnel, and Waypoint proxies operate strictly on network sockets (AF_INET) and have zero access to container stdout/stderr pipes.
+> • The Linux Namespace Boundary: Examining why network proxies cannot intercept in-process memory or file descriptor writes.
+> • Kernel Syscall Interception: How OBI hooks write() system calls in Linux kernel space using eBPF probes.
+> • Real-Time Context Stamping: Extracting active trace IDs from BPF maps and modifying log line buffers in-flight.
+> • The Perfect Partnership: Running Istio Ambient Mesh for L4/L7 traffic security alongside OBI for bidirectional incident triage.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Service Mesh vs. eBPF Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 8:14
+> #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observability #Kubernetes #SRE #DevOps #DistributedTracing
+
+#### 2. Architecture Podcast: Zero-Code Trace-Log Correlation: Service Mesh vs. Kernel eBPF (OBI)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=qJUrpdWvHTs](https://www.youtube.com/watch?v=qJUrpdWvHTs)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/qJUrpdWvHTs/edit](https://studio.youtube.com/video/qJUrpdWvHTs/edit)
+- ⏱️ **Duration**: 58:23
+- 🏷️ **Domain**: Service Mesh vs Kernel eBPF Observability & Full-Stack Synergy
+- 📝 **Full Description**:
+> 🎙️ Architecture Podcast: Zero-Code Trace-Log Correlation – Service Mesh Observability vs. Kernel eBPF
+>
+> Full 58-minute masterclass podcast exploring the architectural boundaries, trade-offs, and synergies between sidecarless Service Meshes (Istio Ambient, Linkerd, Cilium Mesh) and Kernel eBPF Instrumentation (OpenTelemetry OBI).
+>
+> An exhaustive discussion for cloud architects, platform engineers, and SREs on why service meshes excel at network traffic but remain blind to application internals, and how combining both unlocks full-stack zero-trust observability.
+>
+> 📌 Architectural Roadmap & Key Topics:
+> • The Fundamental Dilemma: Why deploying a modern service mesh does not eliminate the need for kernel-level trace-log correlation.
+> • Network Datapath vs. Kernel VFS: Understanding the socket boundary (L4 TCP / L7 HTTP) versus the Linux Virtual File System and system call boundary.
+> • The 2:00 AM P1 Triage Dilemma: Why proxy access logs alone cannot diagnose an internal NullPointerException, database timeout, or unhandled exception.
+> • Inside Istio Ambient Mesh: How ztunnel handles L4 mTLS (HBONE) and Waypoint proxies emit L7 metrics and spans without sidecars.
+> • The Log Correlation Blind Spot: Why network proxies cannot physically access container stdout/stderr file descriptors or inject trace context into application logs.
+> • OBI Kernel Mechanics: Intercepting write() and writev() syscalls, BPF LRU maps, and in-flight trace_id stamping via bpf_probe_write_user.
+> • Full-Stack Enterprise Synergy: Combining Ambient Mesh for L7 security and policy enforcement with OBI for instant, zero-code trace-log correlation.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+> • GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> • Service Mesh vs. eBPF Architectural Deep Dive: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> • OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 58:23
+> #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observability #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
+
+#### 3. Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=kP_FrCcn_jE](https://www.youtube.com/watch?v=kP_FrCcn_jE)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/kP_FrCcn_jE/edit](https://studio.youtube.com/video/kP_FrCcn_jE/edit)
+- ⏱️ **Duration**: 12:50
+- 🏷️ **Domain**: Service Mesh vs eBPF, Frontend W3C Context & Mutación de Memoria
+- 📝 **Full Description**:
+> 🎙️ Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas – Service Mesh vs. Kernel eBPF
+>
+> Episodio completo de 13 minutos en formato podcast técnico en español analizando la sinergia arquitectónica entre Service Mesh (Istio Ambient, Envoy) y la instrumentación en el Kernel de Linux mediante eBPF (OpenTelemetry OBI).
+>
+> Una conversación técnica profunda para ingenieros de fiabilidad (SRE), arquitectos cloud y desarrolladores sobre por qué las mallas de servicio son ciegas a los registros locales de las aplicaciones y cómo eBPF resuelve este dilema sin tocar una sola línea de código.
+>
+> 📌 Puntos Clave y Hoja de Ruta de la Sesión:
+> • El Incidente de las 2:00 AM: Recibir una alerta crítica con un Trace ID específico y encontrar cero resultados al buscar en los logs distribuidos.
+> • La Frontera del Service Mesh: Por qué los proxies de red actúan en el muelle de carga (sockets TCP/HTTP) sin visibilidad alguna sobre los pipes internos stdout y stderr del contenedor.
+> • La Solución en el Kernel: Cómo OBI intercepta llamadas al sistema write() y writev() en Linux, inyectando el Trace ID activo en memoria antes de consolidar el registro.
+> • Del Navegador al Kernel: Conectando el frontend (React, Angular) mediante cabeceras W3C traceparent capturadas por el servidor vía sys_recvfrom.
+> • Supresión NUL y Límites de 8 KiB: El truco de bpf_probe_write_user para silenciar el buffer original y estrategias de reensamblaje multilínea en los colectores.
+> • La Verdad en Producción: Reflexión final sobre el papel del sistema operativo como editor fantasma en la telemetría moderna.
+>
+> 🔗 Repositorio Oficial y Documentación de Referencia:
+> • Repositorio Blueprint en GitHub: https://github.com/nubenetes/obi-trace-log-correlation
+> • Guía Arquitectónica Service Mesh vs. eBPF: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> • Anuncio Oficial de OpenTelemetry: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duración: 12:50
+> #OpenTelemetry #eBPF #ServiceMesh #Istio #AmbientMesh #Observabilidad #Kubernetes #SRE #DevOps #DistributedTracing #Podcast
+
+#### 4. Technical Short: Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/g-mkqDaklMQ](https://www.youtube.com/shorts/g-mkqDaklMQ)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/g-mkqDaklMQ/edit](https://studio.youtube.com/video/g-mkqDaklMQ/edit)
+- ⏱️ **Duration**: 1:17
+- 🏷️ **Domain**: Network Perimeter vs Kernel VFS Interception
+- 📝 **Full Description**:
+> ⚡ Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF!
+>
+> Service meshes track requests across the network, but the moment your application writes a local log, they lose the trail. Here is why:
+>
+> • Outside the Container: Service meshes act as traffic cops on the network boundary. They have zero access to the internal pipes where your code prints its logs.
+> • The Kernel Solution: To correlate logs, you must go beneath the application to the OS kernel. OBI intercepts write system calls mid-flight via eBPF.
+> • In-Flight Stamping: OBI stamps the active trace ID directly into the log line and suppresses the original buffer with bpf_probe_write_user.
+> • The Perfect Pair: Service meshes secure network traffic while eBPF silently links application logs to traces without code changes.
+>
+> 🔗 Official Blueprint Repo & Docs:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Architecture Deep Dive: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> Official Blog: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #ServiceMesh #Istio #Kubernetes #DevOps #SRE #Observability #CloudNative
+
+#### 5. Technical Short: Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/3SfLjZ0hHno](https://www.youtube.com/shorts/3SfLjZ0hHno)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/3SfLjZ0hHno/edit](https://studio.youtube.com/video/3SfLjZ0hHno/edit)
+- ⏱️ **Duration**: 1:02
+- 🏷️ **Domain**: Sinergia Service Mesh y eBPF en Resolución de Incidentes
+- 📝 **Full Description**:
+> ⚡ Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos!
+>
+> ¿Por qué combinar una malla de servicios con eBPF si ambas monitorizan la infraestructura? Porque por separado sus puntos ciegos complican la resolución de incidentes:
+>
+> • El Punto Ciego de la Red: La malla de servicios detecta el error 500 en la red, pero es ciega a lo que ocurre en la memoria interna y stdout de la aplicación.
+> • Intercepción en el Kernel: eBPF opera en el núcleo de Linux, intercepta los mensajes de log justo al escribirse y les estampa el trace ID de la red al instante.
+> • Triage Inmediato: Permite saltar con un solo clic desde la alerta de red hasta la línea exacta de log que explica el error en segundos.
+> • Sinergia Total: La malla gestiona la seguridad y el tráfico mientras eBPF sincroniza los logs sin tocar una sola línea de código.
+>
+> 🔗 Repositorio Oficial y Documentación:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Guía Service Mesh vs eBPF: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/service-mesh-vs-ebpf-observability.md
+> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #ServiceMesh #Istio #Kubernetes #DevOps #SRE #Observabilidad #CloudNative
+
+</details>
 
 ---
 

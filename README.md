@@ -341,7 +341,7 @@ The short answer is **yes**. While modern sidecarless service meshes provide rob
 > [!TIP]
 > **Lossless High-Resolution Asset**: The architecture diagram above is available in original full-resolution (2752x1536 PNG, lossless) at [`docs/images/service-mesh-vs-kernel-ebpf.png`](docs/images/service-mesh-vs-kernel-ebpf.png) and high-definition JPEG at [`docs/images/service-mesh-vs-kernel-ebpf.jpg`](docs/images/service-mesh-vs-kernel-ebpf.jpg).
 
-##### Detailed Breakdown of Core Architectural Dimensions & The Enterprise Synergy Blueprint:
+#### 3. Deep Dive Breakdown: Core Architectural Dimensions & The 3-Step Synergy Blueprint
 
 - **1. 🏗️ System Layer & Operational Scope (The 3D Architectural Stack)**:
   - **User Space Applications**: Polyglot container microservices (Go, Python, Java, Node.js, .NET, Ruby) executing business transactions inside Linux namespaces.
