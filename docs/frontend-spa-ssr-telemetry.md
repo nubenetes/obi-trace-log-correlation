@@ -63,7 +63,7 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 | ⚡ **Technical Short** | [**Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux**](https://www.youtube.com/shorts/QdUdLTSOyZE) | **Del Clic a la Línea de Código**: barrera física del navegador, cabecera W3C y kernel stamping | 🇪🇸 Spanish *(CC 20+)* | `1:11` | [▶️ Ver Short](https://www.youtube.com/shorts/QdUdLTSOyZE) |
 | ⚡ **Technical Short** | [**Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats**](https://www.youtube.com/shorts/b9oNWMJlUcc) | **Node.js SSR Runtime Buffering**: event-loop decoupling, async stdout streams y pérdidas de contexto en Server-Side Rendering | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/b9oNWMJlUcc) |
 
-<details open>
+<details>
 <summary>📂 <strong>Detailed Agendas & Architectural Relevance</strong></summary>
 
 <br/>

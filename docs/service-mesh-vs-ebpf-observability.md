@@ -41,7 +41,7 @@ This architectural comparison is supported by a comprehensive educational multim
 | ⚡ **Technical Short** | [**Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF**](https://www.youtube.com/shorts/g-mkqDaklMQ) | 77-second breakdown of network perimeter limits vs kernel VFS interception | 🇺🇸 English *(CC 20+)* | `1:17` | [▶️ Watch Short](https://www.youtube.com/shorts/g-mkqDaklMQ) |
 | ⚡ **Technical Short** | [**Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos**](https://www.youtube.com/shorts/3SfLjZ0hHno) | Sinergia de red y kernel en resolución instantánea de incidentes | 🇪🇸 Spanish *(CC 20+)* | `1:02` | [▶️ Ver Short](https://www.youtube.com/shorts/3SfLjZ0hHno) |
 
-<details open>
+<details>
 <summary>📂 <strong>Detailed Agendas & Technical Breakdowns</strong></summary>
 
 <br/>

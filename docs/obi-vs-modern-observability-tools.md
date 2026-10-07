@@ -58,7 +58,7 @@ This comparative analysis is accompanied by an educational audio-visual series s
 | ⚡ **Technical Short** | [**How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents**](https://www.youtube.com/shorts/rXKn8waK3lk) | Syscall Interception vs Process Injection | 🇺🇸 English *(CC 20+)* | `1:13` | [▶️ Watch Short](https://www.youtube.com/shorts/rXKn8waK3lk) |
 | ⚡ **Technical Short** | [**El Fin de los Agentes de Monitorización: Observabilidad con eBPF**](https://www.youtube.com/shorts/g8YGDj7FrEI) | Sustitución de APM por Observabilidad Kernel | 🇪🇸 Spanish *(CC 20+)* | `0:57` | [▶️ Ver Short](https://www.youtube.com/shorts/g8YGDj7FrEI) |
 
-<details open>
+<details>
 <summary>📂 <strong>Detailed Agendas & Technical Breakdowns</strong></summary>
 
 <br/>
