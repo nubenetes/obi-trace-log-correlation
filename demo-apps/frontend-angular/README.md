@@ -52,7 +52,7 @@ flowchart TD
     end
 
     subgraph Network ["HTTP / TLS Wire"]
-        Fetch -->|"HTTP request with traceparent"| Gateway
+        Fetch -->|"HTTP request with<br/>traceparent"| Gateway
     end
 
     subgraph LinuxHost ["Kubernetes Node / Linux Host (eBPF Kernel Layer)"]

@@ -105,9 +105,9 @@ flowchart TD
     StdOut -.-> SysWriteHook
     SysWriteHook --> EnrichEngine
 
-    Waypoint -.->|"Emits Network Access Logs & Proxy Spans"| Jaeger
-    Waypoint -.->|"Emits Proxy Access Logs"| Loki
-    EnrichEngine -->|"Emits Correlated App Logs"| Vector
+    Waypoint -.->|"Emits Network Access<br/>Logs & Proxy Spans"| Jaeger
+    Waypoint -.->|"Emits Proxy<br/>Access Logs"| Loki
+    EnrichEngine -->|"Emits Correlated<br/>App Logs"| Vector
     Vector --> Loki
 ```
 
@@ -326,9 +326,9 @@ Use the following decision matrix to determine the optimal observability archite
 flowchart TD
     Q1{"What is your primary architectural objective?"}
     
-    Q1 -->|Network Security & Routing| MeshPath["Service Mesh (Istio Ambient)"]
-    Q1 -->|Correlate Logs with Traces| OBIPath["OpenTelemetry OBI (eBPF)"]
-    Q1 -->|Full Production Readiness| BothPath["Deploy BOTH (Ambient + OBI)"]
+    Q1 -->|"Network Security<br/>& Routing"| MeshPath["Service Mesh (Istio Ambient)"]
+    Q1 -->|"Correlate Logs<br/>with Traces"| OBIPath["OpenTelemetry OBI (eBPF)"]
+    Q1 -->|"Full Production<br/>Readiness"| BothPath["Deploy BOTH (Ambient + OBI)"]
 
     MeshPath --> M1["• Enforce Zero-Trust mTLS\n• L7 HTTP Traffic Management\n• L7 Proxy Access Logs & Spans\n⚠️ App logs remain UN-ENRICHED"]
     

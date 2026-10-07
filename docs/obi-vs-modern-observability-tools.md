@@ -148,7 +148,7 @@ flowchart TD
 
     Mutate -->|"Enriched stdout logs"| LogShipper
     LogShipper -->|"OTLP / Loki API"| OTelBackends
-    NetHook -->|"Spans & Metrics (No logs)"| OTelBackends
+    NetHook -->|"Spans & metrics<br/>(No log context)"| OTelBackends
     NetHook -.->|"USM Spans"| DD_Agent
 
     DD_Agent -->|"Proprietary Intake"| DDSaaS
@@ -378,16 +378,16 @@ Enterprises migrating from high-cost proprietary APM vendors (Datadog, Dynatrace
 
 ```mermaid
 flowchart TD
-    Start["What is your primary observability objective?"] --> Q1{"Do you need internal application logs correlated with traces?"}
+    Start["What is your primary<br/>observability objective?"] --> Q1{"Do you need internal logs<br/>correlated with traces?"}
     
-    Q1 -->|"No, only network RED metrics & spans"| OptNet["Deploy Network eBPF\n(Grafana Beyla / Istio Ambient / Cilium)"]
-    Q1 -->|"Yes, logs must contain trace_id"| Q2{"Can all engineering squads install OTel SDKs in code?"}
+    Q1 -->|"No, only network<br/>RED metrics & spans"| OptNet["Deploy Network eBPF<br/>(Grafana Beyla / Istio Ambient)"]
+    Q1 -->|"Yes, logs must<br/>contain trace_id"| Q2{"Can all squads install<br/>OTel SDKs in code?"}
     
-    Q2 -->|"Yes, 100% squads have budget & time"| OptSDK["Standard OpenTelemetry Manual SDKs\n(MDC Loggers + OTel Tracers)"]
-    Q2 -->|"No, polyglot / legacy / uninstrumented services"| Q3{"Can your Kubernetes nodes run Linux 6.0+ with eBPF privileges?"}
+    Q2 -->|"Yes, all squads have<br/>time to add SDKs"| OptSDK["Standard Manual OTel SDKs<br/>(MDC Loggers + Tracers)"]
+    Q2 -->|"No, polyglot, legacy<br/>or uninstrumented"| Q3{"Can cluster nodes run<br/>Linux 6.0+ with eBPF?"}
     
-    Q3 -->|"Yes, modern Linux kernel (RHCOS, Ubuntu, Mariner)"| OptOBI["🌟 OpenTelemetry OBI (Recommended)\n• 100% Zero-Code\n• In-flight VFS stdout log enrichment\n• 100% Open-Source & OTLP Native"]
-    Q3 -->|"No, legacy Linux 3.10 / Windows nodes"| OptLegacy["Legacy Commercial Bytecode Agents\n(Dynatrace OneAgent / Datadog APM)\n*Incurs high licensing & memory cost*"]
+    Q3 -->|"Yes, modern Linux<br/>kernel (6.0+)"| OptOBI["🌟 OpenTelemetry OBI (Recommended)<br/>• 100% Zero-Code<br/>• In-flight VFS stdout log enrichment<br/>• 100% Open-Source & OTLP Native"]
+    Q3 -->|"No, legacy Linux<br/>or Windows nodes"| OptLegacy["Legacy Bytecode Agents<br/>(Dynatrace / Datadog APM)<br/>*Incurs licensing & memory cost*"]
 ```
 
 ### Strategic Conclusions
