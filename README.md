@@ -108,7 +108,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [5. Under the Hood of OBI eBPF: write vs writev Syscalls, Kernel Security & Limits](#5-under-the-hood-of-obi-ebpf-write-vs-writev-syscalls-kernel-security--limits)
     - [6. Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide](#6-zero-code-trace-log-correlation-with-ebpf-production-architecture--triage-guide)
     - [7. Service Mesh vs. Kernel eBPF: Why Meshes Fail at Log Correlation & How OBI Solves It](#7-service-mesh-vs-kernel-ebpf-why-meshes-fail-at-log-correlation--how-obi-solves-it)
-  - [⚡ Topic-Focused Technical Shorts (10 Shorts)](#-topic-focused-technical-shorts-10-shorts)
+  - [⚡ Topic-Focused Technical Shorts (11 Shorts)](#-topic-focused-technical-shorts-11-shorts)
     - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
     - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
     - [3. How eBPF Automates Trace-Log Correlation in Go Without SDKs](#3-how-ebpf-automates-trace-log-correlation-in-go-without-sdks)
@@ -119,6 +119,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [8. Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats](#8-why-ebpf-trace-log-correlation-loses-context-async-buffers-and-runtime-caveats)
     - [9. Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF](#9-why-service-meshes-fail-at-log-correlation-network-perimeter-vs-kernel-ebpf)
     - [10. Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos](#10-por-qué-combinar-service-mesh-y-ebpf-observabilidad-completa-sin-puntos-ciegos)
+    - [11. How to Canary Deploy OBI: Safe Zero-Downtime eBPF Rollout in Kubernetes](#11-how-to-canary-deploy-obi-safe-zero-downtime-ebpf-rollout-in-kubernetes)
   - [🎙️ Architectural Masterclass Podcasts (4 Episodes)](#-architectural-masterclass-podcasts-4-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
@@ -471,6 +472,7 @@ This repository includes a comprehensive multi-format educational series synthes
 | 8 | [**Why eBPF Trace-Log Correlation Loses Context: Async Buffers and Runtime Caveats**](https://www.youtube.com/shorts/b9oNWMJlUcc) | Runtime Buffering & Async Disconnect Fixes | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/b9oNWMJlUcc) |
 | 9 | [**Why Service Meshes Fail at Log Correlation: Network Perimeter vs Kernel eBPF**](https://www.youtube.com/shorts/g-mkqDaklMQ) | Network Perimeter vs Kernel VFS Interception | 🇺🇸 English *(CC 20+)* | `1:17` | [▶️ Watch Short](https://www.youtube.com/shorts/g-mkqDaklMQ) |
 | 10 | [**Por Qué Combinar Service Mesh y eBPF: Observabilidad Completa sin Puntos Ciegos**](https://www.youtube.com/shorts/3SfLjZ0hHno) | Sinergia Service Mesh y eBPF en Incidentes | 🇪🇸 Spanish *(CC 20+)* | `1:02` | [▶️ Ver Short](https://www.youtube.com/shorts/3SfLjZ0hHno) |
+| 11 | [**How to Canary Deploy OBI: Safe Zero-Downtime eBPF Rollout in Kubernetes**](https://www.youtube.com/shorts/zwLY42xEbq8) | Canary Rollout, Match Lists & Null Filters | 🇺🇸 English *(CC 20+)* | `1:20` | [▶️ Watch Short](https://www.youtube.com/shorts/zwLY42xEbq8) |
 
 *For complete descriptions, technical breakdowns, and YouTube Studio links, see [Video Walkthroughs & Architecture References](#video-walkthroughs--architecture-references-youtube).*
 
@@ -1284,10 +1286,10 @@ Below are the direct links and full descriptions for each session.
 
 <br/>
 
-### ⚡ Topic-Focused Technical Shorts (10 Shorts)
+### ⚡ Topic-Focused Technical Shorts (11 Shorts)
 
 <details>
-<summary>📂 <strong>Technical Video Shorts Breakdown (10 Shorts)</strong></summary>
+<summary>📂 <strong>Technical Video Shorts Breakdown (11 Shorts)</strong></summary>
 
 <br/>
 
@@ -1499,6 +1501,29 @@ Below are the direct links and full descriptions for each session.
 > Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #ServiceMesh #Istio #Kubernetes #DevOps #SRE #Observabilidad #CloudNative
+
+#### 11. How to Canary Deploy OBI: Safe Zero-Downtime eBPF Rollout in Kubernetes
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/zwLY42xEbq8](https://www.youtube.com/shorts/zwLY42xEbq8)
+- 🛠️ **YouTube Studio**: [https://studio.youtube.com/video/zwLY42xEbq8/edit](https://studio.youtube.com/video/zwLY42xEbq8/edit)
+- ⏱️ **Duration**: 1:20
+- 🏷️ **Domain**: Canary Deployment, OBI Match Lists & 8KB Buffer Splits
+- 📝 **Full Description**:
+> ⚡ How to Safely Canary Deploy OBI eBPF in Kubernetes Without Breaking Logs!
+>
+> Rolling out eBPF in production requires caution because it alters memory in flight. Here is how to execute a safe canary deployment:
+>
+> • Start Small: Target a single low-risk microservice emitting JSON logs by adding its binary path to the OBI match list.
+> • Verify NUL Byte Filtering: Ensure your log shipper discards the \x00 placeholder buffers created by bpf_probe_write_user to avoid duplicates.
+> • Test 8KB Payloads: Confirm your log pipeline stitches together large payloads split across kernel memory boundaries.
+> • Zero-Downtime Rollback: If an issue arises, remove the binary from the match list; eBPF probes detach instantly without restarting containers.
+> • Cluster-Wide Rollout: Once validated, safely enable zero-code trace-log correlation across your entire Kubernetes cluster.
+>
+> 🔗 Official Blueprint Repo & Manifests:
+> https://github.com/nubenetes/obi-trace-log-correlation
+> Canary Deployment Overlays: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
+> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observability #CanaryDeployment #CloudNative #Microservices
 
 </details>
 
