@@ -124,7 +124,49 @@ The short answer is **no, but full-stack correlation is achieved by bridging cli
 - **Kernel Socket Ingress**: When the HTTP packet reaches the Linux host where the API Gateway, Ingress Controller, or Backend Service resides, OBI's socket probe (`sys_enter_recvfrom`) intercepts the header, extracts the `trace_id`, and caches it in the kernel's `traces_ctx_v1` BPF hash map keyed by the active thread (`tgid_pid`).
 - **Unbroken Backend Correlation**: As backend microservices (Go, Python, Java, Node.js, .NET, Ruby) process the request and write logs to `stdout`, OBI enriches every log line with that exact client-originated `trace_id`.
 
-#### 2. Server-Side Rendering (SSR) vs. Client-Side SPAs
+<a id="full-stack-telemetry-infographic"></a>
+#### 2. 📊 Full-Stack Architecture Infographic: Client Browser to eBPF Kernel Tracing
+
+[![Full-Stack Telemetry & Frontend SPAs: Bridging the Browser to eBPF Kernel Tracing](docs/images/full-stack-telemetry-via-ebpf.png)](docs/images/full-stack-telemetry-via-ebpf.png)
+
+> [!TIP]
+> **Lossless High-Resolution Asset**: The architecture diagram above is available in original full-resolution (2752x1536 PNG, lossless) at [`docs/images/full-stack-telemetry-via-ebpf.png`](docs/images/full-stack-telemetry-via-ebpf.png) and high-definition JPEG at [`docs/images/full-stack-telemetry-via-ebpf.jpg`](docs/images/full-stack-telemetry-via-ebpf.jpg).
+
+##### Detailed Architectural Walkthrough of the 3-Step Lifecycle:
+
+- **1. 🖥️ Step 1: Client Browser Sandbox Context Generation (Frontend SPAs)**:
+  - **The Client Execution Realm**: Single Page Applications (SPAs) built with Angular 17+, React, Vue, or Svelte execute inside browser JavaScript engines (V8 in Chrome/Edge, JavaScriptCore in Safari, SpiderMonkey in Firefox) on end-user physical devices (laptops, desktops, mobile phones).
+  - **The Security & Kernel Boundary**: Linux kernel eBPF probes operate strictly inside Ring 0 on backend Kubernetes cluster nodes. Remote user machines are outside the cluster perimeter, meaning eBPF probes cannot attach to or inspect client-side browser processes.
+  - **W3C `traceparent` Injection**: Instead of installing bulky proprietary RUM agents, the frontend uses native HTTP interceptors (such as Angular's `HttpInterceptorFn`, Axios/Fetch interceptors, or `@opentelemetry/sdk-trace-web`) to generate and inject standard W3C `traceparent` headers into outgoing requests:
+    ```http
+    traceparent: 00-a1b2c3d4e5f678901234567890abcdef-c700e9f012345678-01
+    ```
+  - **Baggage Propagation**: Contextual attributes (e.g. `client.framework=angular17`, `app.version=2.4.0`) flow through the standard W3C `baggage` header without requiring code alterations in downstream hops.
+
+- **2. 🌉 Step 2: Network Boundary Crossing & Kernel Socket Ingress (Linux Host)**:
+  - **Crossing the Network Perimeter**: The outbound HTTP request travels across public or private networks and enters the backend Kubernetes cluster via an Ingress Controller, API Gateway, or service mesh proxy.
+  - **Kernel Socket Interception (`sys_enter_recvfrom`)**: As the incoming network packet arrives at the Linux host network interface, OBI's socket probe hooks the socket read operation before user space consumes the buffer.
+  - **Header Parsing & BPF Map Insertion**: OBI parses the HTTP header stream in-flight, extracts the client-originated `trace_id` (`a1b2c3d4e5f6...`), and inserts it into the kernel's pinned `traces_ctx_v1` BPF hash map.
+  - **Thread-to-Trace Association**: The trace context is keyed by the operating system thread ID (`tgid_pid`) assigned by the Linux kernel scheduler to process the incoming payload.
+
+- **3. ⚡ Step 3: Kernel-Level In-Flight Log Enrichment (Backend & SSR)**:
+  - **Zero-Code Application Writes**: As backend microservices (Go, Python, Java, Node.js, .NET, Ruby) or Node.js Server-Side Rendering (SSR) engines process business logic and emit log statements (`stdout`/`stderr`), they use standard runtime logging libraries without OpenTelemetry SDKs.
+  - **Syscall Hooking (`sys_enter_write` / `pipe_write`)**: As the container thread executes a `write()` system call, OBI's kernel probe triggers:
+    - Queries `traces_ctx_v1` using the current thread ID to retrieve the active `trace_id`.
+    - Invokes `bpf_probe_write_user` to zero out the original user buffer with NUL characters (`\x00`), suppressing un-enriched output from reaching the CRI pipe.
+    - Forwards the captured log message and trace context to the kernel `log_events` ring buffer.
+  - **Enriched Re-Emission**: The OBI user daemon consumes the ring buffer event and re-emits the enriched log line directly to the container's stdout file descriptor (`/proc/<pid>/fd/1`):
+    ```text
+    ENRICHED LOG: [trace_id=a1b2c3d4e5f6...] User action processed.
+    ```
+
+##### Core Frontend & SSR Architectural Pillars:
+
+- **Framework-Native W3C Header Injection**: SPAs leverage native framework primitives—Angular 17+ `HttpInterceptorFn`, React/Next.js traced `fetch`, Vue 3/Nuxt 3 `$fetch` plugins—to propagate standard trace headers without heavy SDK bundle sizes.
+- **Zero-Code Server-Side Rendering (SSR) Interception**: Node.js SSR engines running on Linux hosts have page generation logs automatically intercepted and enriched at the kernel VFS layer without requiring client-side kernel access.
+- **Client Error Ingestion Bridge Pattern**: Catches uncaught browser exceptions (`window.onerror`, `unhandledrejection`) and ships them to a dedicated backend bridge endpoint (`POST /api/telemetry/logs`), allowing client browser errors to enter the kernel-enriched Loki/Elasticsearch logging pipeline.
+
+#### 3. Server-Side Rendering (SSR) vs. Client-Side SPAs
 
 | Observability Tier | Execution Environment | eBPF Kernel Probe Coverage | Correlation & Ingestion Mechanism | Reference Architecture & Runnable Samples |
 | :--- | :--- | :---: | :--- | :--- |
@@ -133,7 +175,7 @@ The short answer is **no, but full-stack correlation is achieved by bridging cli
 | **Client Error Ingestion Bridge** | Edge API Gateway / Pod (`POST /api/telemetry/logs`) | ✅ 100% Kernel Coverage | Captured browser exceptions (`window.onerror`) forwarded to backend bridge, enriched with trace context | 📄 [Browser Bridge Pattern](docs/frontend-spa-ssr-telemetry.md#7-browser-telemetry-ingestion-bridge-pattern) |
 | **Downstream Microservices** | Host Linux Containers (Go, Python, Java, .NET, Ruby) | ✅ 100% Kernel Coverage | Automatic socket ingress context extraction and stdout enrichment | 🏛️ [Architecture Deep Dive](docs/architecture.md)<br>💻 [Polyglot Demo Apps](demo-apps/) |
 
-#### 3. Frontend Architecture Documentation & Runnable Demos
+#### 4. Frontend Architecture Documentation & Runnable Demos
 
 This repository provides dedicated documentation, code patterns, and runnable implementations for frontend and SSR observability:
 
@@ -162,6 +204,10 @@ This repository provides dedicated documentation, code patterns, and runnable im
   - [🎯 Purpose of This Repository & Architectural Scope](#-purpose-of-this-repository--architectural-scope)
   - [🌍 Why This Blueprint Is Valuable Across Diverse Operational Platforms](#-why-this-blueprint-is-valuable-across-diverse-operational-platforms)
   - [🌐 Frontend SPAs & Full-Stack Telemetry Overview (Angular, React, Vue & SSR)](#-frontend-spas--full-stack-telemetry-overview-angular-react-vue--ssr)
+    - [1. The Architectural Boundary: Client Browser vs. Host Linux Kernel](#1-the-architectural-boundary-client-browser-vs-host-linux-kernel)
+    - [2. 📊 Full-Stack Architecture Infographic: Client Browser to eBPF Kernel Tracing](#full-stack-telemetry-infographic)
+    - [3. Server-Side Rendering (SSR) vs. Client-Side SPAs](#3-server-side-rendering-ssr-vs-client-side-spas)
+    - [4. Frontend Architecture Documentation & Runnable Demos](#4-frontend-architecture-documentation--runnable-demos)
 - [📖 Official Reference & Theoretical Motivation](#-official-reference--theoretical-motivation)
   - [1. The Core Motivation: The 2 AM Incident Response Dilemma](#1-the-core-motivation-the-2-am-incident-response-dilemma)
   - [2. Dual-Perspective Technical Guidance](#2-dual-perspective-technical-guidance)
@@ -525,7 +571,9 @@ obi-trace-log-correlation/
 └── docs/                      # Comprehensive technical documentation
     ├── images/                    # Architectural infographics and visual assets
     │   ├── zero-code-trace-log-correlation-infographic.png # Full-resolution (2752x1536) master PNG
-    │   └── zero-code-trace-log-correlation-infographic.jpg # High-definition (2752x1536) JPEG
+    │   ├── zero-code-trace-log-correlation-infographic.jpg # High-definition (2752x1536) JPEG
+    │   ├── full-stack-telemetry-via-ebpf.png # Full-resolution (2752x1536) full-stack & SSR master PNG
+    │   └── full-stack-telemetry-via-ebpf.jpg # High-definition (2752x1536) full-stack & SSR JPEG
     ├── reference-blog-announcement.md # Verbatim blog text, junior primers & specialist deep dives
     ├── architecture.md            # Kernel hooks, LRU maps, and ringbuffer flow
     ├── day0-planning-sizing.md    # Kernel matrix, hardware sizing, security model
@@ -643,6 +691,8 @@ obi-trace-log-correlation/
     - 📁 **[`docs/images/`](docs/images/)** — *Architectural infographics and visual assets*
       - 🖼️ [`zero-code-trace-log-correlation-infographic.png`](docs/images/zero-code-trace-log-correlation-infographic.png) — *Full-resolution master architectural infographic (2752x1536 PNG, lossless)*
       - 🖼️ [`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg) — *High-definition architectural infographic (2752x1536 JPG)*
+      - 🖼️ [`full-stack-telemetry-via-ebpf.png`](docs/images/full-stack-telemetry-via-ebpf.png) — *Full-stack frontend SPA to kernel eBPF architectural infographic (2752x1536 PNG, lossless)*
+      - 🖼️ [`full-stack-telemetry-via-ebpf.jpg`](docs/images/full-stack-telemetry-via-ebpf.jpg) — *High-definition full-stack frontend telemetry infographic (2752x1536 JPG)*
     - 📜 [`reference-blog-announcement.md`](docs/reference-blog-announcement.md) — *Verbatim OpenTelemetry announcement, junior primer, and kernel deep dive*
     - 🏛️ [`architecture.md`](docs/architecture.md) — *Deep dive into write syscall hooks, `traces_ctx_v1` LRU map, and ringbuffer flow*
     - 📋 [`day0-planning-sizing.md`](docs/day0-planning-sizing.md) — *Kernel matrix, hardware sizing formulas, and security postures*
@@ -709,6 +759,7 @@ obi-trace-log-correlation/
 
 #### 📁 `docs/` — Technical Architecture & Operational Guides
 - **[`docs/images/zero-code-trace-log-correlation-infographic.png`](docs/images/zero-code-trace-log-correlation-infographic.png)**: Full-resolution master architectural infographic (2752x1536 lossless PNG) illustrating the 5 core pillars: the inefficient manual log search problem, kernel-level eBPF context injection, before/after log transformation, compatibility checklist, and production rollout strategy. Also available in high-definition format as **[`zero-code-trace-log-correlation-infographic.jpg`](docs/images/zero-code-trace-log-correlation-infographic.jpg)**.
+- **[`docs/images/full-stack-telemetry-via-ebpf.png`](docs/images/full-stack-telemetry-via-ebpf.png)**: Full-resolution architectural infographic (2752x1536 lossless PNG) mapping the complete full-stack telemetry journey from client browser SPAs (Angular, React, Vue) across the network perimeter to Linux host ingress socket interception (`sys_enter_recvfrom`) and in-flight kernel stdout log enrichment (`sys_enter_write`). Also available in high-definition format as **[`full-stack-telemetry-via-ebpf.jpg`](docs/images/full-stack-telemetry-via-ebpf.jpg)**.
 - **[`docs/reference-blog-announcement.md`](docs/reference-blog-announcement.md)**: Verbatim text of the official OpenTelemetry announcement (*Zero-code trace-log correlation with OBI*), accompanied by multi-tiered explanatory breakdowns for juniors (ELI5) and advanced kernel specialists (VFS mechanics, BPF memory mutation, and context staleness).
 - **[`docs/architecture.md`](docs/architecture.md)**: Complete architectural breakdown of write syscall interception (`pipe_write`, `tty_write`, `ksys_write`, `do_writev`), the pinned `traces_ctx_v1` LRU map, and user-space re-emission.
 - **[`docs/day0-planning-sizing.md`](docs/day0-planning-sizing.md)**: Hardware sizing formulas, BPF kernel memory preallocation calculations, and security postures.

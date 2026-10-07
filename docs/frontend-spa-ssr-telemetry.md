@@ -47,6 +47,11 @@ This guide provides the authoritative architectural blueprint for bridging front
 
 ## 2. The Architectural Boundary: Client Browser vs Linux Kernel Space
 
+[![Full-Stack Telemetry & Frontend SPAs: Bridging the Browser to eBPF Kernel Tracing](images/full-stack-telemetry-via-ebpf.png)](images/full-stack-telemetry-via-ebpf.png)
+
+> [!TIP]
+> **Full-Resolution Visual Architecture**: View the master diagram in full lossless resolution at [`images/full-stack-telemetry-via-ebpf.png`](images/full-stack-telemetry-via-ebpf.png) or high-definition JPEG at [`images/full-stack-telemetry-via-ebpf.jpg`](images/full-stack-telemetry-via-ebpf.jpg).
+
 ```mermaid
 flowchart TD
     subgraph ClientDevice ["Client Device (Browser / Mobile / Desktop OS)"]

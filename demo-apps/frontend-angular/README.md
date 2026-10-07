@@ -31,6 +31,11 @@ This guide and runnable microservice demonstrates how modern frontend architectu
 
 ### The Architectural Boundary: Client Browser vs Linux Kernel Space
 
+[![Full-Stack Telemetry & Frontend SPAs: Bridging the Browser to eBPF Kernel Tracing](../../docs/images/full-stack-telemetry-via-ebpf.png)](../../docs/images/full-stack-telemetry-via-ebpf.png)
+
+> [!TIP]
+> **Full-Resolution Architecture Infographic**: View the master diagram in full lossless resolution at [`../../docs/images/full-stack-telemetry-via-ebpf.png`](../../docs/images/full-stack-telemetry-via-ebpf.png) or high-definition JPEG at [`../../docs/images/full-stack-telemetry-via-ebpf.jpg`](../../docs/images/full-stack-telemetry-via-ebpf.jpg).
+
 ```mermaid
 flowchart TD
     subgraph ClientDevice ["Client Device (Browser / Mobile / Desktop OS)"]
