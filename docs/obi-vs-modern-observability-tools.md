@@ -11,7 +11,7 @@
 
 ## 📑 Table of Contents
 
-- [🎥 Multimedia Deep Dives, Architectural Podcasts & Video Guides](#-multimedia-deep-dives-architectural-podcasts--video-guides)
+- [🎥 Multimedia Deep Dives: Video Guides & Technical Shorts](#-multimedia-deep-dives-video-guides--technical-shorts)
 - [1. Executive Paradigm: The Observability Landscape](#1-executive-paradigm-the-observability-landscape)
 - [2. Architectural Profiles of Evaluated Platforms](#2-architectural-profiles-of-evaluated-platforms)
   - [OpenTelemetry eBPF Instrumentation (OBI)](#opentelemetry-ebpf-instrumentation-obi)
@@ -41,7 +41,7 @@
 
 ---
 
-### 🎥 Multimedia Deep Dives, Architectural Podcasts & Video Guides
+### 🎥 Multimedia Deep Dives: Video Guides & Technical Shorts
 
 This comparative analysis is accompanied by an educational audio-visual series synthesized with **Gemini NotebookLM** based directly on our benchmarks, total cost of ownership (TCO) models, kernel interception mechanics, and production SRE triage workflows. All episodes and technical shorts are hosted on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel.
 
@@ -49,33 +49,26 @@ This comparative analysis is accompanied by an educational audio-visual series s
 > **Multilingual Learning Experience**:
 > Content features native spoken audio in **English 🇺🇸** and **Spanish 🇪🇸**, with automated subtitles and closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for global enterprise engineering teams.
 
-#### 📊 Video Guides, Masterclass Podcasts & Technical Shorts Summary
+#### 📊 Video Guides & Technical Shorts Summary
 
 | Format | Episode / Title | Domain / Focus | Language | Duration | Direct YouTube Link |
 |:---:|---|---|:---:|:---:|---|
 | 📽️ **Video Guide** | [**OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution**](https://www.youtube.com/watch?v=LhDhokgkiqg) | OBI vs APM Agents, Verifier Safety & Pipeline TCO | 🇺🇸 English *(CC 20+)* | `8:38` | [▶️ Watch Video](https://www.youtube.com/watch?v=LhDhokgkiqg) |
-| 📽️ **Video Guide** | [**Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción**](https://www.youtube.com/watch?v=n-Ha2MPAoi0) | Arquitectura Kernel, Buffers NUL y Despliegue | 🇪🇸 Spanish *(CC 20+)* | `6:56` | [▶️ Ver Video](https://www.youtube.com/watch?v=n-Ha2MPAoi0) |
-| 📽️ **Video Guide** | [**Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide**](https://www.youtube.com/watch?v=Vlo8nNAG-pw) | Production Architecture & SRE Triage Playbook | 🇺🇸 English *(CC 20+)* | `7:11` | [▶️ Watch Video](https://www.youtube.com/watch?v=Vlo8nNAG-pw) |
-| 🎙️ **Audio Podcast** | [**Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive**](https://www.youtube.com/watch?v=QUSwbpEERlI) | Complete Architecture, Kernel Hooks & SRE Triage | 🇺🇸 English *(CC 20+)* | `47:47` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=QUSwbpEERlI) |
-| 🎙️ **Audio Podcast** | [**Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive**](https://www.youtube.com/watch?v=D5gHANofzQQ) | Socket Ingress, VFS Pipes & Real-Time Triage | 🇺🇸 English *(CC 20+)* | `55:20` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=D5gHANofzQQ) |
-| 🎙️ **Audio Podcast** | [**Podcast: Correlación de Trazas y Logs con eBPF: De la Alerta al Código**](https://www.youtube.com/watch?v=5XYbAeKnSLs) | Triage de Guardia 2 AM, Syscalls y Filtros NUL | 🇪🇸 Spanish *(CC 20+)* | `25:26` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=5XYbAeKnSLs) |
-| 🎙️ **Audio Podcast** | [**Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=mpSVsUIpaMc) | Arquitectura Kernel, Filtrado NUL y Producción | 🇪🇸 Spanish *(CC 20+)* | `21:37` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=mpSVsUIpaMc) |
+| 📽️ **Video Guide** | [**Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción**](https://www.youtube.com/watch?v=n-Ha2MPAoi0) | Cambio de Paradigma: Agentes Tradicionales vs Kernel eBPF | 🇪🇸 Spanish *(CC 20+)* | `6:56` | [▶️ Ver Video](https://www.youtube.com/watch?v=n-Ha2MPAoi0) |
 | ⚡ **Technical Short** | [**How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents**](https://www.youtube.com/shorts/rXKn8waK3lk) | Syscall Interception vs Process Injection | 🇺🇸 English *(CC 20+)* | `1:13` | [▶️ Watch Short](https://www.youtube.com/shorts/rXKn8waK3lk) |
 | ⚡ **Technical Short** | [**El Fin de los Agentes de Monitorización: Observabilidad con eBPF**](https://www.youtube.com/shorts/g8YGDj7FrEI) | Sustitución de APM por Observabilidad Kernel | 🇪🇸 Spanish *(CC 20+)* | `0:57` | [▶️ Ver Short](https://www.youtube.com/shorts/g8YGDj7FrEI) |
-| ⚡ **Technical Short** | [**How eBPF Connects Traces to Logs: Instant Outage Root Cause Analysis**](https://www.youtube.com/shorts/NWjt3wpw4ZA) | Root Cause Triage & Thread Interception | 🇺🇸 English *(CC 20+)* | `1:24` | [▶️ Watch Short](https://www.youtube.com/shorts/NWjt3wpw4ZA) |
-| ⚡ **Technical Short** | [**Cómo OBI Inyecta Trazas en los Logs sin Modificar Código**](https://www.youtube.com/shorts/NqVcTV7XuuQ) | Inyección Kernel en Tiempo Real sin SDKs | 🇪🇸 Spanish *(CC 20+)* | `1:13` | [▶️ Ver Short](https://www.youtube.com/shorts/NqVcTV7XuuQ) |
 
 <details open>
 <summary>📂 <strong>Detailed Agendas & Technical Breakdowns</strong></summary>
 
 <br/>
 
-#### 1. Video Guide: OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution
+#### 1. Video Guide: OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution (8:38)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=LhDhokgkiqg](https://www.youtube.com/watch?v=LhDhokgkiqg)
 - ⏱️ **Duration**: 8:38
 - 🏷️ **Domain**: OBI vs APM Agents, Verifier Guarantees & Total Cost of Ownership
 - 📝 **Full Description**:
-> 🔍 OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution
+> 🔍 **OBI vs. Legacy Observability Tools: The Zero-Code eBPF Revolution**
 >
 > A comprehensive architectural breakdown comparing OpenTelemetry eBPF Instrumentation (OBI) with legacy observability tools, proprietary APM agents, and manual SDK instrumentation.
 >
@@ -99,12 +92,12 @@ This comparative analysis is accompanied by an educational audio-visual series s
 > ⏱️ **Duration**: 8:38
 > #OpenTelemetry #eBPF #Observability #APM #DevOps #SRE #Kubernetes #CloudNative #DistributedTracing #Microservices
 
-#### 2. Video Guide: Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción
+#### 2. Video Guide: Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción (6:56)
 - 🔗 **Direct Link**: [https://www.youtube.com/watch?v=n-Ha2MPAoi0](https://www.youtube.com/watch?v=n-Ha2MPAoi0)
 - ⏱️ **Duration**: 6:56
-- 🏷️ **Domain**: Arquitectura Kernel, Buffers NUL y Despliegue en Producción
+- 🏷️ **Domain**: Cambio de Paradigma: Agentes Tradicionales vs Kernel eBPF y Arquitectura de Producción
 - 📝 **Full Description**:
-> 🔍 Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción
+> 🔍 **Análisis de OBI eBPF: Correlación Zero-Code de Logs y Trazas en Producción**
 >
 > Guía técnica en profundidad en español analizando la arquitectura de OpenTelemetry eBPF Instrumentation (OBI) y cómo revoluciona la correlación de logs y trazas en entornos empresariales.
 >
@@ -127,156 +120,12 @@ This comparative analysis is accompanied by an educational audio-visual series s
 > ⏱️ **Duración**: 6:56
 > #OpenTelemetry #eBPF #Observabilidad #Kubernetes #DevOps #SRE #CloudNative #Microservicios #DistributedTracing
 
-#### 3. Video Guide: Zero-Code Trace-Log Correlation with eBPF: Production Architecture & Triage Guide
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=Vlo8nNAG-pw](https://www.youtube.com/watch?v=Vlo8nNAG-pw)
-- ⏱️ **Duration**: 7:11
-- 🏷️ **Domain**: Production Architecture, SRE Incident Triage & Runtime Limits
-- 📝 **Full Description**:
-> ⚡ Zero-Code Trace-Log Correlation with eBPF: Production Architecture and Triage Guide
->
-> Discover how OpenTelemetry eBPF Instrumentation (OBI) revolutionizes microservice observability by eliminating the midnight debugging nightmare of grepping logs by timestamp.
->
-> 📌 **Production Roadmap & Architecture Highlights:**
->
-> - **The Midnight Debugging Problem**: Why timestamp cross-referencing during 2:00 AM outages is painful, slow, and imprecise.
-> - **Zero-Code Correlation Explained**: Transparently injecting `trace_id` and `span_id` into application log output without modifying source code or rebuilding binaries.
-> - **How eBPF Makes It Work**: Using kernel uprobes, kprobes, and BPF maps to track execution threads and link active trace contexts to stdout streams.
-> - **Environment Requirements and Limits**: Linux kernel prerequisites, synchronous console writer requirements, and runtime buffering considerations.
-> - **Enabling OBI in Production**: Configuring DaemonSets, integrating with OpenTelemetry Collector, and setting up canary rollouts across Kubernetes clusters.
->
-> 🔗 **Official Blueprint Repository & Reference Documentation:**
->
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Kubernetes Deployment Overlays**: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
->
-> ⏱️ **Duration**: 7:11
-> #OpenTelemetry #eBPF #Observability #SRE #DevOps #Microservices #Kubernetes #DistributedTracing #CloudNative #Docker
-
-#### 4. Architecture Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=QUSwbpEERlI](https://www.youtube.com/watch?v=QUSwbpEERlI)
-- ⏱️ **Duration**: 47:47
-- 🏷️ **Domain**: Complete Architecture Masterclass, Kernel Hooks & SRE Triage
-- 📝 **Full Description**:
-> 🎙️ Architecture Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI)
->
-> Full 47-minute masterclass podcast deep dive exploring how OpenTelemetry eBPF Instrumentation (OBI) bridges distributed traces and application logs at the Linux kernel level with zero source code changes.
->
-> An in-depth technical discussion for platform engineers, SREs, and cloud architects on ending midnight incident triage guesswork and unifying observability telemetry.
->
-> 📌 **Key Discussion Topics:**
->
-> - **The Midnight Triage Nightmare**: Why grepping application logs by timestamp during production outages fails in distributed microservice architectures.
-> - **The Zero-Code Revolution**: How eBPF operates below user space, instrumenting applications without language SDKs, code edits, or image rebuilds.
-> - **Linux Kernel Syscall Interception**: The mechanics of hooking write() and writev() syscalls, extracting active thread execution context, and tracking distributed transactions in BPF maps.
-> - **The NUL Byte Suppression Trick**: How bpf_probe_write_user zeroes out un-enriched user buffers and why downstream shippers (Fluent Bit, Vector, OTel Collector) require drop filters.
-> - **8KB Buffer Boundaries**: Handling large log payloads, chunked splits, and configuring multi-line reassembly in log forwarders.
-> - **Runtime Buffering Quirks**: Synchronous vs asynchronous loggers, Python unbuffered mode (PYTHONUNBUFFERED=1), Node.js async stdout streams, and Java virtual thread nuances.
-> - **Production Security & Rollout**: Kernel version prerequisites (Linux 6.0+), CAP_BPF / CAP_SYS_ADMIN capabilities, and progressive canary rollouts in Kubernetes.
->
-> 🔗 **Official Blueprint Repository & Reference Documentation:**
->
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Production Manifests & Architecture**: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/k8s
->
-> ⏱️ **Duration**: 47:47
-> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservices
-
-#### 5. Architecture Podcast: How eBPF Correlates Traces and Logs: Kernel Mechanics Deep Dive
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=D5gHANofzQQ](https://www.youtube.com/watch?v=D5gHANofzQQ)
-- ⏱️ **Duration**: 55:20
-- 🏷️ **Domain**: Socket Ingress, VFS Pipes & Real-Time Triage
-- 📝 **Full Description**:
-> 🎙️ Architecture Podcast: How eBPF Correlates Traces and Logs – Kernel Mechanics Deep Dive
->
-> Full 55-minute masterclass podcast exploring the low-level systems mechanics behind OpenTelemetry eBPF Instrumentation (OBI) and in-flight trace-log correlation.
->
-> An in-depth systems discussion for Kubernetes architects and reliability engineers on how Linux kernel probes attach to container execution threads and eliminate observability blind spots.
->
-> 📌 **Key Technical Topics Explored:**
->
-> - **From Network Socket to Kernel VFS**: How incoming W3C traceparent headers are captured by sys_enter_recvfrom and stored in BPF maps.
-> - **Thread-to-Trace Mapping**: Tracking the lifecycle of requests through OS thread IDs (tgid_pid) and correlating asynchronous execution.
-> - **In-Flight Payload Modification**: The exact mechanics of memory buffer replacement via bpf_probe_write_user.
-> - **Filtering Placeholders**: Configuring Fluent Bit, Vector, and OpenTelemetry Collector to suppress \x00 characters.
-> - **Real-World Enterprise Triage**: Jumping from a distributed trace span directly to the exact root-cause log line in seconds.
-> - **Operational Best Practices**: Resource overhead, CPU/memory benchmarks, and production readiness checklists.
->
-> 🔗 **Official Blueprint Repository & Reference Documentation:**
->
-> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Documentation & Guides**: https://github.com/nubenetes/obi-trace-log-correlation/tree/main/docs
->
-> ⏱️ **Duration**: 55:20
-> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #SystemsEngineering
-
-#### 6. Podcast de Arquitectura: Correlación de Trazas y Logs con eBPF: De la Alerta al Código
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=5XYbAeKnSLs](https://www.youtube.com/watch?v=5XYbAeKnSLs)
-- ⏱️ **Duration**: 25:26
-- 🏷️ **Domain**: Triage de Guardia 2 AM, Syscalls y Filtros NUL
-- 📝 **Full Description**:
-> 🎙️ Podcast de Arquitectura Técnica: Correlación de Trazas y Logs con eBPF – De la Alerta al Código
->
-> Episodio completo de 25 minutos en formato podcast técnico en español analizando la pesadilla de las guardias de madrugada a las 2:00 AM y cómo resolver incidentes conectando trazas de red y registros locales con OpenTelemetry eBPF (OBI).
->
-> Una conversación técnica indispensable para ingenieros de fiabilidad (SRE), líderes de plataforma y arquitectos cloud sobre observabilidad moderna en Kubernetes.
->
-> 📌 **Puntos Clave de la Sesión:**
->
-> - **El Drama de la Guardia a las 2:00 AM**: Por qué buscar logs con grep por timestamp durante una caída de producción es lento, impreciso y frustrante.
-> - **Observabilidad Zero-Code**: Cómo eBPF inyecta identificadores de traza en tiempo de ejecución sin añadir SDKs a las aplicaciones ni recompilar contenedores.
-> - **Intercepción en el Kernel de Linux**: Captura de llamadas write() y writev(), mapas LRU de contexto y seguimiento de hilos.
-> - **Supresión NUL y Filtros de Pipeline**: Por qué OBI reemplaza el buffer original con bytes nulos (\x00) y cómo configurarlo en Fluent Bit, Vector y OTel Collector.
-> - **Límite de 8 KiB y Runtimes Asíncronos**: Ensamblado multilínea y recomendaciones para Python, Node.js y Java.
-> - **Despliegue Seguro en Producción**: Requisitos de kernel Linux 6.0+, capacidades CAP_SYS_ADMIN y despliegue canary en Kubernetes y OpenShift.
->
-> 🔗 **Repositorio Oficial y Documentación:**
->
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Guía de Filtrado y Arquitectura**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
->
-> ⏱️ **Duración**: 25:26
-> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
-
-#### 7. Podcast de Arquitectura: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI
-- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=mpSVsUIpaMc](https://www.youtube.com/watch?v=mpSVsUIpaMc)
-- ⏱️ **Duration**: 21:37
-- 🏷️ **Domain**: Arquitectura Kernel, Filtrado NUL y Producción
-- 📝 **Full Description**:
-> 🎙️ Podcast de Arquitectura Técnica: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI
->
-> Episodio completo de 21 minutos en formato podcast técnico en español analizando la arquitectura de correlación automática entre logs y trazas distribuidas mediante OpenTelemetry eBPF Instrumentation (OBI).
->
-> Una conversación exhaustiva para ingenieros de fiabilidad (SRE), líderes de plataforma y desarrolladores sobre cómo conectar telemetría directamente desde el kernel de Linux sin tocar código fuente ni recompilar servicios.
->
-> 📌 **Puntos Clave de la Sesión:**
->
-> - **El Drama de la Guardia a las 3:00 AM**: Por qué buscar logs con grep por timestamp durante un incidente es impreciso y ralentiza la recuperación del servicio.
-> - **Filosofía Zero-Code**: Cómo eBPF inyecta identificadores de traza (trace_id y span_id) en tiempo de ejecución sin dependencias de SDKs en las aplicaciones.
-> - **Mecánica en el Kernel de Linux**: Intercepción de syscalls write() y writev(), mapas LRU de contexto y seguimiento del hilo de ejecución en tiempo real.
-> - **Supresión de Buffers y Filtrado NUL**: Por qué OBI reemplaza el buffer original con bytes nulos (\x00) mediante bpf_probe_write_user y cómo configurar filtros de descarte en Fluent Bit, Vector y OTel Collector.
-> - **Límites y Ensamblado de 8 KiB**: Comportamiento ante líneas de log masivas que superan la memoria del kernel y reglas de reconstrucción multilínea.
-> - **Trampas en Runtimes Asíncronos**: Cómo evitar desfases de contexto en Python deshabilitando el buffer (PYTHONUNBUFFERED=1), Node.js y virtual threads en Java.
-> - **Puesta en Producción Segura**: Requisitos de kernel (Linux 6.0+), privilegios de seguridad (CAP_SYS_ADMIN) y estrategias de despliegue canary en Kubernetes y OpenShift.
->
-> 🔗 **Repositorio Oficial y Documentación:**
->
-> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
-> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
-> - **Guía de Filtrado de Logs**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
->
-> ⏱️ **Duración**: 21:37
-> #OpenTelemetry #eBPF #Observability #Podcast #Kubernetes #DistributedTracing #SRE #DevOps #CloudNative #Microservicios
-
-#### 8. Technical Short: How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents
+#### 3. Technical Short: How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents (1:13)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/rXKn8waK3lk](https://www.youtube.com/shorts/rXKn8waK3lk)
 - ⏱️ **Duration**: 1:13
 - 🏷️ **Domain**: Syscall Interception vs Process Injection
 - 📝 **Full Description**:
-> ⚡ How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents!
+> ⚡ **How OBI Mutates Logs In-Flight: Kernel Syscalls vs Intrusive APM Agents!**
 >
 > How does OBI inject trace IDs into application logs without code changes? Here is the kernel-level magic:
 >
@@ -286,18 +135,19 @@ This comparative analysis is accompanied by an educational audio-visual series s
 > - **Downstream Discard**: Log forwarders drop the blank placeholder, leaving only perfectly correlated logs without code edits.
 >
 > 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Log Filtering Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **GitHub Blueprint Repository**: https://github.com/nubenetes/obi-trace-log-correlation
+> - **Log Filtering Guide**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/log-filtering-guide.md
+> - **OpenTelemetry Official Announcement**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #Linux #Kernel #Kubernetes #DevOps #SRE #Observability #CloudNative
 
-#### 9. Technical Short: El Fin de los Agentes de Monitorización: Observabilidad con eBPF
+#### 4. Technical Short: El Fin de los Agentes de Monitorización: Observabilidad con eBPF (0:57)
 - 🔗 **Direct Link**: [https://www.youtube.com/shorts/g8YGDj7FrEI](https://www.youtube.com/shorts/g8YGDj7FrEI)
 - ⏱️ **Duration**: 0:57
 - 🏷️ **Domain**: Sustitución de APM por Observabilidad Kernel
 - 📝 **Full Description**:
-> ⚡ El Fin de los Agentes de Monitorización: Observabilidad con eBPF!
+> ⚡ **El Fin de los Agentes de Monitorización: Observabilidad con eBPF!**
 >
 > Son las 2:00 AM, una aplicación crítica falla y salta la alarma. El reto no es saber que falló, sino encontrar el log exacto entre millones de líneas:
 >
@@ -307,53 +157,12 @@ This comparative analysis is accompanied by an educational audio-visual series s
 > - **Diagnóstico Inmediato**: Reduce el tiempo medio de resolución (MTTR) de horas a segundos en sistemas distribuidos.
 >
 > 🔗 **Repositorio Oficial y Documentación:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía de Filtrado y Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> - **Repositorio Blueprint en GitHub**: https://github.com/nubenetes/obi-trace-log-correlation
+> - **Guía de Filtrado y Arquitectura**: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
+> - **Anuncio Oficial de OpenTelemetry**: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
 >
 > #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observabilidad #CloudNative #MTTR
-
-#### 10. Technical Short: How eBPF Connects Traces to Logs: Instant Outage Root Cause Analysis
-- 🔗 **Direct Link**: [https://www.youtube.com/shorts/NWjt3wpw4ZA](https://www.youtube.com/shorts/NWjt3wpw4ZA)
-- ⏱️ **Duration**: 1:24
-- 🏷️ **Domain**: Root Cause Triage & Thread Interception
-- 📝 **Full Description**:
-> ⚡ How eBPF Connects Traces to Logs: Instant Outage Root Cause Analysis!
->
-> Finding the exact error log during an outage is a nightmare of constant timestamp guessing. Here is how eBPF links network failures to root cause logs instantly:
->
-> - **The Incident Gap**: A payment service fails with an HTTP 500 error. The trace tells you where it broke, but logs hold the why.
-> - **Kernel Thread Interception**: When a request hits your container, eBPF captures the W3C trace ID and tracks the operating system thread.
-> - **In-Flight Log Stamping**: As the app logs an unhandled exception, eBPF writes the active trace ID directly into the log line before it leaves the kernel.
-> - **Instant Triage**: Jump from your trace span directly to the exact line of code that triggered the failure in seconds.
->
-> 🔗 **Official Blueprint Repo & Docs:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Architecture Deep Dive: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
->
-> #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observability #DistributedTracing #CloudNative
-
-#### 11. Technical Short: Cómo OBI Inyecta Trazas en los Logs sin Modificar Código
-- 🔗 **Direct Link**: [https://www.youtube.com/shorts/NqVcTV7XuuQ](https://www.youtube.com/shorts/NqVcTV7XuuQ)
-- ⏱️ **Duration**: 1:13
-- 🏷️ **Domain**: Inyección Kernel en Tiempo Real sin SDKs
-- 📝 **Full Description**:
-> ⚡ Cómo OBI Inyecta Trazas en los Logs sin Modificar Código!
->
-> Vincular trazas distribuidas con logs locales sin tocar el código de la aplicación parecía imposible hasta la llegada de eBPF. Así lo hace OBI:
->
-> - **Sin Agentes Pesados**: Nada de inyectar agentes intrusivos en la memoria de la aplicación que puedan degradar el rendimiento o tumbar el servicio.
-> - **Intercepción en el Kernel**: OBI opera desde el núcleo de Linux, interceptando las llamadas al sistema write() en el instante exacto en que la aplicación genera un log.
-> - **Inyección en Tiempo Real**: Recupera el trace_id activo del hilo y lo añade directamente al registro antes de que llegue a stdout.
-> - **Sincronización Total**: Correlación perfecta entre peticiones de red y logs internos sin tocar una sola línea de código fuente.
->
-> 🔗 **Repositorio Oficial y Documentación:**
-> https://github.com/nubenetes/obi-trace-log-correlation
-> Guía de Arquitectura: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/architecture.md
-> Anuncio Oficial: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
->
-> #Shorts #OpenTelemetry #eBPF #Kubernetes #DevOps #SRE #Observabilidad #CloudNative #Microservicios
 
 </details>
 
