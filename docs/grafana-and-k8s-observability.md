@@ -26,6 +26,10 @@
     - [Dashboard 1: OBI eBPF Health & Kernel Map Telemetry](#dashboard-1-obi-ebpf-health--kernel-map-telemetry)
     - [Dashboard 2: Auto-Generated RED Service APM Dashboard](#dashboard-2-auto-generated-red-service-apm-dashboard)
     - [Dashboard 3: 360-Degree Unified Incident Triage Dashboard](#dashboard-3-360-degree-unified-incident-triage-dashboard)
+  - [3.6 GitOps Automation: Dashboards & Alert Rules as Code (IaC)](#36-gitops-automation-dashboards--alert-rules-as-code-iac)
+    - [Grafana ConfigMap Auto-Provisioning (`kube-prometheus-stack`)](#grafana-configmap-auto-provisioning-kube-prometheus-stack)
+    - [GrafanaDashboard CRD (Grafana Operator)](#grafanadashboard-crd-grafana-operator)
+    - [PrometheusRule CRD for OBI Kernel Health Alerts](#prometheusrule-crd-for-obi-kernel-health-alerts)
 - [4. Which Grafana? Edition Comparison & Collector Configuration](#4-which-grafana-edition-comparison--collector-configuration)
   - [4.1 Grafana OSS (Self-Hosted LGTM Stack)](#41-grafana-oss-self-hosted-lgtm-stack)
   - [4.2 Grafana Cloud (Managed SaaS)](#42-grafana-cloud-managed-saas)
@@ -39,10 +43,19 @@
   - [5.4 Google Kubernetes Engine (GKE Standard): Google Cloud Observability + Trace](#54-google-kubernetes-engine-gke-standard-google-cloud-observability--trace)
   - [5.5 Rancher RKE2 / K3s: OpenSearch Dashboards (KQL) + Standalone Jaeger](#55-rancher-rke2--k3s-opensearch-dashboards-kql--standalone-jaeger)
   - [5.6 100% Open-Source Single-Pane-of-Glass Alternative: SigNoz](#56-100-open-source-single-pane-of-glass-alternative-signoz)
-- [6. Multi-Backend OpenTelemetry Collector Routing Blueprint](#6-multi-backend-opentelemetry-collector-routing-blueprint)
-- [7. Comparative Decision Matrix: Choose Your Observability Architecture](#7-comparative-decision-matrix-choose-your-observability-architecture)
-- [8. Categorized Public References & Standards Catalog](#8-categorized-public-references--standards-catalog)
-- [9. Navigation & Documentation Directory](#9-navigation--documentation-directory)
+- [6. Multi-Tenant Security & RBAC Isolation Across Platforms](#6-multi-tenant-security--rbac-isolation-across-platforms)
+  - [6.1 Multi-Tenant Loki Isolation via OTel Collector (`X-Scope-OrgID`)](#61-multi-tenant-loki-isolation-via-otel-collector-x-scope-orgid)
+  - [6.2 Red Hat OpenShift Project-Level Security Context & RBAC](#62-red-hat-openshift-project-level-security-context--rbac)
+  - [6.3 Azure Log Analytics Workspace-Centric vs Resource-Centric RBAC](#63-azure-log-analytics-workspace-centric-vs-resource-centric-rbac)
+  - [6.4 AWS IAM Policy Boundaries for CloudWatch Log Groups](#64-aws-iam-policy-boundaries-for-cloudwatch-log-groups)
+- [7. Production OpenTelemetry Collector: Routing & Tail-Based Cost Optimization](#7-production-opentelemetry-collector-routing--tail-based-cost-optimization)
+  - [7.1 The Ingestion Cost Dilemma with Kernel eBPF Telemetry](#71-the-ingestion-cost-dilemma-with-kernel-ebpf-telemetry)
+  - [7.2 High-Throughput Tail-Based Sampling (80%–95% Cost Reduction)](#72-high-throughput-tail-based-sampling-8095-cost-reduction)
+  - [7.3 Multi-Backend Production Pipeline Blueprint](#73-multi-backend-production-pipeline-blueprint)
+- [8. The 2:00 AM Incident Triage Rapid Cheat Sheet (60-Second Runbook)](#8-the-200-am-incident-triage-rapid-cheat-sheet-60-second-runbook)
+- [9. Comparative Decision Matrix: Choose Your Observability Architecture](#9-comparative-decision-matrix-choose-your-observability-architecture)
+- [10. Categorized Public References & Standards Catalog](#10-categorized-public-references--standards-catalog)
+- [11. Navigation & Documentation Directory](#11-navigation--documentation-directory)
 
 ---
 
@@ -366,6 +379,140 @@ A split-screen investigation workspace featuring:
 
 ---
 
+### 3.6 GitOps Automation: Dashboards & Alert Rules as Code (IaC)
+
+In production Kubernetes clusters, dashboards and alert rules are never imported manually via UI clicks. They are deployed immutably through GitOps pipelines.
+
+#### Grafana ConfigMap Auto-Provisioning (`kube-prometheus-stack`)
+
+When using the `kube-prometheus-stack` Helm chart or a standard Grafana sidecar, save the dashboard definition inside a labeled `ConfigMap`:
+
+```yaml
+# k8s/base/grafana-dashboard-obi-health.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-obi-health
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+spec:
+  data:
+    obi-health.json: |
+      {
+        "annotations": { "list": [] },
+        "editable": false,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 1,
+        "title": "Kernel eBPF: OBI Health & System Overhead",
+        "tags": ["ebpf", "opentelemetry", "obi", "kernel"],
+        "timezone": "utc",
+        "schemaVersion": 39,
+        "version": 1,
+        "panels": [
+          {
+            "id": 1,
+            "title": "LRU BPF Map Saturation (traces_ctx_v1)",
+            "type": "gauge",
+            "targets": [
+              {
+                "expr": "(obi_bpf_map_entries{map="traces_ctx_v1"} / obi_bpf_map_max_entries{map="traces_ctx_v1"}) * 100",
+                "legendFormat": "Map Saturation %"
+              }
+            ],
+            "fieldConfig": {
+              "defaults": {
+                "unit": "percent",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    { "color": "green", "value": null },
+                    { "color": "orange", "value": 75 },
+                    { "color": "red", "value": 90 }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+```
+
+#### GrafanaDashboard CRD (Grafana Operator)
+
+For clusters governed by the [Grafana Operator](https://grafana.github.io/grafana-operator/), declare the dashboard using the `GrafanaDashboard` custom resource:
+
+```yaml
+# k8s/base/grafanadashboard-cr.yaml
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: obi-kernel-telemetry
+  namespace: monitoring
+spec:
+  instanceSelector:
+    matchLabels:
+      dashboards: "grafana"
+  resyncPeriod: 5m
+  configMapRef:
+    name: grafana-dashboard-obi-health
+    key: obi-health.json
+```
+
+#### PrometheusRule CRD for OBI Kernel Health Alerts
+
+Proactively alert the platform team before kernel map exhaustion leads to context loss or dropped spans:
+
+```yaml
+# k8s/base/prometheusrules-obi.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: obi-kernel-health-alerts
+  namespace: monitoring
+  labels:
+    role: alert-rules
+    prometheus: k8s
+spec:
+  groups:
+    - name: obi-ebpf.rules
+      rules:
+        # Alert 1: BPF Map Near Capacity
+        - alert: OBIBPFMapSaturationWarning
+          expr: (obi_bpf_map_entries{map="traces_ctx_v1"} / obi_bpf_map_max_entries{map="traces_ctx_v1"}) * 100 > 80
+          for: 3m
+          labels:
+            severity: warning
+            team: platform-sre
+          annotations:
+            summary: "OBI kernel BPF map is near capacity on {{ $labels.instance }}"
+            description: "The traces_ctx_v1 LRU map is {{ $value | printf "%.1f" }}% full. Concurrent request volume may cause context eviction."
+
+        # Alert 2: Ringbuffer Drops (Zero Tolerance)
+        - alert: OBIKernelRingbufferDropsCritical
+          expr: sum(increase(obi_bpf_ringbuf_drops_total[5m])) by (instance, pod) > 0
+          for: 1m
+          labels:
+            severity: critical
+            team: platform-sre
+          annotations:
+            summary: "Kernel ringbuffer is dropping telemetry on {{ $labels.pod }}"
+            description: "OBI user-space agent cannot keep up with kernel syscall write volume. Increase agent CPU limits immediately."
+
+        # Alert 3: Elevated Probe Overhead
+        - alert: OBIElevatedProbeOverhead
+          expr: histogram_quantile(0.99, sum(rate(obi_bpf_overhead_nanoseconds_bucket[5m])) by (le, instance)) > 5000
+          for: 5m
+          labels:
+            severity: warning
+            team: platform-sre
+          annotations:
+            summary: "OBI eBPF probe execution latency exceeded 5 microseconds"
+            description: "Kernel write hook latency p99 is {{ $value }} ns. Check for node CPU throttling."
+```
+
+---
+
 ## 4. Which Grafana? Edition Comparison & Collector Configuration
 
 Grafana is available in multiple commercial and open-source editions. All editions support OBI telemetry, but they differ in operational maintenance, cost structures, and data compliance.
@@ -617,9 +764,132 @@ For teams seeking an all-in-one open-source observability platform without confi
 
 ---
 
-## 6. Multi-Backend OpenTelemetry Collector Routing Blueprint
+## 6. Multi-Tenant Security & RBAC Isolation Across Platforms
 
-The OpenTelemetry Collector acts as the universal routing engine. It can ingest OBI telemetry once and simultaneously fan out to Grafana, hyperscaler native backends, and open-source tools:
+In enterprise Kubernetes clusters shared across dozens of autonomous engineering squads, multi-tenancy and strict Role-Based Access Control (RBAC) are non-negotiable requirements. Unprivileged developers must never see telemetry from other business units or secure payment namespaces.
+
+### 6.1 Multi-Tenant Loki Isolation via OTel Collector (`X-Scope-OrgID`)
+
+When Grafana Loki is deployed with multi-tenancy enabled (`auth_enabled: true`), every write and read request must carry the `X-Scope-OrgID` HTTP header. 
+
+The OpenTelemetry Collector can dynamically extract the Kubernetes namespace attribute (`k8s.namespace.name`) and route each log record to its dedicated Loki tenant:
+
+```yaml
+# loki-tenant-routing.yaml
+processors:
+  transform/tenant:
+    error_mode: ignore
+    log_statements:
+      # Inject the tenant header value equal to the Kubernetes namespace
+      - set(attributes["loki.tenant"], resource.attributes["k8s.namespace.name"])
+
+exporters:
+  otlphttp/loki_multitenant:
+    endpoint: "http://loki-gateway.loki.svc.cluster.local/otlp"
+    headers:
+      # Dynamic or gateway-routed tenant header
+      X-Scope-OrgID: "${attributes:loki.tenant}"
+```
+
+In Grafana, configure multiple Loki datasources or use the **Grafana Enterprise Data Isolation** engine so developers in Team A only authenticate against their namespace's tenant ID.
+
+### 6.2 Red Hat OpenShift Project-Level Security Context & RBAC
+
+OpenShift provides zero-effort multi-tenancy through its built-in security architecture:
+1. **RBAC Isolation**: Developers only have `view` access to their specific OpenShift Project (e.g. `payments-prod`).
+2. **Observe UI Filtering**: When an engineer accesses **Observe > Logs** or **Observe > Traces** in the Web Console, OpenShift automatically injects the tenant context into the LokiStack and TempoStack queries.
+3. **Audit Proofing**: Unprivileged users cannot remove namespace filters to inspect logs belonging to `kube-system`, `openshift-*`, or other tenant projects.
+
+### 6.3 Azure Log Analytics Workspace-Centric vs Resource-Centric RBAC
+
+Azure Monitor supports two distinct access control models:
+- **Workspace-Centric RBAC**: Users granted access to the Log Analytics workspace can query all logs across the entire cluster.
+- **Resource-Centric RBAC (Recommended)**: Developers are granted Azure RBAC `Reader` access only on their AKS cluster resource or specific resource groups. Azure Monitor automatically filters the `ContainerLogV2` table so queries executed by the user only return logs for pods within namespaces they are permitted to view.
+
+### 6.4 AWS IAM Policy Boundaries for CloudWatch Log Groups
+
+In AWS EKS, partition CloudWatch Log Groups by application domain:
+`/aws/containerinsights/<cluster>/application/<namespace>`
+
+Enforce least privilege using IAM condition keys:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:FilterLogEvents",
+        "logs:GetLogEvents"
+      ],
+      "Resource": "arn:aws:logs:us-east-1:123456789012:log-group:/aws/containerinsights/prod-eks/application/payments-*:*"
+    }
+  ]
+}
+```
+
+---
+
+## 7. Production OpenTelemetry Collector: Routing & Tail-Based Cost Optimization
+
+### 7.1 The Ingestion Cost Dilemma with Kernel eBPF Telemetry
+
+Because OpenTelemetry eBPF (OBI) operates transparently in kernel space, it captures **every single system call write and network transaction**. 
+
+In high-throughput microservices (e.g., 5,000 req/sec):
+- A cluster produces over **430 million spans** and **500+ GB of logs** daily.
+- Ingestion pricing across managed platforms ($0.50/GB in AWS CloudWatch, $0.50/GB in Grafana Cloud, $2.30/GB in Datadog) can result in unexpected monthly bills exceeding **$10,000–$25,000**.
+- **90%+ of this volume** typically consists of routine Kubernetes health probes (`/healthz`, `/livez`, `/readyz`) and repetitive HTTP 200 OK responses.
+
+### 7.2 High-Throughput Tail-Based Sampling (80%–95% Cost Reduction)
+
+To eliminate bill shock without compromising incident triage, configure the OpenTelemetry Collector's `tail_sampling` processor:
+
+```yaml
+# tail-sampling-strategy.yaml
+processors:
+  tail_sampling:
+    decision_wait: 5s
+    num_traces: 50000
+    expected_new_traces_per_sec: 2000
+    policies:
+      # Rule 1: Always retain 100% of HTTP 5xx Server Errors
+      - name: retain-server-errors
+        type: numeric_attribute
+        numeric_attribute:
+          key: http.status_code
+          min_value: 500
+          max_value: 599
+
+      # Rule 2: Always retain 100% of Slow Requests (Latency > 1.5s)
+      - name: retain-slow-spans
+        type: latency
+        latency:
+          threshold_ms: 1500
+
+      # Rule 3: Drop 100% of routine Kubernetes health probes
+      - name: drop-health-checks
+        type: string_attribute
+        string_attribute:
+          key: http.target
+          values: [ "/healthz", "/livez", "/readyz", "/metrics" ]
+          enabled_regex_matching: false
+          invert_match: true
+
+      # Rule 4: Statistically sample only 2% of successful HTTP 200 OKs
+      - name: sample-successful-traffic
+        type: probabilistic
+        probabilistic:
+          sampling_percentage: 2.0
+```
+
+> [!IMPORTANT]
+> **Why Tail-Based Sampling is Mandatory with eBPF**: Head-based sampling (making the decision at the start of the request) cannot know whether an incoming HTTP call will result in an exception or database timeout. Tail-based sampling waits for the trace to complete, ensuring that **every single failing request is captured at 100% fidelity**, while background noise is dropped.
+
+### 7.3 Multi-Backend Production Pipeline Blueprint
+
+Here is the complete, multi-backend OpenTelemetry Collector deployment combining tail-based sampling, NUL-byte cleansing, and fan-out routing:
 
 ```yaml
 # k8s/base/otel-collector-multi-backend.yaml
@@ -638,7 +908,6 @@ data:
           http:
             endpoint: 0.0.0.0:4318
 
-      # Ingests container logs from /var/log/pods with OBI-injected trace context
       filelog:
         include: [ /var/log/pods/*/*/*.log ]
         exclude: [ /var/log/pods/opentelemetry_*/*/*.log ]
@@ -661,10 +930,6 @@ data:
         limit_percentage: 75
         spike_limit_percentage: 20
 
-      batch:
-        send_batch_size: 8192
-        timeout: 1s
-
       k8sattributes:
         auth_type: "serviceAccount"
         passthrough: false
@@ -674,6 +939,30 @@ data:
             - k8s.pod.name
             - k8s.node.name
             - k8s.container.name
+
+      tail_sampling:
+        decision_wait: 5s
+        num_traces: 25000
+        expected_new_traces_per_sec: 1500
+        policies:
+          - name: retain-server-errors
+            type: numeric_attribute
+            numeric_attribute:
+              key: http.status_code
+              min_value: 500
+              max_value: 599
+          - name: retain-slow-traces
+            type: latency
+            latency:
+              threshold_ms: 1500
+          - name: probabilistic-sample
+            type: probabilistic
+            probabilistic:
+              sampling_percentage: 5.0
+
+      batch:
+        send_batch_size: 8192
+        timeout: 1s
 
     exporters:
       # Target 1: Grafana LGTM Stack (Tempo & Loki)
@@ -685,15 +974,15 @@ data:
       otlphttp/loki:
         endpoint: http://loki-gateway.loki.svc.cluster.local/otlp
 
-      # Target 2: AWS Hyperscaler (X-Ray & CloudWatch)
+      # Target 2: AWS CloudWatch / X-Ray
       awsxray:
         region: us-east-1
 
-      # Target 3: Azure Hyperscaler (Application Insights / Log Analytics)
+      # Target 3: Azure Monitor / Application Insights
       azuremonitor:
         connection_string: "${env:APPLICATIONINSIGHTS_CONNECTION_STRING}"
 
-      # Target 4: Google Cloud (Trace & Logging)
+      # Target 4: Google Cloud Trace & Logging
       googlecloud:
         project: "${env:GCP_PROJECT_ID}"
 
@@ -703,7 +992,7 @@ data:
         tls:
           insecure: true
 
-      # Target 6: Standard Prometheus Metrics
+      # Target 6: Local Prometheus Metrics
       prometheus:
         endpoint: 0.0.0.0:8889
 
@@ -711,7 +1000,7 @@ data:
       pipelines:
         traces:
           receivers: [ otlp ]
-          processors: [ memory_limiter, k8sattributes, batch ]
+          processors: [ memory_limiter, k8sattributes, tail_sampling, batch ]
           exporters: [ otlp/tempo, awsxray, azuremonitor, googlecloud, otlp/signoz ]
 
         logs:
@@ -727,7 +1016,23 @@ data:
 
 ---
 
-## 7. Comparative Decision Matrix: Choose Your Observability Architecture
+## 8. The 2:00 AM Incident Triage Rapid Cheat Sheet (60-Second Runbook)
+
+When an outage triggers at 2:00 AM and PagerDuty delivers an alert with an active Trace ID (`4bf92f3577b34da6a3ce929d0e0e4736`), use this 60-second operational lookup table:
+
+| Platform / Portal | Initial Signal & Entry Point | Step 1: Trace Inspection | Step 2: Instant Correlated Log Command | Typical MTTR |
+| :--- | :--- | :--- | :--- | :---: |
+| **Grafana LGTM** | PagerDuty webhook with exemplar link | Opens Tempo waterfall at failing span | Click **"Logs for this span"** (`tracesToLogsV2`) or query in Loki: `{namespace="prod"} \|= "4bf92f3577b34da6a3ce929d0e0e4736"` | **< 30s** |
+| **OpenShift 4.20+** | Alertmanager notification in Web Console | Navigate to **Observe > Traces**, paste Trace ID | Click inline button **"Correlated Logs"** in the trace details blade | **< 45s** |
+| **Azure AKS** | Application Insights Failure Alert | Open **Transaction Diagnostics** blade | In **Log Analytics**, run: `ContainerLogV2 \| where LogMessage has "4bf92f3577b34da6a3ce929d0e0e4736"` | **< 60s** |
+| **AWS EKS** | CloudWatch Composite Alarm | Open **ServiceLens**, click node with 5xx error | In **Logs Insights**, run: `fields @timestamp, @message \| filter @message like /4bf92f3577b34da6a3ce929d0e0e4736/` | **< 60s** |
+| **Google GKE** | Cloud Monitoring Alert Policy | Open **Cloud Trace** overview list | In **Logs Explorer**, run: `jsonPayload.trace_id="4bf92f3577b34da6a3ce929d0e0e4736"` | **< 45s** |
+| **Rancher RKE2** | Prometheus Alertmanager notification | Open **Jaeger UI**, search Trace ID | In **OpenSearch Dashboards Discover**, query: `trace_id : "4bf92f3577b34da6a3ce929d0e0e4736"` | **< 60s** |
+| **SigNoz** | Native SigNoz Alert Rule | Click trace in **Traces** tab | Click inline tab **"Logs"** beneath the trace waterfall | **< 15s** |
+
+---
+
+## 9. Comparative Decision Matrix: Choose Your Observability Architecture
 
 | Evaluation Dimension | Grafana LGTM (OSS) | Grafana Cloud (SaaS) | OpenShift Observe UI | Azure Monitor (AKS) | AWS ServiceLens (EKS) | GCP Cloud Trace (GKE) | SigNoz (ClickHouse) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -742,7 +1047,7 @@ data:
 
 ---
 
-## 8. Categorized Public References & Standards Catalog
+## 10. Categorized Public References & Standards Catalog
 
 ### 1. OpenTelemetry & eBPF Standards
 - [OpenTelemetry eBPF Instrumentation (OBI) Repository](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation) — Official upstream repository under the OpenTelemetry project.
@@ -753,6 +1058,7 @@ data:
 - [Grafana Tempo `tracesToLogs` Configuration](https://grafana.com/docs/tempo/latest/configuration/grafana/#traces-to-logs) — Official guide on linking Tempo trace spans to Loki log streams.
 - [Grafana Loki Derived Fields Configuration](https://grafana.com/docs/grafana/latest/datasources/loki/#derived-fields) — Regex-based link creation from log lines to tracing backends.
 - [Grafana Mimir & Prometheus Exemplars Guide](https://grafana.com/docs/grafana/latest/fundamentals/exemplars/) — Connecting metric alert spikes to distributed traces.
+- [Grafana Operator Documentation](https://grafana.github.io/grafana-operator/) — Kubernetes operator for declarative dashboard and datasource provisioning.
 
 ### 3. Kubernetes Platform Observability Guides
 - [Red Hat OpenShift Observability & Logging](https://docs.redhat.com/en/documentation/openshift_container_platform/4.16/html/logging/index) — Architecture of Vector, LokiStack, and Observe UI.
@@ -763,7 +1069,7 @@ data:
 
 ---
 
-## 9. Navigation & Documentation Directory
+## 11. Navigation & Documentation Directory
 
 | ⬅️ Previous Document | 🏠 Documentation Hub | ➡️ Next Document |
 | :--- | :---: | ---: |
