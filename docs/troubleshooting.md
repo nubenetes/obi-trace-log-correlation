@@ -11,6 +11,34 @@ This runbook covers common issues encountered when deploying and operating OBI t
 
 ---
 
+## 🔍 Diagnostic Decision Flowchart
+
+When trace-log correlation is absent or behaving unexpectedly, follow this systematic diagnostic tree:
+
+```mermaid
+flowchart TD
+    Start["Issue: Log line lacks 'trace_id' or has errors"] --> Q_Kernel{"1. Is host Linux kernel >= 6.0?"}
+    Q_Kernel -- "No (< 6.0)" --> Fix_Kernel["Upgrade kernel to Linux 6.0+<br/>(write/writev ITER_UBUF required)"]
+    Q_Kernel -- "Yes" --> Q_Lockdown{"2. Is Kernel Lockdown active?<br/>cat /sys/kernel/security/lockdown"}
+
+    Q_Lockdown -- "[integrity] / [confidentiality]" --> Fix_Lockdown["Disable Secure Boot Lockdown<br/>(bpf_probe_write_user is blocked)"]
+    Q_Lockdown -- "[none]" --> Q_ActiveTraffic{"3. Was log emitted during an ACTIVE trace?"}
+
+    Q_ActiveTraffic -- "No (Startup / background worker)" --> Fix_Traffic["Send active HTTP/gRPC request<br/>(eBPF only enriches in-flight contexts)"]
+    Q_ActiveTraffic -- "Yes" --> Q_Map{"4. Is traces_ctx_v1 map saturated?<br/>bpftool map dump name traces_ctx_v1"}
+
+    Q_Map -- "Map entries > 90%" --> Fix_Map["Increase map capacity in obi-config.yml<br/>(LRU is evicting active PIDs)"]
+    Q_Map -- "Normal" --> Q_Shipper{"5. Are raw NUL bytes reaching backend?"}
+
+    Q_Shipper -- "Yes (\x00 visible in Loki/ES)" --> Fix_Shipper["Add drop filter to log shipper:<br/>regex: ^[\x00\s]*$"]
+    Q_Shipper -- "No" --> Q_Async{"6. Is runtime buffering stdout?<br/>(Python/Node.js/Java)"}
+
+    Q_Async -- "Yes" --> Fix_Async["Disable stdout buffering:<br/>PYTHONUNBUFFERED=1 or sync streams"]
+    Q_Async -- "No" --> Fix_Matched["Verify process matches capture.rules<br/>AND log_trace_annotation.match"]
+```
+
+---
+
 ## 1. Trace Context Not Appearing in Logs
 
 ### Symptom
@@ -109,6 +137,35 @@ Or allow the built-in `privileged` SCC:
 oc adm policy add-scc-to-user privileged -z obi-agent -n obi
 ```
 
+
+---
+
+
+---
+
+## 6. Low-Level `bpftool` Diagnostic Cheat Sheet
+
+When operating directly on a Kubernetes node or debug container (`crictl` / `nsenter`), use `bpftool` to inspect active kernel state:
+
+| Diagnostic Objective | `bpftool` Command | Expected Output & Indicator |
+| :--- | :--- | :--- |
+| **Verify Loaded eBPF Programs** | `bpftool prog show name obi_pipe_write` | Displays prog ID, type `kprobe`, GPL license, and JIT translation size. |
+| **Inspect Active Context LRU Map** | `bpftool map dump name traces_ctx_v1` | Lists active `pid_tgid` keys paired with active 32-hex `trace_id` values. |
+| **Check Ring Buffer Memory** | `bpftool map show name log_events` | Confirms map type `ringbuf` with allocated byte capacity (e.g. 8 MiB). |
+| **Inspect Live Kernel Trace Pipe** | `cat /sys/kernel/debug/tracing/trace_pipe` | Streams real-time `bpf_trace_printk` messages emitted by debug builds. |
+| **Check Map Entry Utilization** | `bpftool map list -j \| jq '.[] \| select(.name=="traces_ctx_v1")'` | Returns JSON metadata with entry counts and map ID. |
+
+---
+
+## 7. Common Linux Kernel eBPF Error Codes
+
+| System Error Code | Kernel Constant | Root Cause | Immediate Remediation |
+| :--- | :--- | :--- | :--- |
+| **1: Operation not permitted** | `EPERM` | Kernel Lockdown is active, or DaemonSet lacks `CAP_SYS_ADMIN` / `CAP_BPF`. | Disable UEFI Secure Boot Lockdown (`lockdown=none`) or add `securityContext.privileged: true`. |
+| **2: No such file or directory** | `ENOENT` | The BPF filesystem (`/sys/fs/bpf`) is not mounted on the host node. | Execute `mount -t bpf bpffs /sys/fs/bpf` on the host node before starting the container. |
+| **12: Cannot allocate memory** | `ENOMEM` | Node kernel non-swappable locked memory (`RLIMIT_MEMLOCK`) is too low. | Add `securityContext.capabilities.add: ["IPC_LOCK"]` or set `ulimit -l unlimited` in host service. |
+| **22: Invalid argument** | `EINVAL` | Kernel BPF verifier rejected the program bytecode or BTF type information is missing. | Verify host kernel has `CONFIG_DEBUG_INFO_BTF=y` in `/boot/config-$(uname -r)`. |
+| **28: No space left on device** | `ENOSPC` | The fixed-size BPF hash map has reached its maximum entry capacity. | Increase `max_entries` in BPF map declaration or switch map type to `BPF_MAP_TYPE_LRU_HASH`. |
 
 ---
 

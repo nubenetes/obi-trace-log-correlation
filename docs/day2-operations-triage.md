@@ -41,6 +41,27 @@ When an incident occurs and an alert fires, trace-log correlation cuts Mean Time
    - Every log line across every microservice executing that transaction appears in perfect chronological order.
    - You immediately observe the backend database timeout line containing the exact query parameters without searching through gigabytes of unrelated logs.
 
+### Multi-Cluster Federated Triage
+
+In multi-region or hybrid architectures (e.g., EKS in AWS + AKS in Azure + on-premise OpenShift):
+- **Cross-Cluster LogQL Query**:
+  ```logql
+  {cluster=~"prod-(aws|azure|onprem)", namespace="checkout"} |= "4bf92f3577b34da6a3ce929d0e0e4736"
+  ```
+- **Cross-Cluster Elasticsearch / OpenSearch DSL**:
+  ```json
+  {
+    "query": {
+      "bool": {
+        "must": [
+          { "term": { "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736" } },
+          { "terms": { "k8s.cluster.name": ["prod-us-east", "prod-eu-west"] } }
+        ]
+      }
+    }
+  }
+  ```
+
 ---
 
 ## 2. Progressive Canary Rollout Strategy
@@ -68,6 +89,44 @@ flowchart LR
 # Global emergency shutoff
 ./scripts/day2-canary-rollout.sh disable-all
 ```
+
+### Node-Level Canary DaemonSet Deployment
+
+In production clusters with hundreds of worker nodes, roll out the OBI DaemonSet itself to a 10% canary node group before scheduling across the entire fleet:
+
+1. **Label Canary Nodes**:
+   ```bash
+   kubectl label node worker-node-01 worker-node-02 node-role.kubernetes.io/obi-canary="true"
+   ```
+2. **Apply Canary DaemonSet**:
+   ```yaml
+   apiVersion: apps/v1
+   kind: DaemonSet
+   metadata:
+     name: obi-canary
+     namespace: obi
+   spec:
+     template:
+       spec:
+         nodeSelector:
+           node-role.kubernetes.io/obi-canary: "true"
+   ```
+3. **Verify Node Stability**:
+   Monitor node kernel logs (`dmesg -w`) and BPF map allocations for 24 hours. Once verified, promote to the default DaemonSet targeting all worker nodes.
+
+### Zero-Downtime Hot Rollback Procedure
+
+If an anomaly occurs (e.g. an unhandled runtime buffer split or downstream log ingestion spike):
+1. **Instant Annotation Disable (Hot Unhook)**:
+   Dynamically set `log_trace_annotation.enabled: false` in the `obi-config` ConfigMap:
+   ```bash
+   kubectl patch configmap obi-config -n obi --type merge -p '{"data":{"obi-config.yml":"extensions:\n  obi:\n    correlation:\n      log_trace_annotation:\n        enabled: false\n"}}'
+   ```
+   *Result*: The eBPF hook detaches from `sys_enter_write` within **50 milliseconds**. Application pods continue running with zero downtime or restarts.
+2. **Emergency Global Rollback via Script**:
+   ```bash
+   ./scripts/day2-canary-rollout.sh disable-all
+   ```
 
 ---
 

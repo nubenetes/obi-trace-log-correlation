@@ -58,6 +58,15 @@ $$\text{Total Memory per Node} = \text{BPF Preallocated Maps (18 MiB)} + \text{A
 
 Latency overhead added to standard application requests: **< 0.15 ms (p99)**.
 
+### Cluster Scale Sizing Reference Matrix
+
+| Fleet Scale | Worker Nodes | Active Pods | Avg Request Volume | Total BPF Map Memory | Total DaemonSet RAM | Recommended DaemonSet CPU Limit |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Small / Dev** | 5 – 10 nodes | 50 – 200 | ~1,000 req/sec | ~180 MiB cluster-wide | 2.5 GiB – 5.0 GiB total | `100m` per node |
+| **Medium / Staging**| 25 – 50 nodes | 500 – 1,500 | ~10,000 req/sec | ~900 MiB cluster-wide | 12.5 GiB – 25 GiB total | `200m` per node |
+| **Large / Production**| 100 – 250 nodes | 2,500 – 7,500| ~50,000 req/sec | ~4.5 GiB cluster-wide | 50 GiB – 125 GiB total | `400m` per node |
+| **Enterprise Hyperscale**| 500+ nodes | 15,000+ | 150,000+ req/sec | ~9.0 GiB cluster-wide | 250+ GiB total | `500m` per node |
+
 ---
 
 ## 4. Security Architecture
@@ -73,6 +82,37 @@ Latency overhead added to standard application requests: **< 0.15 ms (p99)**.
    In OpenShift, default projects are bound to `restricted-v2`. Deploy the provided `obi-ebpf-scc` which allows `hostPID` and `CAP_SYS_ADMIN`.
 3. **Application Namespaces**:
    Demo and business application namespaces remain strictly hardened under `restricted` or `baseline` security standards. The application containers themselves require **zero elevated privileges**.
+
+### Kernel Lockdown LSM & Secure Boot Policies
+
+The Linux kernel contains a security module (LSM) known as **Kernel Lockdown**, designed to prevent user-space processes (even with `root` / `CAP_SYS_ADMIN`) from modifying running kernel code and user-space memory:
+
+- **Modes**:
+  - `[none]`: Lockdown disabled. Full eBPF capability enabled, including `bpf_probe_write_user`. (**Required for OBI**).
+  - `[integrity]`: Prevents user-space modification of running kernel memory. Blocks `bpf_probe_write_user` system calls (`EPERM`).
+  - `[confidentiality]`: Prevents user-space inspection of confidential kernel data. Blocks memory probing and tracing.
+- **Verification Command**:
+  ```bash
+  cat /sys/kernel/security/lockdown
+  # Healthy output: [none] integrity confidentiality
+  ```
+- **Remediation**:
+  If lockdown is enforced by UEFI Secure Boot, pass `lockdown=none` as a kernel boot parameter in GRUB or provision node groups without locked EFI secure boot enforcement (standard in AWS AL2023, Azure Linux, and RHCOS).
+
+### SELinux & AppArmor Postures
+
+In hardened distributions (RHEL, RHCOS, Ubuntu CIS, SLES):
+1. **SELinux (OpenShift / RHEL)**:
+   - In container runtimes, processes running with `spc_t` (Super Privileged Container) can access `/sys/fs/bpf` and mount bpffs.
+   - The provided `obi-ebpf-scc` binds the DaemonSet to the privileged SELinux domain automatically.
+2. **AppArmor (Ubuntu / Debian / SUSE)**:
+   - Modern AppArmor profiles restrict mounting bpffs and attaching tracepoints.
+   - Annotate the DaemonSet pod template to run unconfined:
+     ```yaml
+     metadata:
+       annotations:
+         container.apparmor.security.beta.kubernetes.io/obi: "unconfined"
+     ```
 
 
 ---

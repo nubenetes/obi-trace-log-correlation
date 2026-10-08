@@ -145,6 +145,29 @@ OBI monitors logging writes by attaching eBPF probes to the Linux Virtual File S
 - **Linux < 6.0**: Syscalls like `write()` utilized older iterator abstractions (`ITER_IOVEC`). Only runtimes issuing vectored `writev()` calls could be safely inspected.
 - **Linux >= 6.0**: Introduced `ITER_UBUF` (single user buffer iterator) for standard `write()` paths. This allows OBI to cleanly inspect, read, and rewrite single-buffer system calls without overhead.
 
+#### Vectored I/O Traversal Mechanics (`struct iovec` & `writev`)
+
+Modern high-performance runtimes (Go `net/http`, Java Netty, Node.js libuv) frequently issue vectored writes using `writev()` to avoid copying multiple buffer segments:
+
+```
+Process User Space (struct iovec Array)             Linux Kernel VFS Pipe
++------------------------------------------+        +--------------------------+
+| iov[0]: Base pointer -> Header ("INFO: ") | ---->  |                          |
+| iov[0].iov_len = 6                       |        |                          |
++------------------------------------------+        | Consolidated FIFO Buffer |
+| iov[1]: Base pointer -> Msg ("order ok") | ---->  | "INFO: order ok\n"       |
+| iov[1].iov_len = 8                       |        |                          |
++------------------------------------------+        |                          |
+| iov[2]: Base pointer -> Suffix ("\n")    | ---->  |                          |
+| iov[2].iov_len = 1                       |        |                          |
++------------------------------------------+        +--------------------------+
+```
+
+When handling `writev()`:
+1. **Iterating the Vector**: OBI attaches a kprobe to `do_writev` to capture the `struct iovec *iov` pointer and vector count (`vlen`).
+2. **Buffer Assembly**: eBPF bounded loops iterate through the vector array up to the verifier loop limit (maximum 8 vectors), concatenating memory chunks into a temporary contiguous per-CPU scratchpad.
+3. **Selective Mutation**: OBI calculates the exact offsets and zeroes out the user-space memory segments before the VFS pipe consumes the vector, ensuring that multi-part writes don't produce corrupted fragments.
+
 ### The `traces_ctx_v1` LRU Map Specification
 
 The correlation engine relies on a shared BPF map pinned into the Linux BPF filesystem (`bpffs`):

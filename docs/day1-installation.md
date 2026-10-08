@@ -99,7 +99,86 @@ The quickest way to deploy is using the unified script `scripts/day1-deploy.sh`:
 
 ---
 
-## 3. Generate Traffic & Verify Initial Ingestion
+### E. Rancher RKE2 / K3s
+
+1. **Verify Host Kernel & BPF Filesystem**:
+   RKE2 and K3s nodes must run Linux kernel 6.0 or later. In hardened CIS profiles, verify that `/sys/fs/bpf` is mounted on the host:
+   ```bash
+   mount | grep bpffs
+   # If missing, mount on the host:
+   sudo mount -t bpf bpffs /sys/fs/bpf
+   ```
+2. **Configure Pod Security Standards**:
+   Ensure the `obi` namespace allows privileged execution:
+   ```bash
+   kubectl create namespace obi --dry-run=client -o yaml | kubectl apply -f -
+   kubectl label namespace obi --overwrite pod-security.kubernetes.io/enforce=privileged
+   ```
+3. **Deploy the RKE2 Overlay**:
+   ```bash
+   kubectl apply -k k8s/overlays/rke
+   ```
+4. **Confirm DaemonSet Rollout**:
+   ```bash
+   kubectl rollout status ds/obi -n obi
+   ```
+
+---
+
+## 3. Declarative GitOps Deployment (ArgoCD & Flux)
+
+In enterprise multi-cluster environments, deploy OBI across development, staging, and production clusters using GitOps controllers.
+
+### A. ArgoCD Application Manifest
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: obi-daemonset
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nubenetes/obi-trace-log-correlation.git
+    targetRevision: main
+    # Select target distribution overlay (e.g. aks, eks, openshift-4.20, gke, rke)
+    path: k8s/overlays/aks
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: obi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+```
+
+### B. Flux CD Kustomization
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: obi-daemonset
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: "./k8s/overlays/eks"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: obi-trace-log-correlation
+  targetNamespace: obi
+  timeout: 3m
+```
+
+---
+
+## 4. Generate Traffic & Verify Initial Ingestion
 
 Once the cluster is bootstrapped, send requests to trigger trace propagation and log correlation:
 

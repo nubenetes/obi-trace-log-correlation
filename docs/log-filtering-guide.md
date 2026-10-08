@@ -33,6 +33,28 @@ As a direct consequence, the raw container log file on disk (`/var/log/pods/*/*/
 > - The remaining bytes pass through un-enriched into the log stream and **will not match** the placeholder filter.
 > Always ensure application log formatters avoid emitting single monolithic writes larger than 8 KiB (e.g. huge stack traces with mega payloads).
 
+### Linux Pipe Buffering Mechanics & Chunking Architecture
+
+```
+User Space (App)              Linux VFS Pipe Layer                    Node Disk / Forwarder
++--------------------+        +-----------------------------+        +----------------------+
+| Write monolithic   |        | Linux Pipe Buffer (64 KiB)  |        | /var/log/pods/*.log  |
+| payload (12 KiB)   |        |                             |        |                      |
+|                    |        | +-------------------------+ |        |                      |
+| [Chunk 1: 0-8 KiB] ---------> | OBI eBPF Hooks & Mutates | ---------> Enriched line        |
+|                    |        | +-------------------------+ |        | (8 KiB with trace_id)|
+|                    |        |                             |        |                      |
+| [Chunk 2: 8-12KiB] ---------> | Passthrough unmodified   | ---------> Un-enriched tail     |
+|                    |        | (exceeds eBPF buffer limit)|        | (Remaining 4 KiB)    |
++--------------------+        +-----------------------------+        +----------------------+
+```
+
+When an application emits a single write exceeding 8 KiB (8,192 bytes):
+1. **First 8 KiB**: The eBPF verifier constrains stack and temporary buffer allocations to 8 KiB. OBI captures this chunk, injects trace context, and zeroes the user memory.
+2. **Remaining Bytes (> 8 KiB)**: The remaining trailing bytes pass directly into the pipe buffer as ordinary text without NUL suppression or trace injection.
+3. **Log Shipper Reassembly**:
+   Configure log collectors with multi-line reassembly rules (e.g. `multiline.match_all` or CRI timestamp joining) to ensure split chunks are reunited into a single logical document in Loki or Elasticsearch.
+
 ---
 
 ## 3. Log Shipper Filter Configurations
@@ -72,7 +94,7 @@ condition = '!match(string!(.message), r"^[\x00\s]*$")'
     Exclude log ^[\x00\s]*$
 ```
 
-### D. Promtail / Grafana Alloy
+### D. Promtail
 ```yaml
 scrape_configs:
   - job_name: kubernetes-pods
@@ -80,6 +102,58 @@ scrape_configs:
       - cri: {}
       - drop:
           expression: "^[\\x00\\s]*$"
+```
+
+### E. Grafana Alloy (River Syntax)
+
+Grafana Alloy replaces Promtail using declarative River syntax. Add a `stage.drop` block inside `loki.process`:
+
+```alloy
+loki.process "filter_obi_nul" {
+  stage.cri {}
+
+  stage.drop {
+    expression = "^[\\x00\\s]*$"
+  }
+
+  forward_to = [loki.write.default.receiver]
+}
+```
+
+### F. Logstash / Filebeat (Elasticsearch & OpenSearch)
+
+In Logstash log pipelines, drop empty NUL placeholders before indexing:
+
+```ruby
+filter {
+  # Drop lines that contain only NUL bytes or whitespace
+  if [message] =~ /^[\x00\s]*$/ {
+    drop { }
+  }
+}
+```
+
+For Filebeat:
+```yaml
+filebeat.inputs:
+  - type: container
+    paths:
+      - '/var/log/pods/*/*/*.log'
+    exclude_lines: ['^[\x00\s]*$']
+```
+
+### G. Fluentd (`filter_grep`)
+
+In Fluentd DaemonSets, use `filter_grep` with an exclude rule:
+
+```xml
+<filter kubernetes.**>
+  @type grep
+  <exclude>
+    key log
+    pattern /^[\x00\s]*$/
+  </exclude>
+</filter>
 ```
 
 
