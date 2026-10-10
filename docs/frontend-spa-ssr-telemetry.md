@@ -46,7 +46,7 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 > **Multilingual Learning Experience**:
 > Features native audio in **Spanish 🇪🇸** and **English 🇺🇸**, with automated closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for full-stack, frontend, and SRE teams.
 
-#### 📊 Curated Frontend SPAs & SSR Telemetry Collection (12 Episodes)
+#### 📊 Curated Frontend SPAs & SSR Telemetry Collection (13 Episodes)
 
 | Format | Episode / Title | Domain / Focus | Language | Duration | Direct YouTube Link |
 |:---:|---|---|:---:|:---:|---|
@@ -56,6 +56,7 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 | 📽️ **Video Guide** | [**Telemetría Full Stack OBI: Conectando el Navegador con el Kernel**](https://www.youtube.com/watch?v=ulOScXmXit8) | **6 Etapas Arquitectónicas**: del clic del usuario a la intercepción en socket y enriquecimiento zero-code | 🇪🇸 Spanish *(CC 20+)* | `5:42` | [▶️ Ver Video](https://www.youtube.com/watch?v=ulOScXmXit8) |
 | 📽️ **Video Guide** | [**Conecta la Telemetría Frontend al Backend con OpenTelemetry y eBPF**](https://www.youtube.com/watch?v=eHCTIUg4GmY) | **Tres Pilares Full-Stack**: Navegador, Puentes de Ingesta y SSR | 🇪🇸 Spanish *(CC 20+)* | `2:52` | [▶️ Ver Video](https://www.youtube.com/watch?v=eHCTIUg4GmY) |
 | 📽️ **Video Guide** | [**Connecting Browser Clicks to eBPF Logs: Full-Stack Architecture Guide**](https://www.youtube.com/watch?v=l2ehRwv8z-g) | **Three Full-Stack Pillars**: sandboxed SPAs, client ingestion bridges & SSR | 🇺🇸 English *(CC 20+)* | `2:29` | [▶️ Watch Video](https://www.youtube.com/watch?v=l2ehRwv8z-g) |
+| 📽️ **Video Guide** | [**Bridging SPA and SSR Telemetry with OpenTelemetry eBPF**](https://www.youtube.com/watch?v=I26MdWvlEeg) | **Full-Stack Telemetry Gap**: client HTTP interceptors, kernel socket capture & SSR | 🇺🇸 English *(CC 20+)* | `2:45` | [▶️ Watch Video](https://www.youtube.com/watch?v=I26MdWvlEeg) |
 | 🎙️ **Audio Podcast** | [**Podcast: Correlating Browser Clicks with Kernel Logs: Full-Stack OBI Deep Dive**](https://www.youtube.com/watch?v=YKPsm3iLVmk) | **Conversational Blueprint**: del sandbox del navegador al kernel eBPF y SSR | 🇺🇸 English *(CC 20+)* | `22:34` | [▶️ Listen Podcast](https://www.youtube.com/watch?v=YKPsm3iLVmk) |
 | 🎙️ **Audio Podcast** | [**Podcast: Observabilidad del Navegador al Kernel con eBPF y OpenTelemetry OBI**](https://www.youtube.com/watch?v=6Yvs6DSSUdI) | **Analogía Postal y Trazas**: frontera del navegador, cabeceras W3C y stamping en Linux | 🇪🇸 Spanish *(CC 20+)* | `24:04` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=6Yvs6DSSUdI) |
 | 🎙️ **Audio Podcast** | [**Podcast: Correlación Zero-Code de Logs y Trazas: Service Mesh vs. Kernel eBPF (OBI)**](https://www.youtube.com/watch?v=kP_FrCcn_jE) | **Del Navegador al Kernel**: frontend SPAs (React, Angular), cabeceras W3C traceparent y captura en `sys_recvfrom` | 🇪🇸 Spanish *(CC 20+)* | `12:50` | [▶️ Escuchar Podcast](https://www.youtube.com/watch?v=kP_FrCcn_jE) |
@@ -385,6 +386,33 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 >
 > ⏱️ Duration: 2:29
 > #OpenTelemetry #eBPF #Frontend #FullStack #Kubernetes #DistributedTracing #Observability #SRE #DevOps #Microservices
+
+#### 13. Bridging SPA and SSR Telemetry with OpenTelemetry eBPF (2:45)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=I26MdWvlEeg](https://www.youtube.com/watch?v=I26MdWvlEeg)
+- ⏱️ **Duration**: 2:45
+- 🏷️ **Domain**: SPA & SSR Telemetry, Client Ingestion Bridges and Node.js Streams
+- 📝 **Full Description**:
+> 🌐 Architecture Quick Guide: Bridging SPA and SSR Telemetry with OpenTelemetry eBPF
+>
+> High-density 2-minute architectural overview analyzing how to bridge client-side Single Page Applications (SPAs) and Server-Side Rendering (SSR) engines with Linux kernel eBPF log correlation.
+>
+> Learn how to connect browser user actions with host kernel logging without application code modification.
+>
+> 📌 Key Architectural Discussion Points:
+>
+> - The Full-Stack Telemetry Gap: Correlating end-user browser sessions with distributed backend microservice logs during production outages.
+> - W3C Traceparent Injection: Generating standardized trace headers in browser HTTP interceptors to traverse network ingress points.
+> - Kernel Socket and Stream Capture: How sys_enter_recvfrom and sys_enter_write correlate incoming requests with active operating system threads.
+> - Server-Side Rendering (SSR) Considerations: Addressing Node.js event-loop buffering and asynchronous Pino logging streams.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Frontend SPAs & SSR Telemetry Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/frontend-spa-ssr-telemetry.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 2:45
+> #OpenTelemetry #eBPF #Frontend #SSR #FullStack #Kubernetes #DistributedTracing #Observability #SRE #DevOps
 
 </details>
 
