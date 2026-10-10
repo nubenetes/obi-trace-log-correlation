@@ -60,10 +60,13 @@ This reference guide catalogs all official OpenTelemetry documentation, blog pos
 
 ## 6. Architectural Video Guides & Multimedia Catalog (YouTube)
 All video deep dives, technical shorts, and audio podcasts are published on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel.
-- **Full Video & Podcast Catalog**: See [`README.md#video-walkthroughs--architecture-references-youtube`](../README.md#video-walkthroughs--architecture-references-youtube) for the complete 56-episode breakdown.
+- **Full Video & Podcast Catalog**: See [`README.md#video-walkthroughs--architecture-references-youtube`](../README.md#video-walkthroughs--architecture-references-youtube) for the complete 59-episode breakdown.
 - **eBPF Metrics & Telemetry Series**:
   - [OBI Metrics Architecture: RED Signals, Kernel Telemetry & Prometheus Exemplars](https://www.youtube.com/watch?v=KZKEWYL1b00) (`8:11`)
   - [Production OBI Metrics Blueprints: Multi-Cloud, GitOps Alerts & Boundaries](https://www.youtube.com/watch?v=yEChUSX2NXc) (`9:22`)
+  - [Why eBPF Can't See Business Metrics: Protocol vs. Domain Telemetry](https://www.youtube.com/watch?v=7nPi3z_tl90) (`2:31`)
+  - [Podcast: Zero-Code Observability with OpenTelemetry eBPF: Metrics, Exemplars & Runbooks](https://www.youtube.com/watch?v=JVHBUMxBpDY) (`43:58`)
+  - [Podcast: Observabilidad SRE sin código con eBPF: Métricas RED, Exemplars y Alertas 2 AM](https://www.youtube.com/watch?v=I3iPK1lsINw) (`23:58`)
   - [How Prometheus Exemplars Connect Spikes to Logs](https://www.youtube.com/shorts/nhwv34F6Fa0) (`1:11`)
   - [Why eBPF Can't See Your Business Metrics](https://www.youtube.com/shorts/Ja5gPK7KTK4) (`1:23`)
 
