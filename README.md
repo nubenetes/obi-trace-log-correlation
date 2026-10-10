@@ -2630,6 +2630,7 @@ Below are the direct links and full descriptions for each session.
 - **Kernel Internals & Dev Docs**: [devdocs/trace-log-correlation.md](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/blob/main/devdocs/trace-log-correlation.md)
 - **Demo Gist**: [mmat11/f3f23707e7bc9c94bce144f56276251d](https://gist.github.com/mmat11/f3f23707e7bc9c94bce144f56276251d)
 - **CNCF Slack Community**: [#otel-ebpf-instrumentation](https://cloud-native.slack.com/archives/C06DQ7S2YEP)
+- **Video Walkthroughs & Architecture References**: [Nubenetes YouTube Channel (@nubenetes) Video Catalog](#video-walkthroughs--architecture-references-youtube) — 56 architectural video walkthroughs, technical shorts, and audio podcasts.
 
 ---
 

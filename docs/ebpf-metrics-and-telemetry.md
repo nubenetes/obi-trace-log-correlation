@@ -830,6 +830,12 @@ flowchart TD
 - [Grafana Mimir Long-Term Metric Storage](https://grafana.com/oss/mimir/) — Horizontally scalable multi-tenant metrics engine with native Exemplars support.
 - [OpenTelemetry eBPF Instrumentation (OBI) Repository](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation) — Upstream CNCF repository for kernel eBPF instrumentation.
 
+### 3. YouTube Architectural Video Guides & Technical Shorts
+- [OBI Metrics Architecture: RED Signals, Kernel Telemetry & Prometheus Exemplars](https://www.youtube.com/watch?v=KZKEWYL1b00) — 8-minute architectural exploration of kernel socket interception, RED Golden Signals, BPF map health, and Prometheus / Mimir Exemplars.
+- [Production OBI Metrics Blueprints: Multi-Cloud, GitOps Alerts & Boundaries](https://www.youtube.com/watch?v=yEChUSX2NXc) — 9-minute production engineering guide covering OBI DaemonSets, multi-backend OTel Collector routing, GitOps PrometheusRule CRDs, and multi-cloud metrics (OpenShift, AKS, EKS, GKE, SigNoz).
+- [How Prometheus Exemplars Connect Spikes to Logs](https://www.youtube.com/shorts/nhwv34F6Fa0) — Technical short explaining 1-click drill-down from latency spikes in Grafana directly to traces and correlated Loki logs.
+- [Why eBPF Can't See Your Business Metrics](https://www.youtube.com/shorts/Ja5gPK7KTK4) — Architectural short highlighting the boundary between kernel protocol telemetry and application-layer business metrics.
+
 ---
 
 ## 11. Navigation & Documentation Directory

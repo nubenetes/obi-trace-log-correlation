@@ -56,6 +56,16 @@ This reference guide catalogs all official OpenTelemetry documentation, blog pos
 - **OpenTelemetry Community Meetings**: Join the bi-weekly eBPF SIG meeting on the CNCF public calendar.
 - **Issue Tracker**: [Report OBI Issues](https://github.com/open-telemetry/opentelemetry-ebpf-instrumentation/issues)
 
+---
+
+## 6. Architectural Video Guides & Multimedia Catalog (YouTube)
+All video deep dives, technical shorts, and audio podcasts are published on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel.
+- **Full Video & Podcast Catalog**: See [`README.md#video-walkthroughs--architecture-references-youtube`](../README.md#video-walkthroughs--architecture-references-youtube) for the complete 56-episode breakdown.
+- **eBPF Metrics & Telemetry Series**:
+  - [OBI Metrics Architecture: RED Signals, Kernel Telemetry & Prometheus Exemplars](https://www.youtube.com/watch?v=KZKEWYL1b00) (`8:11`)
+  - [Production OBI Metrics Blueprints: Multi-Cloud, GitOps Alerts & Boundaries](https://www.youtube.com/watch?v=yEChUSX2NXc) (`9:22`)
+  - [How Prometheus Exemplars Connect Spikes to Logs](https://www.youtube.com/shorts/nhwv34F6Fa0) (`1:11`)
+  - [Why eBPF Can't See Your Business Metrics](https://www.youtube.com/shorts/Ja5gPK7KTK4) (`1:23`)
 
 ---
 
