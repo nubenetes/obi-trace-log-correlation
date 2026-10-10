@@ -13,39 +13,41 @@
 ## 📑 Table of Contents
 
 - [1. Executive Summary: Strategic Answers Upfront](#1-executive-summary-strategic-answers-upfront)
-- [2. Kernel Mechanics: Socket Layer Probes vs. VFS Syscall Hooks](#2-kernel-mechanics-socket-layer-probes-vs-vfs-syscall-hooks)
+- [2. 📊 Architectural Infographic: OpenTelemetry eBPF (OBI) Metrics & Kernel Telemetry Architecture](#kernel-telemetry-architecture-infographic)
+  - [Comprehensive Breakdown of the 5 Core Architectural Pillars](#comprehensive-breakdown-of-the-5-core-architectural-pillars)
+- [3. Kernel Mechanics: Socket Layer Probes vs. VFS Syscall Hooks](#3-kernel-mechanics-socket-layer-probes-vs-vfs-syscall-hooks)
   - [The Dual-Path Kernel Interception Architecture](#the-dual-path-kernel-interception-architecture)
   - [How Network Socket Hooks Derive RED Metrics](#how-network-socket-hooks-derive-red-metrics)
-- [3. Layer 1: Application RED Metrics (Golden Signals)](#3-layer-1-application-red-metrics-golden-signals)
-  - [3.1 OpenTelemetry Semantic Conventions](#31-opentelemetry-semantic-conventions)
-  - [3.2 HTTP/HTTPS Server Metrics & PromQL Formulas](#32-httphttps-server-metrics--promql-formulas)
-  - [3.3 gRPC & RPC Service Metrics](#33-grpc--rpc-service-metrics)
-  - [3.4 Database Client Metrics (SQL & NoSQL)](#34-database-client-metrics-sql--nosql)
-- [4. Layer 2: eBPF Subsystem & Kernel Health Telemetry](#4-layer-2-ebpf-subsystem--kernel-health-telemetry)
-  - [4.1 Self-Monitoring Prometheus Endpoint (Port 8999)](#41-self-monitoring-prometheus-endpoint-port-8999)
-  - [4.2 Kernel BPF Map Capacity & Saturation (`traces_ctx_v1`)](#42-kernel-bpf-map-capacity--saturation-traces_ctx_v1)
-  - [4.3 Ring Buffer Backpressure & Drop Detection](#43-ring-buffer-backpressure--drop-detection)
-  - [4.4 Probe Overhead & Microsecond Latency Tracking](#44-probe-overhead--microsecond-latency-tracking)
-- [5. The Metric-Trace-Log Synergy: Prometheus & Mimir Exemplars](#5-the-metric-trace-log-synergy-prometheus--mimir-exemplars)
-  - [5.1 How OBI Binds W3C Trace IDs to Histogram Buckets](#51-how-obi-binds-w3c-trace-ids-to-histogram-buckets)
-  - [5.2 1-Click Investigation: Metric Spike ➔ Trace ➔ Correlated Logs](#52-1-click-investigation-metric-spike--trace--correlated-logs)
-- [6. Production Configuration Blueprints](#6-production-configuration-blueprints)
-  - [6.1 OBI DaemonSet Configuration (`meter_provider`)](#61-obi-daemonset-configuration-meter_provider)
-  - [6.2 OpenTelemetry Collector Multi-Backend Metrics Pipeline](#62-opentelemetry-collector-multi-backend-metrics-pipeline)
-  - [6.3 GitOps `PrometheusRule` Alerting CRD](#63-gitops-prometheusrule-alerting-crd)
-- [7. Multi-Cloud Kubernetes Metrics Architecture](#7-multi-cloud-kubernetes-metrics-architecture)
-  - [7.1 Red Hat OpenShift: User Workload Monitoring](#71-red-hat-openshift-user-workload-monitoring)
-  - [7.2 Microsoft Azure AKS: Azure Managed Prometheus](#72-microsoft-azure-aks-azure-managed-prometheus)
-  - [7.3 AWS EKS: Amazon Managed Service for Prometheus (AMP)](#73-aws-eks-amazon-managed-service-for-prometheus-amp)
-  - [7.4 Google Cloud GKE: Google Cloud Managed Service for Prometheus (GMP)](#74-google-cloud-gke-google-cloud-managed-service-for-prometheus-gmp)
-  - [7.5 SigNoz: Native Columnar ClickHouse Metrics](#75-signoz-native-columnar-clickhouse-metrics)
-- [8. Boundaries & Anti-Patterns: What eBPF Metrics Do and Do Not Solve](#8-boundaries--anti-patterns-what-ebpf-metrics-do-and-do-not-solve)
-  - [8.1 What eBPF Metrics Provide Out-of-the-Box](#81-what-ebpf-metrics-provide-out-of-the-box)
-  - [8.2 What Requires In-Process Application SDKs](#82-what-requires-in-process-application-sdks)
-  - [8.3 Architectural Decision Matrix](#83-architectural-decision-matrix)
-- [9. The 2:00 AM Metric Alert Incident Runbook](#9-the-200-am-metric-alert-incident-runbook)
-- [10. Categorized Public References & Standards Catalog](#10-categorized-public-references--standards-catalog)
-- [11. Navigation & Documentation Directory](#11-navigation--documentation-directory)
+- [4. Layer 1: Application RED Metrics (Golden Signals)](#4-layer-1-application-red-metrics-golden-signals)
+  - [4.1 OpenTelemetry Semantic Conventions](#41-opentelemetry-semantic-conventions)
+  - [4.2 HTTP/HTTPS Server Metrics & PromQL Formulas](#42-httphttps-server-metrics--promql-formulas)
+  - [4.3 gRPC & RPC Service Metrics](#43-grpc--rpc-service-metrics)
+  - [4.4 Database Client Metrics (SQL & NoSQL)](#44-database-client-metrics-sql--nosql)
+- [5. Layer 2: eBPF Subsystem & Kernel Health Telemetry](#5-layer-2-ebpf-subsystem--kernel-health-telemetry)
+  - [5.1 Self-Monitoring Prometheus Endpoint (Port 8999)](#51-self-monitoring-prometheus-endpoint-port-8999)
+  - [5.2 Kernel BPF Map Capacity & Saturation (`traces_ctx_v1`)](#52-kernel-bpf-map-capacity--saturation-traces_ctx_v1)
+  - [5.3 Ring Buffer Backpressure & Drop Detection](#53-ring-buffer-backpressure--drop-detection)
+  - [5.4 Probe Overhead & Microsecond Latency Tracking](#54-probe-overhead--microsecond-latency-tracking)
+- [6. The Metric-Trace-Log Synergy: Prometheus & Mimir Exemplars](#6-the-metric-trace-log-synergy-prometheus--mimir-exemplars)
+  - [6.1 How OBI Binds W3C Trace IDs to Histogram Buckets](#61-how-obi-binds-w3c-trace-ids-to-histogram-buckets)
+  - [6.2 1-Click Investigation: Metric Spike ➔ Trace ➔ Correlated Logs](#62-1-click-investigation-metric-spike--trace--correlated-logs)
+- [7. Production Configuration Blueprints](#7-production-configuration-blueprints)
+  - [7.1 OBI DaemonSet Configuration (`meter_provider`)](#71-obi-daemonset-configuration-meter_provider)
+  - [7.2 OpenTelemetry Collector Multi-Backend Metrics Pipeline](#72-opentelemetry-collector-multi-backend-metrics-pipeline)
+  - [7.3 GitOps `PrometheusRule` Alerting CRD](#73-gitops-prometheusrule-alerting-crd)
+- [8. Multi-Cloud Kubernetes Metrics Architecture](#8-multi-cloud-kubernetes-metrics-architecture)
+  - [8.1 Red Hat OpenShift: User Workload Monitoring](#81-red-hat-openshift-user-workload-monitoring)
+  - [8.2 Microsoft Azure AKS: Azure Managed Prometheus](#82-microsoft-azure-aks-azure-managed-prometheus)
+  - [8.3 AWS EKS: Amazon Managed Service for Prometheus (AMP)](#83-aws-eks-amazon-managed-service-for-prometheus-amp)
+  - [8.4 Google Cloud GKE: Google Cloud Managed Service for Prometheus (GMP)](#84-google-cloud-gke-google-cloud-managed-service-for-prometheus-gmp)
+  - [8.5 SigNoz: Native Columnar ClickHouse Metrics](#85-signoz-native-columnar-clickhouse-metrics)
+- [9. Boundaries & Anti-Patterns: What eBPF Metrics Do and Do Not Solve](#9-boundaries--anti-patterns-what-ebpf-metrics-do-and-do-not-solve)
+  - [9.1 What eBPF Metrics Provide Out-of-the-Box](#91-what-ebpf-metrics-provide-out-of-the-box)
+  - [9.2 What Requires In-Process Application SDKs](#92-what-requires-in-process-application-sdks)
+  - [9.3 Architectural Decision Matrix](#93-architectural-decision-matrix)
+- [10. The 2:00 AM Metric Alert Incident Runbook](#10-the-200-am-metric-alert-incident-runbook)
+- [11. Categorized Public References & Standards Catalog](#11-categorized-public-references--standards-catalog)
+- [12. Navigation & Documentation Directory](#12-navigation--documentation-directory)
 
 ---
 
@@ -196,7 +198,82 @@ This guide is supported by dedicated educational audio-visual deep dives synthes
 
 ---
 
-## 2. Kernel Mechanics: Socket Layer Probes vs. VFS Syscall Hooks
+<a id="kernel-telemetry-architecture-infographic"></a>
+## 2. 📊 Architectural Infographic: OpenTelemetry eBPF (OBI) Metrics & Kernel Telemetry Architecture
+
+[![OpenTelemetry eBPF (OBI) Metrics & Kernel Telemetry Architecture](images/kernel-telemetry-architecture-diagram.png)](images/kernel-telemetry-architecture-diagram.png)
+
+> [!TIP]
+> **Lossless High-Resolution Asset**: The architecture diagram above is available in original full-resolution (2752x1536 PNG, lossless) at [`images/kernel-telemetry-architecture-diagram.png`](images/kernel-telemetry-architecture-diagram.png) and high-definition JPEG at [`images/kernel-telemetry-architecture-diagram.jpg`](images/kernel-telemetry-architecture-diagram.jpg).
+
+### Comprehensive Breakdown of the 5 Core Architectural Pillars
+
+#### 1. 🔍 Left Hemisphere: Linux Kernel Space (Dual-Path Zero-Code Interception)
+- **Path A: VFS Log Trace Enrichment (Stdout/Stderr Streams)**:
+  - **Hook Points**: Kernel system call probes hook `sys_enter_write` and `sys_enter_writev` at the Virtual File System (VFS) layer (`pipe_write` / `tty_write`).
+  - **BPF Map Context Lookup**: Looks up the active thread/goroutine identifier (`pid_tgid`) in the pinned `traces_ctx_v1` BPF hash map to retrieve the in-flight distributed trace context.
+  - **In-Flight Buffer Mutation**: Invokes `bpf_probe_write_user` to zero out un-enriched user buffers and enqueues enriched records with W3C `trace_id` and `span_id` directly into the container stream pipe (`/var/log/pods/*/*.log`).
+- **Path B: Network Socket Layer Telemetry**:
+  - **Hook Points**: Attaches `tcp_recvmsg` and `sockops` kprobes to Linux network sockets, paired with user-space uprobes for encrypted TLS communication (`SSL_read` / `SSL_write` in OpenSSL, BoringSSL, and Go `crypto/tls`).
+  - **Multi-Protocol Inspection**: Intercepts L7 traffic across HTTP/1.1, HTTP/2, gRPC, TLS, and SQL/Redis client connections.
+  - **Nanosecond Latency Calculation**: Records ingress arrival timestamps `ktime_get_ns()` and calculates delta $\Delta t = t_{\text{egress}} - t_{\text{ingress}}$ upon response commit.
+- **Zero-Code Polyglot Fleet Coverage**:
+  - **Supported Runtimes**: Works transparently across Go, Java (Platform & Virtual Threads), Python, Node.js, .NET, and Rust.
+  - **Zero-Touch Operational Model**: Requires **no code modifications**, **no language SDK imports**, **no runtime bytecode injection**, and **no application rebuilds or restarts**.
+
+#### 2. 📊 Center Column: Dual-Layer Telemetry Output (Unified System)
+- **Layer 1: Out-of-Process Application RED Metrics (OTLP Port 4317)**:
+  - **`http.server.request.duration`**: High-resolution latency histograms (P50, P90, P95, P99) derived from socket boundary timers.
+  - **`rpc.server.duration`**: Comprehensive procedure latency and status code distributions for gRPC services.
+  - **`db.client.operation.duration`**: Query round-trip latencies for relational SQL databases (PostgreSQL, MySQL) and key-value caches (Redis).
+  - **Export Protocol**: Standard OpenTelemetry Protocol (OTLP v1.0) over gRPC/HTTP routed directly to the OpenTelemetry Collector.
+- **Layer 2: Self-Monitoring eBPF Kernel Health (Prometheus Port 8999)**:
+  - **OBI BPF Map Capacity (`traces_ctx_v1`)**: Monitors LRU thread context map entry consumption.
+    - *Critical Threshold*: `> 80% Saturation`.
+    - *Remediation Action*: Increase `max_entries` in `obi-config.yml` to prevent context evictions.
+  - **Ring Buffer Drops (`obi_ringbuffer_dropped_events_total`)**: Detects queue backpressure between kernel space and the user-space OBI agent.
+    - *Critical Threshold*: `> 0 Events Dropped`.
+    - *Remediation Action*: Immediately raise OBI DaemonSet container CPU limits (`resources.limits.cpu`).
+  - **Probe Overhead (`obi_bpf_overhead_nanoseconds`)**: Measures hardware cycle execution overhead of kernel probes.
+    - *Critical Threshold*: `> 5.0 Microseconds` (standard is `< 2.5 µs`).
+    - *Remediation Action*: Investigate node CPU throttling, memory bus contention, or frequency scaling governors.
+
+#### 3. ⚡ Right Column Top: The Triad Synergy (1-Click Investigation via Prometheus Exemplars)
+- **Step 1: Metric Alert Trigger**: PromQL alert rule detects an anomalous latency or error spike in Prometheus or Grafana Mimir (e.g. `http_server_duration_milliseconds_bucket p99 > 2s`).
+- **Step 2: W3C Exemplar Binding**: Because OBI measures network transaction durations and generates distributed traces simultaneously, it automatically stamps the active 32-hex W3C `trace_id` onto the matching high-latency histogram bucket.
+- **Step 3: Trace Waterfall Jump**: Clicking the interactive Exemplar star on the Grafana latency graph opens the exact trace waterfall in Grafana Tempo or Jaeger, zeroing in on the slowest microservice span.
+- **Step 4: Correlated Log View**: Inside Tempo, clicking **"Logs for this span"** (`tracesToLogsV2`) queries Loki or CloudWatch using `{namespace="production"} |= "<trace_id>"`, displaying the exact application exception log line with zero manual grepping or timestamp drift.
+
+#### 4. 🛡️ Right Column Bottom: Capabilities, Boundaries & Observability Decision Matrix
+- **What eBPF Solves 100% Out-of-the-Box**:
+  - Zero-code Golden Signals (Rate/RPS, 5xx/4xx Error percentage, Duration latency histograms).
+  - Protocol-level timings for HTTP, gRPC, and SQL/Redis client connections.
+  - Resilience during failure: telemetry survives process crashes, segmentation faults, and Out-Of-Memory (OOM) kills that terminate in-process APM agents.
+- **What Still Requires In-Process SDKs**:
+  - Internal application domain business metrics (e.g., `cart_items_count`, `credit_score`, `auction_bid_usd`) residing in private process heap memory.
+  - Deep language runtime virtual machine internals (e.g., JVM garbage collection pause times, Go goroutine scheduler starvation, Python Global Interpreter Lock contention).
+- **Observability Decision Matrix**:
+  | Observability Requirement | Recommended Mechanism | Primary Tooling |
+  | :--- | :--- | :--- |
+  | **HTTP/gRPC RED Signals** | **Kernel eBPF (OBI)** | OBI Socket Interception (`tcp_recvmsg` / `sockops`) |
+  | **Database Call Durations** | **Kernel eBPF (OBI)** | OBI Client Socket Inspection |
+  | **Log-Trace Context Correlation** | **Kernel eBPF (OBI)** | OBI VFS Interception (`pipe_write` / `bpf_probe_write_user`) |
+  | **Custom Business Logic Metrics** | **In-Process SDK** | OpenTelemetry API / Micrometer / Prometheus Client |
+  | **VM Memory & GC Profiling** | **Language Runtime Profiler** | JMX Exporter / Go pprof / Pyroscope Continuous Profiler |
+
+#### 5. 🚨 Bottom Ribbon: The 2:00 AM Metric Alert Diagnostic Runbook
+- **Triage Path 1 (Error Rate Spike 5xx)**:
+  - *Action*: Open RED Dashboard ➔ Click Exemplar star on 5xx burst ➔ Tempo trace waterfall opens ➔ Click "Logs for this span" ➔ Read root-cause exception stack trace.
+- **Triage Path 2 (Latency Degradation p95 > 2s)**:
+  - *Action*: Open Latency Heatmap ➔ Identify slowest route (e.g., `/checkout`) ➔ Inspect `db.client.operation.duration` metrics ➔ Isolate database query stall vs. application lock contention.
+- **Triage Path 3 (Ring Buffer Drops > 0)**:
+  - *Action*: Execute `kubectl top pods -n obi` ➔ Verify if OBI agent is CPU throttled ➔ Run `kubectl set resources ds obi -n obi -c obi --limits=cpu=1000m` to relieve backpressure.
+- **Triage Path 4 (BPF Map Saturation > 85%)**:
+  - *Action*: Inspect concurrent request surge ➔ Update `obi-config` ConfigMap to double `max_entries` (e.g. from 65536 to 131072) ➔ Rollout restart OBI DaemonSet.
+
+---
+
+## 3. Kernel Mechanics: Socket Layer Probes vs. VFS Syscall Hooks
 
 To understand how OBI produces metrics, one must analyze where OBI attaches inside the Linux kernel. OBI employs a **dual-path interception architecture** separating network wire telemetry from container stream I/O.
 
@@ -257,11 +334,11 @@ When a client initiates a network transaction with a Kubernetes container:
 
 ---
 
-## 3. Layer 1: Application RED Metrics (Golden Signals)
+## 4. Layer 1: Application RED Metrics (Golden Signals)
 
 Layer 1 metrics represent application-level service performance metrics generated completely out-of-process without code modifications.
 
-### 3.1 OpenTelemetry Semantic Conventions
+### 4.1 OpenTelemetry Semantic Conventions
 
 OBI adheres strictly to the official [OpenTelemetry Semantic Conventions for HTTP Metrics](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/):
 
@@ -273,7 +350,7 @@ OBI adheres strictly to the official [OpenTelemetry Semantic Conventions for HTT
 | `rpc.server.duration` | Histogram | `s` (seconds) | Server call duration for gRPC and RPC transactions. |
 | `db.client.operation.duration` | Histogram | `s` (seconds) | Latency of database client queries (PostgreSQL, MySQL, Redis). |
 
-### 3.2 HTTP/HTTPS Server Metrics & PromQL Formulas
+### 4.2 HTTP/HTTPS Server Metrics & PromQL Formulas
 
 When scraped by Prometheus or shipped via OTLP to Grafana Mimir, AWS AMP, or Azure Monitor, OBI exposes standard Prometheus metric names:
 
@@ -309,7 +386,7 @@ histogram_quantile(
 )
 ```
 
-### 3.3 gRPC & RPC Service Metrics
+### 4.3 gRPC & RPC Service Metrics
 
 For high-performance microservices communicating via gRPC over HTTP/2, OBI decodes framing headers to produce RPC metrics:
 
@@ -323,7 +400,7 @@ Example PromQL query for gRPC error rate:
 sum(rate(rpc_server_requests_total{rpc_grpc_status_code!="0"}[1m])) by (rpc_service, rpc_method)
 ```
 
-### 3.4 Database Client Metrics (SQL & NoSQL)
+### 4.4 Database Client Metrics (SQL & NoSQL)
 
 When application processes communicate with SQL databases (PostgreSQL, MySQL) or in-memory caches (Redis), OBI detects client socket traffic:
 
@@ -332,11 +409,11 @@ When application processes communicate with SQL databases (PostgreSQL, MySQL) or
 
 ---
 
-## 4. Layer 2: eBPF Subsystem & Kernel Health Telemetry
+## 5. Layer 2: eBPF Subsystem & Kernel Health Telemetry
 
 Operating eBPF in production requires continuous visibility into the health, resource consumption, and execution safety of the kernel probes themselves. OBI exports dedicated subsystem metrics on **port `8999`**.
 
-### 4.1 Self-Monitoring Prometheus Endpoint (Port 8999)
+### 5.1 Self-Monitoring Prometheus Endpoint (Port 8999)
 
 Every node-level OBI daemon exposes a Prometheus scrape target at `http://<node-ip>:8999/metrics`.
 
@@ -360,7 +437,7 @@ obi_bpf_map_max_entries{map="traces_ctx_v1"} 65536
 obi_ringbuffer_dropped_events_total 0
 ```
 
-### 4.2 Kernel BPF Map Capacity & Saturation (`traces_ctx_v1`)
+### 5.2 Kernel BPF Map Capacity & Saturation (`traces_ctx_v1`)
 
 The in-kernel BPF map `traces_ctx_v1` stores the active W3C trace context (`trace_id`, `span_id`) mapped to active thread/goroutine IDs (`pid_tgid`).
 
@@ -376,7 +453,7 @@ The in-kernel BPF map `traces_ctx_v1` stores the active W3C trace context (`trac
 > [!WARNING]
 > **Map Saturation Risk**: If map utilization exceeds 85%, high-concurrency spikes may cause the Least-Recently-Used (LRU) eviction algorithm to evict active thread contexts prematurely. This results in log lines emitted without `trace_id` injection. If this metric exceeds 80%, increase `max_entries` in the OBI configuration.
 
-### 4.3 Ring Buffer Backpressure & Drop Detection
+### 5.3 Ring Buffer Backpressure & Drop Detection
 
 When OBI intercepts a log write, it enqueues metadata into the Linux BPF Ring Buffer (`BPF_MAP_TYPE_RINGBUF`) for user-space re-emission.
 
@@ -388,7 +465,7 @@ sum(increase(obi_ringbuffer_dropped_events_total[5m]))
 - **Target Value**: Must strictly remain **0**.
 - **Non-Zero Cause**: If `obi_ringbuffer_dropped_events_total > 0`, the user-space OBI agent is CPU-throttled and cannot drain the ring buffer fast enough to keep up with kernel write volume. Remediate immediately by raising OBI container CPU limits.
 
-### 4.4 Probe Overhead & Microsecond Latency Tracking
+### 5.4 Probe Overhead & Microsecond Latency Tracking
 
 OBI tracks the execution time of its own eBPF bytecode programs using kernel hardware cycle counters:
 
@@ -405,9 +482,9 @@ histogram_quantile(
 
 ---
 
-## 5. The Metric-Trace-Log Synergy: Prometheus & Mimir Exemplars
+## 6. The Metric-Trace-Log Synergy: Prometheus & Mimir Exemplars
 
-### 5.1 How OBI Binds W3C Trace IDs to Histogram Buckets
+### 6.1 How OBI Binds W3C Trace IDs to Histogram Buckets
 
 In traditional observability, metrics, traces, and logs exist in isolated silos. When an SRE observes an alert spike on a Prometheus latency graph, they are forced to switch tabs and guess which trace caused the spike.
 
@@ -447,7 +524,7 @@ Because OBI executes inside the Linux kernel and handles both network timings an
 +─────────────────────────────────────────────────────────────────────────────+
 ```
 
-### 5.2 1-Click Investigation: Metric Spike ➔ Trace ➔ Correlated Logs
+### 6.2 1-Click Investigation: Metric Spike ➔ Trace ➔ Correlated Logs
 
 With OBI exemplars enabled across the stack:
 1. **The Alert**: A PromQL alert triggers in Mimir or Prometheus: `http_server_duration_milliseconds_bucket p99 > 2s`.
@@ -459,9 +536,9 @@ Mean Time to Root Cause: **Under 30 seconds**, with zero timestamp guessing or m
 
 ---
 
-## 6. Production Configuration Blueprints
+## 7. Production Configuration Blueprints
 
-### 6.1 OBI DaemonSet Configuration (`meter_provider`)
+### 7.1 OBI DaemonSet Configuration (`meter_provider`)
 
 Deploy this updated `ConfigMap` to activate both RED metrics generation and internal Prometheus scrape endpoints:
 
@@ -532,7 +609,7 @@ data:
               span_id: span_id
 ```
 
-### 6.2 OpenTelemetry Collector Multi-Backend Metrics Pipeline
+### 7.2 OpenTelemetry Collector Multi-Backend Metrics Pipeline
 
 The OpenTelemetry Collector ingests OTLP metrics from OBI and fans them out to your production time-series backends:
 
@@ -614,7 +691,7 @@ data:
           exporters: [ prometheusremotewrite/mimir, prometheus ]
 ```
 
-### 6.3 GitOps `PrometheusRule` Alerting CRD
+### 7.3 GitOps `PrometheusRule` Alerting CRD
 
 Declare automated cluster alerts for both application RED metrics and OBI eBPF kernel health:
 
@@ -695,7 +772,7 @@ spec:
 
 ---
 
-## 7. Multi-Cloud Kubernetes Metrics Architecture
+## 8. Multi-Cloud Kubernetes Metrics Architecture
 
 OBI metrics integrate natively with cloud provider observability engines without proprietary agent sidecars:
 
@@ -711,7 +788,7 @@ OBI metrics integrate natively with cloud provider observability engines without
 +─────────────────────────────────────────────────────────────────────────────────────────+
 ```
 
-### 7.1 Red Hat OpenShift: User Workload Monitoring
+### 8.1 Red Hat OpenShift: User Workload Monitoring
 
 Red Hat OpenShift includes a pre-configured Prometheus Operator for user applications:
 1. Enable User Workload Monitoring in `cluster-monitoring-config`:
@@ -728,27 +805,27 @@ Red Hat OpenShift includes a pre-configured Prometheus Operator for user applica
 2. Deploy a `PodMonitor` targeting OBI on port `8999` and `8889`.
 3. In the **OpenShift Web Console**, navigate to **Observe > Metrics**. OBI RED metrics appear natively alongside cluster platform metrics.
 
-### 7.2 Microsoft Azure AKS: Azure Managed Prometheus
+### 8.2 Microsoft Azure AKS: Azure Managed Prometheus
 
 Azure AKS provides **Azure Monitor Managed Service for Prometheus (AMMP)**:
 - OTel Collector forwards metrics via the `prometheusremotewrite` exporter to the Azure Prometheus endpoint.
 - Metrics are queried using standard PromQL in the Azure Portal or in **Azure Managed Grafana (Azure AMG)** with built-in Entra ID authentication.
 
-### 7.3 AWS EKS: Amazon Managed Service for Prometheus (AMP)
+### 8.3 AWS EKS: Amazon Managed Service for Prometheus (AMP)
 
 AWS EKS pairs with **Amazon Managed Service for Prometheus (AMP)**:
 - Configure the OpenTelemetry Collector's `awsprometheusremotewrite` exporter using AWS IAM Roles for Service Accounts (IRSA).
 - High-scale metrics ingestion is completely serverless and requires zero Prometheus disk management.
 - Visualized in **Amazon Managed Grafana (AMG)** or correlated in AWS CloudWatch Container Insights.
 
-### 7.4 Google Cloud GKE: Google Cloud Managed Service for Prometheus (GMP)
+### 8.4 Google Cloud GKE: Google Cloud Managed Service for Prometheus (GMP)
 
 Google Kubernetes Engine features native **Google Cloud Managed Service for Prometheus (GMP)**:
 - Deploy the `PodMonitoring` custom resource targeting OBI's Prometheus port.
 - Google Cloud automatically scrapes, indexes, and retains metrics without managing metric storage disks.
 - Available directly in Google Cloud Console **Monitoring > Metrics Explorer** and Grafana via the Cloud Monitoring datasource.
 
-### 7.5 SigNoz: Native Columnar ClickHouse Metrics
+### 8.5 SigNoz: Native Columnar ClickHouse Metrics
 
 SigNoz ingests OTLP metrics directly via gRPC into **ClickHouse**:
 - Unlike traditional Prometheus index stores, ClickHouse handles millions of high-cardinality label combinations effortlessly.
@@ -756,7 +833,7 @@ SigNoz ingests OTLP metrics directly via gRPC into **ClickHouse**:
 
 ---
 
-## 8. Boundaries & Anti-Patterns: What eBPF Metrics Do and Do Not Solve
+## 9. Boundaries & Anti-Patterns: What eBPF Metrics Do and Do Not Solve
 
 To maintain architectural integrity, SRE teams must recognize the technical boundaries of kernel-level metric generation:
 
@@ -781,16 +858,16 @@ To maintain architectural integrity, SRE teams must recognize the technical boun
 +────────────────────────────────────────────┴────────────────────────────────────────────+
 ```
 
-### 8.1 What eBPF Metrics Provide Out-of-the-Box
+### 9.1 What eBPF Metrics Provide Out-of-the-Box
 - **100% Fleet Coverage**: Every microservice immediately emits Golden Signals without waiting for application sprints or SDK refactoring.
 - **Zero App CPU Overhead**: Telemetry computation occurs in kernel space and the node-level daemon; the application process consumes 0 extra CPU cycles for metric aggregation.
 - **Resilience During Crashes**: If an application crashes (OOM, segfault), the kernel probe captures the failing transaction duration and socket termination, preserving telemetry that in-process agents lose.
 
-### 8.2 What Requires In-Process Application SDKs
+### 9.2 What Requires In-Process Application SDKs
 - **Business Domain Metrics**: Kernel probes intercept network bytes and VFS writes; they cannot inspect application variables residing in private heap memory.
 - **Runtime Virtual Machine Metrics**: For JVM heap memory sizing, Go GC pause duration, or Python GIL contention, use dedicated runtime metric scrapers or lightweight OTel runtime metric packages alongside OBI.
 
-### 8.3 Architectural Decision Matrix
+### 9.3 Architectural Decision Matrix
 
 | Observability Requirement | Recommended Mechanism | Primary Tooling |
 | :--- | :--- | :--- |
@@ -802,7 +879,7 @@ To maintain architectural integrity, SRE teams must recognize the technical boun
 
 ---
 
-## 9. The 2:00 AM Metric Alert Incident Runbook
+## 10. The 2:00 AM Metric Alert Incident Runbook
 
 When on-call engineers are paged at 2:00 AM by a metric alert, follow this 60-second diagnostic runbook:
 
@@ -818,7 +895,7 @@ flowchart TD
 
 ---
 
-## 10. Categorized Public References & Standards Catalog
+## 11. Categorized Public References & Standards Catalog
 
 ### 1. OpenTelemetry Specifications & Standards
 - [OpenTelemetry Semantic Conventions for HTTP Metrics](https://opentelemetry.io/docs/specs/semconv/http/http-metrics/) — Formal specifications for HTTP request duration, rate, and status codes.
@@ -838,7 +915,7 @@ flowchart TD
 
 ---
 
-## 11. Navigation & Documentation Directory
+## 12. Navigation & Documentation Directory
 
 | ⬅️ Previous Document | 🏠 Documentation Hub | ➡️ Next Document |
 | :--- | :---: | ---: |
