@@ -63,6 +63,139 @@ Platform architects and Site Reliability Engineers evaluating OpenTelemetry eBPF
 
 ---
 
+---
+
+### 🎥 Multimedia Deep Dives & Architectural Audio-Visual Guides
+
+This guide is supported by dedicated educational audio-visual deep dives synthesized with **Gemini NotebookLM** that explore OpenTelemetry eBPF (OBI) metrics architecture: from kernel socket interception deriving RED Golden Signals and self-monitoring eBPF maps to Prometheus / Mimir Exemplars, GitOps alerting rules, multi-cloud managed Prometheus backends, and metric boundaries. All episodes and technical shorts are hosted on the [**@nubenetes**](https://youtube.com/@nubenetes) YouTube channel.
+
+> [!NOTE]
+> **Multilingual Learning Experience**:
+> Features native audio in **English 🇺🇸**, with automated closed captions (CC) translated into **20+ languages** (Spanish, French, German, Japanese, Portuguese, Italian, Arabic, Hindi, etc.) for platform engineering, cloud-native architecture, and SRE teams.
+
+#### 📊 Curated eBPF Metrics & Telemetry Collection (4 Episodes)
+
+| Format | Episode / Title | Domain / Focus | Language | Duration | Direct YouTube Link |
+|:---:|---|---|:---:|:---:|---|
+| 📽️ **Video Guide** | [**OBI Metrics Architecture: RED Signals, Kernel Telemetry & Prometheus Exemplars**](https://www.youtube.com/watch?v=KZKEWYL1b00) | **Core Metrics Architecture**: Dual-path interception, Golden Signals, map health & Exemplars | 🇺🇸 English *(CC 20+)* | `8:11` | [▶️ Watch Video](https://www.youtube.com/watch?v=KZKEWYL1b00) |
+| 📽️ **Video Guide** | [**Production OBI Metrics Blueprints: Multi-Cloud, GitOps Alerts & Boundaries**](https://www.youtube.com/watch?v=yEChUSX2NXc) | **Production Blueprints**: Multi-cloud K8s metrics, PrometheusRule CRDs & Decision Matrix | 🇺🇸 English *(CC 20+)* | `9:22` | [▶️ Watch Video](https://www.youtube.com/watch?v=yEChUSX2NXc) |
+| ⚡ **Technical Short** | [**How Prometheus Exemplars Connect Spikes to Logs**](https://www.youtube.com/shorts/nhwv34F6Fa0) | **Exemplars Integration**: 1-click drill-down from metric spikes to traces and correlated logs | 🇺🇸 English *(CC 20+)* | `1:11` | [▶️ Watch Short](https://www.youtube.com/shorts/nhwv34F6Fa0) |
+| ⚡ **Technical Short** | [**Why eBPF Can't See Your Business Metrics**](https://www.youtube.com/shorts/Ja5gPK7KTK4) | **Architectural Boundaries**: Protocol-level RED metrics vs application business telemetry | 🇺🇸 English *(CC 20+)* | `1:23` | [▶️ Watch Short](https://www.youtube.com/shorts/Ja5gPK7KTK4) |
+
+<details>
+<summary>📂 <strong>Detailed Agendas & Architectural Relevance</strong></summary>
+
+<br/>
+
+#### 1. OBI Metrics Architecture: RED Signals, Kernel Telemetry & Prometheus Exemplars (8:11)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=KZKEWYL1b00](https://www.youtube.com/watch?v=KZKEWYL1b00)
+- ⏱️ **Duration**: 8:11
+- 🏷️ **Domain**: Dual-Path Interception, RED Golden Signals, BPF Map Health & Prometheus Exemplars
+- 📝 **Full Description**:
+> 🔬 Architectural Deep Dive: OpenTelemetry eBPF (OBI) Metrics Architecture
+>
+> Comprehensive 8-minute architectural walkthrough exploring how OpenTelemetry eBPF Instrumentation (OBI) natively generates application RED metrics and kernel subsystem health telemetry without developer code changes.
+>
+> Based directly on the ebpf-metrics-and-telemetry.md blueprint, discover how Linux kernel socket probes derive Golden Signals and bind active W3C trace IDs to Prometheus and Mimir histogram buckets.
+>
+> 📌 Core Architectural Concepts Explored:
+>
+> - Native RED Signals Without SDKs: How OBI tcp_recvmsg and sockops probes derive request rate, error counts, and latency histograms at Ring 0.
+> - Dual-Path Kernel Interception: The architectural separation between VFS syscall hooks (pipe_write) for log enrichment and socket probes for L7 network telemetry.
+> - Layer 1 Application Metrics: OpenTelemetry semantic conventions for HTTP/HTTPS, gRPC, and database client interactions with PromQL formulas.
+> - Layer 2 Kernel Health Telemetry: Self-monitoring port 8999, BPF map capacity tracking (traces_ctx_v1), and ringbuffer backpressure detection.
+> - Metric-Trace-Log Synergy: How Prometheus and Mimir Exemplars enable 1-click investigation from a metric spike directly to distributed traces and correlated logs.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - eBPF Metrics & Telemetry Blueprint: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/ebpf-metrics-and-telemetry.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 8:11
+> #OpenTelemetry #eBPF #Prometheus #Kubernetes #Grafana #Mimir #Observability #SRE #DevOps #CloudNative #Exemplars
+
+#### 2. Production OBI Metrics Blueprints: Multi-Cloud, GitOps Alerts & Boundaries (9:22)
+- 🔗 **Direct Link**: [https://www.youtube.com/watch?v=yEChUSX2NXc](https://www.youtube.com/watch?v=yEChUSX2NXc)
+- ⏱️ **Duration**: 9:22
+- 🏷️ **Domain**: Multi-Cloud Architectures, GitOps PrometheusRules, Alerting & Boundaries
+- 📝 **Full Description**:
+> 🔬 Production Blueprints: OBI Metrics, Multi-Cloud Architectures & Alerting
+>
+> Comprehensive 9-minute engineering guide detailing production configurations, GitOps alerting rules, multi-cloud managed Prometheus backends, and architectural boundaries for OpenTelemetry eBPF metrics.
+>
+> Based directly on the ebpf-metrics-and-telemetry.md blueprint, discover how to deploy enterprise metric pipelines across OpenShift, AKS, EKS, GKE, and SigNoz.
+>
+> 📌 Production Engineering Blueprints Covered:
+>
+> - OBI DaemonSet Configuration: Configuring meter_provider, batch processors, and OTLP exporters with resource limits.
+> - OpenTelemetry Collector Routing: Designing robust multi-backend pipelines for Prometheus remote write and OTLP endpoints.
+> - GitOps PrometheusRule CRD: Production alerting rules for kernel BPF map saturation and dropped telemetry spans.
+> - Multi-Cloud Deployments: Integrating with OpenShift User Workload Monitoring, Azure Managed Prometheus, AWS AMP, Google GMP, and SigNoz.
+> - Architectural Decision Matrix: Clarifying what eBPF metrics solve out-of-the-box versus domain metrics requiring application SDKs.
+> - The 2:00 AM Metric Alert Runbook: On-call troubleshooting protocol for kernel map pressure and ringbuffer exhaustion.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - eBPF Metrics & Telemetry Blueprint: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/ebpf-metrics-and-telemetry.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 9:22
+> #OpenTelemetry #eBPF #Kubernetes #GitOps #Prometheus #OpenShift #AzureAKS #AWSEKS #GKE #SRE #DevOps
+
+#### 3. How Prometheus Exemplars Connect Spikes to Logs (1:11)
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/nhwv34F6Fa0](https://www.youtube.com/shorts/nhwv34F6Fa0)
+- ⏱️ **Duration**: 1:11
+- 🏷️ **Domain**: Prometheus & Mimir Exemplars, 1-Click Investigation
+- 📝 **Full Description**:
+> ⚡ Technical Short: How Prometheus Exemplars Connect Spikes to Logs
+>
+> Static metric graphs alert you when latency spikes, but finding the failing root cause usually requires manual searching. Discover how OpenTelemetry eBPF Instrumentation (OBI) bridges metrics, traces, and logs using Prometheus and Mimir Exemplars.
+>
+> 📌 The 1-Click Investigation Portal:
+>
+> - Automatic Exemplar Binding: OBI attaches the active 32-character W3C trace ID to histogram latency buckets in real time.
+> - Interactive Grafana Dashboards: Clicking an anomalous latency spike dot on a Prometheus chart immediately opens the exact Tempo trace.
+> - Direct Path to Logs: Navigating from the distributed trace span straight into correlated container logs in Loki with zero timestamp guessing.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - eBPF Metrics & Telemetry Blueprint: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/ebpf-metrics-and-telemetry.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:11
+> #Shorts #Prometheus #Exemplars #OpenTelemetry #eBPF #Grafana #Loki #Tempo #Kubernetes #SRE #DevOps
+
+#### 4. Why eBPF Can't See Your Business Metrics (1:23)
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/Ja5gPK7KTK4](https://www.youtube.com/shorts/Ja5gPK7KTK4)
+- ⏱️ **Duration**: 1:23
+- 🏷️ **Domain**: Architectural Boundaries & Protocol vs. Application Telemetry
+- 📝 **Full Description**:
+> ⚡ Technical Short: Why eBPF Cannot See Your Business Metrics
+>
+> Can Linux kernel eBPF completely eliminate the need for application monitoring SDKs? Discover the critical architectural boundary between protocol-level telemetry and application domain metrics.
+>
+> 📌 Architectural Decision Boundary:
+>
+> - What eBPF Solves Out-of-the-Box: Zero-code RED Golden Signals (RPS, 5xx error rates, response durations), socket connection states, and kernel health.
+> - The Kernel Blind Spot: Why OS probes operating at Ring 0 cannot inspect internal application heap objects (e.g. cart_total_usd, active_checkout_steps).
+> - The Hybrid Observability Strategy: Leverage eBPF for zero-touch infrastructure and protocol telemetry, and standard OpenTelemetry API calls for specific business metrics.
+>
+> 🔗 Official Blueprint Repository & Reference Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - eBPF Metrics & Telemetry Blueprint: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/ebpf-metrics-and-telemetry.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:23
+> #Shorts #OpenTelemetry #eBPF #Observability #BusinessMetrics #Kubernetes #CloudNative #DevOps #SRE #Architecture
+
+</details>
+
+---
+
 ## 2. Kernel Mechanics: Socket Layer Probes vs. VFS Syscall Hooks
 
 To understand how OBI produces metrics, one must analyze where OBI attaches inside the Linux kernel. OBI employs a **dual-path interception architecture** separating network wire telemetry from container stream I/O.
