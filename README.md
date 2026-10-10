@@ -119,7 +119,7 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [16. OBI Masterclass: Kubernetes & Multi-Cloud Observability with OpenTelemetry eBPF](#16-obi-masterclass-kubernetes--multi-cloud-observability-with-opentelemetry-ebpf)
     - [17. Observabilidad en Kubernetes sin tocar código con OpenTelemetry y eBPF](#17-observabilidad-en-kubernetes-sin-tocar-código-con-opentelemetry-y-ebpf)
     - [18. Bridging SPA and SSR Telemetry with OpenTelemetry eBPF](#18-bridging-spa-and-ssr-telemetry-with-opentelemetry-ebpf)
-  - [⚡ Topic-Focused Technical Shorts (17 Shorts)](#-topic-focused-technical-shorts-17-shorts)
+  - [⚡ Topic-Focused Technical Shorts (26 Shorts)](#-topic-focused-technical-shorts-26-shorts)
     - [1. Zero-Code Trace-Log Correlation Explained: OpenTelemetry OBI eBPF](#1-zero-code-trace-log-correlation-explained-opentelemetry-obi-ebpf)
     - [2. How OBI Correlates Logs Without Code: OpenTelemetry eBPF In-Flight](#2-how-obi-correlates-logs-without-code-opentelemetry-ebpf-in-flight)
     - [3. How eBPF Automates Trace-Log Correlation in Go Without SDKs](#3-how-ebpf-automates-trace-log-correlation-in-go-without-sdks)
@@ -137,6 +137,15 @@ Enterprise reference implementation, multi-cloud Kubernetes architectures, and e
     - [15. El Fin de los Agentes de Monitorización: Observabilidad con eBPF](#15-el-fin-de-los-agentes-de-monitorización-observabilidad-con-ebpf)
     - [16. Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs](#16-frontend-spa-telemetry-how-w3c-trace-context-connects-clicks-to-logs)
     - [17. Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux](#17-cómo-conectar-el-frontend-con-ebpf-del-navegador-al-kernel-en-linux)
+    - [18. How Tail Based Sampling Stops eBPF Bill Shock](#18-how-tail-based-sampling-stops-ebpf-bill-shock)
+    - [19. How tracesToLogsV2 Correlates Traces](#19-how-tracestologsv2-correlates-traces)
+    - [20. OpenShift Native Trace Log Correlation](#20-openshift-native-trace-log-correlation)
+    - [21. How Azure Natively Correlates Kubernetes Logs](#21-how-azure-natively-correlates-kubernetes-logs)
+    - [22. Why OpenTelemetry OBI Doesn't Require Grafana](#22-why-opentelemetry-obi-doesnt-require-grafana)
+    - [23. How One Trace ID Solves Outages in 60 Seconds](#23-how-one-trace-id-solves-outages-in-60-seconds)
+    - [24. How eBPF Kills Vendor Lock In](#24-how-ebpf-kills-vendor-lock-in)
+    - [25. How OBI eBPF Injects Trace IDs In Flight](#25-how-obi-ebpf-injects-trace-ids-in-flight)
+    - [26. How eBPF Links Logs Without Code](#26-how-ebpf-links-logs-without-code)
   - [🎙️ Architectural Masterclass Podcasts (8 Episodes)](#-architectural-masterclass-podcasts-8-episodes)
     - [1. Podcast: Zero-Code Trace-Log Correlation with OpenTelemetry eBPF (OBI) Deep Dive](#1-podcast-zero-code-trace-log-correlation-with-opentelemetry-ebpf-obi-deep-dive)
     - [2. Podcast: Correlación Zero-Code de Logs y Trazas con eBPF y OpenTelemetry OBI](#2-podcast-correlación-zero-code-de-logs-y-trazas-con-ebpf-y-opentelemetry-obi)
@@ -513,6 +522,15 @@ This repository includes a comprehensive multi-format educational series synthes
 | 15 | [**El Fin de los Agentes de Monitorización: Observabilidad con eBPF**](https://www.youtube.com/shorts/g8YGDj7FrEI) | Sustitución de APM por Observabilidad Kernel | 🇪🇸 Spanish *(CC 20+)* | `0:57` | [▶️ Ver Short](https://www.youtube.com/shorts/g8YGDj7FrEI) |
 | 16 | [**Frontend SPA Telemetry: How W3C Trace Context Connects Clicks to Logs**](https://www.youtube.com/shorts/fPy7vW2vRDQ) | Client Browser Interception & W3C Trace Context | 🇺🇸 English *(CC 20+)* | `1:11` | [▶️ Watch Short](https://www.youtube.com/shorts/fPy7vW2vRDQ) |
 | 17 | [**Cómo Conectar el Frontend con eBPF: Del Navegador al Kernel en Linux**](https://www.youtube.com/shorts/QdUdLTSOyZE) | Conexión Frontend al Kernel y Trazabilidad W3C | 🇪🇸 Spanish *(CC 20+)* | `1:11` | [▶️ Ver Short](https://www.youtube.com/shorts/QdUdLTSOyZE) |
+| 18 | [**How Tail Based Sampling Stops eBPF Bill Shock**](https://www.youtube.com/shorts/5LuHKkoTqAs) | Tail-Based Sampling & Ingestion Cost Reduction | 🇺🇸 English *(CC 20+)* | `1:08` | [▶️ Watch Short](https://www.youtube.com/shorts/5LuHKkoTqAs) |
+| 19 | [**How tracesToLogsV2 Correlates Traces**](https://www.youtube.com/shorts/bIYcoxT2JHY) | Grafana Tempo to Loki Correlation & tracesToLogsV2 | 🇺🇸 English *(CC 20+)* | `1:12` | [▶️ Watch Short](https://www.youtube.com/shorts/bIYcoxT2JHY) |
+| 20 | [**OpenShift Native Trace Log Correlation**](https://www.youtube.com/shorts/dxdC93SWLiM) | Red Hat OpenShift Observe UI, LokiStack & TempoStack | 🇺🇸 English *(CC 20+)* | `1:16` | [▶️ Watch Short](https://www.youtube.com/shorts/dxdC93SWLiM) |
+| 21 | [**How Azure Natively Correlates Kubernetes Logs**](https://www.youtube.com/shorts/D9-1TFG8ui8) | Azure AKS ContainerLogV2, Log Analytics KQL & App Insights | 🇺🇸 English *(CC 20+)* | `1:21` | [▶️ Watch Short](https://www.youtube.com/shorts/D9-1TFG8ui8) |
+| 22 | [**Why OpenTelemetry OBI Doesn't Require Grafana**](https://www.youtube.com/shorts/t6JzaNdrIHw) | Kernel Decoupling & Multi-Platform Observability | 🇺🇸 English *(CC 20+)* | `1:13` | [▶️ Watch Short](https://www.youtube.com/shorts/t6JzaNdrIHw) |
+| 23 | [**How One Trace ID Solves Outages in 60 Seconds**](https://www.youtube.com/shorts/Y1bqQGaCZ7c) | 60-Second Incident Triage & 2:00 AM PagerDuty Runbook | 🇺🇸 English *(CC 20+)* | `1:01` | [▶️ Watch Short](https://www.youtube.com/shorts/Y1bqQGaCZ7c) |
+| 24 | [**How eBPF Kills Vendor Lock In**](https://www.youtube.com/shorts/Vd2TfmVxCLU) | Vendor Neutrality & Open Standards (OTLP/W3C) | 🇺🇸 English *(CC 20+)* | `1:12` | [▶️ Watch Short](https://www.youtube.com/shorts/Vd2TfmVxCLU) |
+| 25 | [**How OBI eBPF Injects Trace IDs In Flight**](https://www.youtube.com/shorts/ETnbC-_CNvI) | Kernel Syscall Interception & In-Flight Log Stamping | 🇺🇸 English *(CC 20+)* | `1:18` | [▶️ Watch Short](https://www.youtube.com/shorts/ETnbC-_CNvI) |
+| 26 | [**How eBPF Links Logs Without Code**](https://www.youtube.com/shorts/GBdfwe8pJKU) | Zero-Code Architecture & DaemonSet Deployment | 🇺🇸 English *(CC 20+)* | `1:18` | [▶️ Watch Short](https://www.youtube.com/shorts/GBdfwe8pJKU) |
 
 *For complete descriptions and technical breakdowns, see [Video Walkthroughs & Architecture References](#video-walkthroughs--architecture-references-youtube).*
 
@@ -1644,10 +1662,10 @@ Below are the direct links and full descriptions for each session.
 
 <br/>
 
-### ⚡ Topic-Focused Technical Shorts (17 Shorts)
+### ⚡ Topic-Focused Technical Shorts (26 Shorts)
 
 <details>
-<summary>📂 <strong>Technical Video Shorts Breakdown (17 Shorts)</strong></summary>
+<summary>📂 <strong>Technical Video Shorts Breakdown (26 Shorts)</strong></summary>
 
 <br/>
 
@@ -2021,6 +2039,222 @@ Below are the direct links and full descriptions for each session.
 > - **Anuncio Oficial de OpenTelemetry**: [https://opentelemetry.io/blog/2026/obi-trace-log-correlation/](https://opentelemetry.io/blog/2026/obi-trace-log-correlation/)
 >
 > #Shorts #OpenTelemetry #eBPF #Frontend #Angular #React #Observabilidad #Kubernetes #SRE #DevOps
+
+#### 18. How Tail Based Sampling Stops eBPF Bill Shock
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/5LuHKkoTqAs](https://www.youtube.com/shorts/5LuHKkoTqAs)
+- ⏱️ **Duration**: 1:08
+- 🏷️ **Domain**: Tail-Based Sampling & Ingestion Cost Reduction
+- 📝 **Full Description**:
+> ⚡ Technical Short: How Tail Based Sampling Stops eBPF Bill Shock
+>
+> High-throughput eBPF instrumentation captures every single system call write, potentially inflating telemetry ingestion bills to $25,000/month. Discover how configuring tail-based sampling in OpenTelemetry Collector reduces volume by 80% to 95%.
+>
+> 📌 Architectural Takeaways:
+>
+> - The Head vs Tail Dilemma: Why head sampling misses runtime exceptions and timeouts.
+> - Dropping Noise: Dropping 100% of /healthz and /readyz probes while sampling 2% of HTTP 200 OKs.
+> - 100% Error Capture: Ensuring every HTTP 5xx error and slow transaction (exceeding 1500ms) is retained.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:08
+> #OpenTelemetry #eBPF #Kubernetes #CostOptimization #FinOps #SRE #DevOps
+
+#### 19. How tracesToLogsV2 Correlates Traces
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/bIYcoxT2JHY](https://www.youtube.com/shorts/bIYcoxT2JHY)
+- ⏱️ **Duration**: 1:12
+- 🏷️ **Domain**: Grafana Tempo to Loki Correlation & tracesToLogsV2 Configuration
+- 📝 **Full Description**:
+> ⚡ Technical Short: How tracesToLogsV2 Correlates Traces and Logs in Grafana
+>
+> Drill down from a Tempo trace waterfall directly into correlated container logs in Loki with a single click using the tracesToLogsV2 datasource specification.
+>
+> 📌 Key Technical Capabilities:
+>
+> - Automatic Trace ID Forwarding: Injecting active trace_id into Loki queries automatically.
+> - Time Shift Padding: Configuring spanStartTimeShift to accommodate asynchronous logging buffers.
+> - Bidirectional Navigation: Jumping between Tempo spans and Loki logs without manual filtering.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:12
+> #Grafana #Tempo #Loki #OpenTelemetry #eBPF #DistributedTracing #Kubernetes #SRE
+
+#### 20. OpenShift Native Trace Log Correlation
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/dxdC93SWLiM](https://www.youtube.com/shorts/dxdC93SWLiM)
+- ⏱️ **Duration**: 1:16
+- 🏷️ **Domain**: Red Hat OpenShift Observe UI, LokiStack & TempoStack
+- 📝 **Full Description**:
+> ⚡ Technical Short: OpenShift Native Trace-Log Correlation with eBPF
+>
+> Red Hat OpenShift features a native enterprise observability interface embedded directly in the Web Console. See how OBI enables zero-code correlation in OpenShift Observe UI.
+>
+> 📌 Key OpenShift Features:
+>
+> - Native Observe UI: Navigating from Observe to Traces to Correlated Logs seamlessly.
+> - OpenShift Logging & Tracing Operators: ClusterLogForwarder pipelines with LokiStack and TempoStack.
+> - Project-Level RBAC: Enforcing multi-tenant isolation out-of-the-box.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:16
+> #OpenShift #RedHat #Kubernetes #OpenTelemetry #eBPF #Loki #Tempo #SRE #DevOps
+
+#### 21. How Azure Natively Correlates Kubernetes Logs
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/D9-1TFG8ui8](https://www.youtube.com/shorts/D9-1TFG8ui8)
+- ⏱️ **Duration**: 1:21
+- 🏷️ **Domain**: Azure AKS ContainerLogV2, Log Analytics KQL & Application Insights
+- 📝 **Full Description**:
+> ⚡ Technical Short: Native eBPF Trace-Log Correlation in Azure Kubernetes Service (AKS)
+>
+> Learn how Azure AKS correlates container logs in ContainerLogV2 with Application Insights traces using pure Kusto Query Language (KQL).
+>
+> 📌 Key AKS Capabilities:
+>
+> - OperationId to Trace ID Mapping: Using native W3C headers across Azure Monitor.
+> - High-Speed KQL Queries: Querying ContainerLogV2 by trace_id with microsecond latency.
+> - JSON Unpacking: Using extend LogJson = parse_json(LogMessage) to parse OBI structured logs.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:21
+> #Azure #AKS #KQL #Kubernetes #OpenTelemetry #eBPF #AzureMonitor #CloudNative #SRE
+
+#### 22. Why OpenTelemetry OBI Doesn't Require Grafana
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/t6JzaNdrIHw](https://www.youtube.com/shorts/t6JzaNdrIHw)
+- ⏱️ **Duration**: 1:13
+- 🏷️ **Domain**: Kernel Decoupling & Multi-Platform Observability
+- 📝 **Full Description**:
+> ⚡ Technical Short: Why OpenTelemetry OBI Does Not Require Grafana
+>
+> Dispel the myth that eBPF trace-log correlation requires deploying heavy Loki and Tempo clusters. OBI standardizes log streams right in the Linux kernel.
+>
+> 📌 Architectural Advantages:
+>
+> - Complete Backend Independence: Route OTLP telemetry to any platform without re-instrumentation.
+> - Native Cloud Stacks: Leverage existing contracts with AWS CloudWatch, Azure Monitor, or Google Cloud Trace.
+> - Zero Vendor Lock-In: Standardized W3C context embedded into stdout/stderr at Ring 0.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:13
+> #OpenTelemetry #eBPF #Kubernetes #Observability #MultiCloud #SRE #DevOps #CloudNative
+
+#### 23. How One Trace ID Solves Outages in 60 Seconds
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/Y1bqQGaCZ7c](https://www.youtube.com/shorts/Y1bqQGaCZ7c)
+- ⏱️ **Duration**: 1:01
+- 🏷️ **Domain**: 60-Second Incident Triage & 2:00 AM PagerDuty Runbook
+- 📝 **Full Description**:
+> ⚡ Technical Short: How One Trace ID Solves Outages in 60 Seconds
+>
+> During a 2:00 AM production outage, every second counts. See how a single W3C trace ID bridges distributed waterfall traces with backend logs across any Kubernetes distribution in under 60 seconds.
+>
+> 📌 Rapid Incident Triage:
+>
+> - Instant Drill-Down: Jump from a failing span directly to the exact stack trace in logs.
+> - Zero Timestamp Guesswork: Eliminate blind grepping across distributed microservices.
+> - Universal Workflow: Identical triage experience in Grafana, OpenShift, Azure, AWS, and SigNoz.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:01
+> #IncidentManagement #PagerDuty #SRE #DevOps #Kubernetes #OpenTelemetry #eBPF #DistributedTracing
+
+#### 24. How eBPF Kills Vendor Lock In
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/Vd2TfmVxCLU](https://www.youtube.com/shorts/Vd2TfmVxCLU)
+- ⏱️ **Duration**: 1:12
+- 🏷️ **Domain**: Vendor Neutrality & Open Standards
+- 📝 **Full Description**:
+> ⚡ Technical Short: How eBPF Eliminates Observability Vendor Lock-In
+>
+> Proprietary APM agents create brittle dependencies and expensive licensing contracts. Discover how kernel-space OpenTelemetry eBPF frees your platform architecture.
+>
+> 📌 Key Decoupling Principles:
+>
+> - OS-Level Stamping: Context injection at the syscall layer independent of application code.
+> - Open Standards: Native W3C Trace Context and OpenTelemetry Protocol (OTLP).
+> - Backend Flexibility: Switch between Grafana, cloud-native tools, and open-source stacks effortlessly.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:12
+> #VendorLockIn #OpenTelemetry #eBPF #CloudNative #Kubernetes #SRE #OpenSource
+
+#### 25. How OBI eBPF Injects Trace IDs In Flight
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/ETnbC-_CNvI](https://www.youtube.com/shorts/ETnbC-_CNvI)
+- ⏱️ **Duration**: 1:18
+- 🏷️ **Domain**: Kernel Syscall Interception & In-Flight Log Stamping
+- 📝 **Full Description**:
+> ⚡ Technical Short: How OBI eBPF Injects Trace IDs In-Flight
+>
+> Explore how OpenTelemetry eBPF Instrumentation intercepts stdout and stderr streams in kernel space and stamps active trace IDs mid-flight before disk commit.
+>
+> 📌 Kernel Mechanics Explained:
+>
+> - Syscall Interception: Attaching kprobes and tracepoints to write() and writev() system calls.
+> - Thread Tracking: Linking socket ingress packets to active operating system thread IDs.
+> - Mid-Flight Mutation: Zero-code log enrichment executed transparently in Ring 0.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:18
+> #eBPF #LinuxKernel #OpenTelemetry #DistributedTracing #Kubernetes #Syscalls #SRE
+
+#### 26. How eBPF Links Logs Without Code
+- 🔗 **Direct Link**: [https://www.youtube.com/shorts/GBdfwe8pJKU](https://www.youtube.com/shorts/GBdfwe8pJKU)
+- ⏱️ **Duration**: 1:18
+- 🏷️ **Domain**: Zero-Code Architecture & DaemonSet Deployment
+- 📝 **Full Description**:
+> ⚡ Technical Short: How eBPF Links Logs to Traces Without Code Changes
+>
+> Traditional APM agents require application SDKs, recompilation, and continuous maintenance. See how OBI achieves complete observability deployed as a lightweight Kubernetes DaemonSet.
+>
+> 📌 Production Highlights:
+>
+> - Zero Application SDKs: No language-specific dependencies in Java, Go, Node.js, or Python.
+> - DaemonSet Delivery: Single agent per node protecting all containers transparently.
+> - Immediate Value: Instant trace-log correlation for legacy and modern services alike.
+>
+> 🔗 Official Blueprint Repository & Documentation:
+>
+> - GitHub Blueprint Repository: https://github.com/nubenetes/obi-trace-log-correlation
+> - Grafana & K8s Observability Guide: https://github.com/nubenetes/obi-trace-log-correlation/blob/main/docs/grafana-and-k8s-observability.md
+> - OpenTelemetry Official Announcement: https://opentelemetry.io/blog/2026/obi-trace-log-correlation/
+>
+> ⏱️ Duration: 1:18
+> #ZeroCode #OpenTelemetry #eBPF #Kubernetes #DaemonSet #DevOps #SRE
 
 </details>
 
